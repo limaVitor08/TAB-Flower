@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - TabFlower</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body class="tela-login">
+
+    <main class="caixa-login">
+
+        <div class="marca marca-login">Tab<span>Flower</span></div>
+
+        <p class="subtitulo-login">
+            Gestão documental e processual do escritório.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <form class="formulario formulario-login" id="form-login">
+
+            <div class="campo campo-largo">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" required autofocus
+                       placeholder="voce@tabflower.com" autocomplete="username">
+            </div>
+
+            <div class="campo campo-largo">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" required
+                       autocomplete="current-password">
+            </div>
+
+            <div class="acoes-formulario">
+                <button type="submit" class="botao botao-principal" id="botao-entrar">
+                    Entrar
+                </button>
+            </div>
+
+        </form>
+
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/login.js"></script>
+</body>
+</html>

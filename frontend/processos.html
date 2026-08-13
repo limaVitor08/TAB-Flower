@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <title>Processos - TabFlower</title>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html">Painel</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="processos.html" class="ativa">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+
+        <h1 class="titulo-pagina">Processos</h1>
+        <p class="subtitulo-pagina">
+            Busque pelo número da ação, pelo título ou pelo nome do cliente.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <div class="barra-acoes">
+            <form class="busca" id="form-busca">
+                <input type="text" id="campo-busca"
+                       placeholder="Número, título ou nome do cliente"
+                       aria-label="Buscar processo">
+                <button type="submit" class="botao">Buscar</button>
+            </form>
+
+            <button type="button" class="botao" id="botao-limpar">Ver todos</button>
+
+            <div class="espacador"></div>
+
+            <label class="dica" style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="mostrar-inativos">
+                Mostrar arquivados
+            </label>
+
+            <a href="processo-form.html" class="botao botao-principal">Novo processo</a>
+        </div>
+
+        <!-- Filtros combinados (Funcionalidade 03).
+             Quando qualquer um destes é usado, a tela deixa de usar a
+             listagem simples da Model e passa a chamar a procedure
+             sp_buscar_processos, pela camada Repository. -->
+        <div class="barra-filtros">
+            <label class="dica" for="filtro-status">Situação</label>
+            <select id="filtro-status"></select>
+
+            <label class="dica" for="filtro-advogado">Advogado</label>
+            <select id="filtro-advogado"></select>
+
+            <label class="dica" for="filtro-tipo">Tipo</label>
+            <select id="filtro-tipo"></select>
+
+            <span class="dica" id="rotulo-fonte"></span>
+        </div>
+
+        <div id="lista" class="lista"></div>
+
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/processos.js"></script>
+</body>
+</html>

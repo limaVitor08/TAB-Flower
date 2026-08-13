@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <title>Checklists - TabFlower</title>
+</head>
+<body>
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html">Painel</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="processos.html">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+        <h1 class="titulo-pagina">Configuração de checklists</h1>
+        <p class="subtitulo-pagina">
+            Define quais documentos cada tipo de processo exige. É esta lista
+            que o sistema copia ao abrir um processo novo.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <div class="barra-filtros">
+            <label class="dica" for="tipo-processo">Tipo de processo</label>
+            <select id="tipo-processo"></select>
+        </div>
+
+        <section class="painel">
+            <h2 class="titulo-secao">Documentos exigidos</h2>
+            <p class="dica">
+                Alterar esta lista vale apenas para processos abertos daqui
+                em diante. Checklists já criados não mudam.
+            </p>
+            <ul class="checklist" id="itens"></ul>
+        </section>
+
+        <section class="painel">
+            <h2 class="titulo-secao">Acrescentar exigência</h2>
+            <div class="linha-status">
+                <select id="nova-categoria"></select>
+                <label class="dica" style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                    <input type="checkbox" id="nova-obrigatorio" checked>
+                    Obrigatório
+                </label>
+                <button type="button" class="botao botao-principal" id="botao-adicionar">
+                    Acrescentar
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/checklists.js"></script>
+</body>
+</html>

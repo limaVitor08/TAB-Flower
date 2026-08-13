@@ -1,0 +1,885 @@
+/* =====================================================================
+   TabFlower - Folha de estilo unica
+   =====================================================================
+   O sistema substitui pastas fisicas, etiquetas e post-its. Por isso o
+   elemento visual central e a ABA de pasta: cada cliente tem uma faixa
+   colorida na lateral esquerda indicando se esta ativo ou inativo.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   1. Variaveis (tokens de design)
+   Trocar uma cor aqui muda o sistema inteiro.
+   --------------------------------------------------------------------- */
+:root {
+    --tinta:        #1b2a41;  /* azul-ardosia escuro: textos e cabecalho */
+    --tinta-clara:  #5a6472;  /* textos secundarios */
+    --papel:        #f7f6f3;  /* fundo da pagina */
+    --papel-branco: #ffffff;  /* fundo dos cartoes e tabelas */
+    --folha:        #2f6f4e;  /* verde: acao principal e status ativo */
+    --folha-clara:  #e6f0ea;  /* verde bem claro: fundos de destaque */
+    --alerta:       #c2410c;  /* laranja-tijolo: erros e exclusao */
+    --alerta-claro: #fdece5;
+    --linha:        #e2e0dc;  /* bordas */
+
+    --raio: 6px;
+    --sombra: 0 1px 3px rgba(27, 42, 65, 0.08);
+}
+
+/* ---------------------------------------------------------------------
+   2. Reset e base
+   --------------------------------------------------------------------- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--tinta);
+    background-color: var(--papel);
+}
+
+/* Fonte monoespacada para CPF, CNPJ e numeros de processo.
+   Digito embaixo de digito, a lista fica muito mais facil de ler. */
+.mono {
+    font-family: 'Roboto Mono', 'Consolas', monospace;
+    font-size: 0.9rem;
+    letter-spacing: -0.02em;
+}
+
+/* ---------------------------------------------------------------------
+   3. Cabecalho
+   --------------------------------------------------------------------- */
+.cabecalho {
+    background-color: var(--tinta);
+    color: var(--papel);
+    padding: 0 24px;
+}
+
+.cabecalho-conteudo {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding-top: 18px;
+}
+
+.marca {
+    font-family: 'Archivo', 'Segoe UI', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    padding-bottom: 14px;
+}
+
+.marca span {
+    color: var(--folha);
+}
+
+/* As abas de navegacao sao literalmente abas de pasta:
+   cantos superiores arredondados e coladas na base do cabecalho. */
+.abas {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+}
+
+.abas a {
+    display: block;
+    padding: 10px 20px;
+    border-radius: var(--raio) var(--raio) 0 0;
+    color: rgba(247, 246, 243, 0.7);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.abas a:hover {
+    background-color: rgba(247, 246, 243, 0.1);
+    color: var(--papel);
+}
+
+.abas a.ativa {
+    background-color: var(--papel);
+    color: var(--tinta);
+}
+
+/* ---------------------------------------------------------------------
+   4. Estrutura da pagina
+   --------------------------------------------------------------------- */
+.pagina {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+}
+
+.titulo-pagina {
+    font-family: 'Archivo', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+}
+
+.subtitulo-pagina {
+    color: var(--tinta-clara);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+}
+
+.barra-acoes {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.espacador {
+    flex: 1;
+}
+
+/* ---------------------------------------------------------------------
+   5. Botoes
+   --------------------------------------------------------------------- */
+.botao {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border: 1px solid transparent;
+    border-radius: var(--raio);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: var(--papel-branco);
+    color: var(--tinta);
+    border-color: var(--linha);
+}
+
+.botao:hover {
+    border-color: var(--tinta-clara);
+}
+
+.botao-principal {
+    background-color: var(--folha);
+    color: #fff;
+    border-color: var(--folha);
+}
+
+.botao-principal:hover {
+    background-color: #275c41;
+    border-color: #275c41;
+}
+
+.botao-perigo {
+    color: var(--alerta);
+    border-color: var(--linha);
+}
+
+.botao-perigo:hover {
+    background-color: var(--alerta-claro);
+    border-color: var(--alerta);
+}
+
+.botao-pequeno {
+    padding: 5px 12px;
+    font-size: 0.85rem;
+}
+
+/* ---------------------------------------------------------------------
+   6. Campo de busca
+   --------------------------------------------------------------------- */
+.busca {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    min-width: 260px;
+    max-width: 460px;
+}
+
+.busca input {
+    flex: 1;
+    padding: 9px 14px;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    font-family: inherit;
+    font-size: 0.95rem;
+    background-color: var(--papel-branco);
+    color: var(--tinta);
+}
+
+.busca input:focus {
+    outline: 2px solid var(--folha);
+    outline-offset: -1px;
+}
+
+/* ---------------------------------------------------------------------
+   7. Lista de clientes
+   O cartao tem a aba colorida na lateral esquerda: verde para ativo,
+   cinza para inativo. E o indicador de estado do sistema inteiro.
+   --------------------------------------------------------------------- */
+.lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ficha {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--papel-branco);
+    border: 1px solid var(--linha);
+    border-left: 5px solid var(--folha);
+    border-radius: var(--raio);
+    padding: 14px 18px;
+    box-shadow: var(--sombra);
+}
+
+.ficha.inativa {
+    border-left-color: var(--tinta-clara);
+    opacity: 0.65;
+}
+
+.ficha-dados {
+    flex: 1;
+    min-width: 0;
+}
+
+.ficha-nome {
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 2px;
+}
+
+.ficha-info {
+    color: var(--tinta-clara);
+    font-size: 0.9rem;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.ficha-acoes {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* Etiqueta de tipo de pessoa e de status */
+.etiqueta {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background-color: var(--folha-clara);
+    color: var(--folha);
+}
+
+.etiqueta-cinza {
+    background-color: var(--linha);
+    color: var(--tinta-clara);
+}
+
+/* ---------------------------------------------------------------------
+   8. Formulario
+   --------------------------------------------------------------------- */
+.formulario {
+    background-color: var(--papel-branco);
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    padding: 28px;
+    box-shadow: var(--sombra);
+    max-width: 720px;
+}
+
+.grupo-campos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.campo-largo {
+    grid-column: 1 / -1;
+}
+
+.campo label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--tinta-clara);
+}
+
+.campo label .obrigatorio {
+    color: var(--alerta);
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    padding: 9px 12px;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    font-family: inherit;
+    font-size: 0.95rem;
+    background-color: var(--papel-branco);
+    color: var(--tinta);
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    outline: 2px solid var(--folha);
+    outline-offset: -1px;
+}
+
+.campo input:disabled {
+    background-color: var(--papel);
+    color: var(--tinta-clara);
+    cursor: not-allowed;
+}
+
+.campo textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+.dica {
+    font-size: 0.8rem;
+    color: var(--tinta-clara);
+}
+
+.rodape-formulario {
+    display: flex;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid var(--linha);
+}
+
+/* ---------------------------------------------------------------------
+   9. Avisos
+   --------------------------------------------------------------------- */
+.aviso {
+    padding: 12px 16px;
+    border-radius: var(--raio);
+    margin-bottom: 18px;
+    font-size: 0.95rem;
+    border-left: 4px solid;
+}
+
+.aviso-erro {
+    background-color: var(--alerta-claro);
+    border-color: var(--alerta);
+    color: #8a2c05;
+}
+
+.aviso-sucesso {
+    background-color: var(--folha-clara);
+    border-color: var(--folha);
+    color: #1f4f37;
+}
+
+.escondido {
+    display: none;
+}
+
+/* ---------------------------------------------------------------------
+   10. Estado vazio e carregando
+   Tela vazia e convite para agir, nao mensagem de desculpa.
+   --------------------------------------------------------------------- */
+.vazio {
+    background-color: var(--papel-branco);
+    border: 1px dashed var(--linha);
+    border-radius: var(--raio);
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--tinta-clara);
+}
+
+.vazio strong {
+    display: block;
+    color: var(--tinta);
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+}
+
+/* ---------------------------------------------------------------------
+   11. Responsivo
+   --------------------------------------------------------------------- */
+@media (max-width: 700px) {
+    .cabecalho-conteudo {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .abas {
+        overflow-x: auto;
+    }
+
+    .grupo-campos {
+        grid-template-columns: 1fr;
+    }
+
+    .ficha {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .ficha-acoes {
+        width: 100%;
+    }
+}
+
+/* Respeita quem desativou animacoes no sistema. */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
+
+/* ---------------------------------------------------------------------
+   12. Paineis, checklist e historico (tela de detalhe do processo)
+   --------------------------------------------------------------------- */
+.painel {
+    background-color: var(--papel-branco);
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    padding: 22px;
+    box-shadow: var(--sombra);
+    margin-bottom: 16px;
+}
+
+.titulo-secao {
+    font-family: 'Archivo', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.colunas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+/* Grade de dados do processo */
+.grade-dados {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.dado-rotulo {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--tinta-clara);
+    margin-bottom: 2px;
+}
+
+.dado-valor {
+    font-size: 0.98rem;
+}
+
+.linha-status {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.linha-status select,
+.linha-status input {
+    padding: 9px 12px;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    font-family: inherit;
+    font-size: 0.95rem;
+    background-color: var(--papel-branco);
+    color: var(--tinta);
+}
+
+.linha-status input {
+    flex: 1;
+    min-width: 180px;
+}
+
+/* Checklist: pendencia em laranja, entregue em verde.
+   Funcionalidade 12 - Mapeamento de Pendencias. */
+.checklist {
+    list-style: none;
+    margin-top: 12px;
+}
+
+.checklist li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--linha);
+    font-size: 0.95rem;
+}
+
+.checklist li:last-child {
+    border-bottom: none;
+}
+
+.marca-item {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    background-color: var(--alerta-claro);
+    color: var(--alerta);
+    border: 1px solid var(--alerta);
+}
+
+.checklist li.entregue .marca-item {
+    background-color: var(--folha-clara);
+    color: var(--folha);
+    border-color: var(--folha);
+}
+
+.checklist li.entregue span:nth-child(2) {
+    color: var(--tinta-clara);
+}
+
+/* Historico: linha do tempo simples */
+.historico {
+    list-style: none;
+    margin-top: 12px;
+    border-left: 2px solid var(--linha);
+    padding-left: 16px;
+}
+
+.historico li {
+    padding-bottom: 16px;
+    position: relative;
+}
+
+.historico li::before {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--folha);
+}
+
+.historico-data {
+    font-size: 0.78rem;
+    color: var(--tinta-clara);
+}
+
+.historico-mudanca {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.historico-obs {
+    font-size: 0.88rem;
+    color: var(--tinta-clara);
+}
+
+/* Etiqueta de status usando a cor cadastrada no banco */
+.etiqueta-status {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+@media (max-width: 800px) {
+    .colunas {
+        grid-template-columns: 1fr;
+    }
+
+    .grade-dados {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Select de categoria dentro da ficha de documento */
+.select-categoria {
+    padding: 3px 8px;
+    border: 1px solid var(--linha);
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    background-color: var(--papel-branco);
+    color: var(--tinta);
+    max-width: 200px;
+}
+
+/* Campo de arquivo do formulario de upload */
+#form-upload input[type="file"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 7px 10px;
+    border: 1px dashed var(--linha);
+    border-radius: var(--raio);
+    font-family: inherit;
+    font-size: 0.9rem;
+    background-color: var(--papel);
+}
+
+/* ---------------------------------------------------------------------
+   13. Painel de gestao (Terceira Etapa)
+   --------------------------------------------------------------------- */
+.cartoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.cartao {
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    border-top: 4px solid var(--tinta-clara);
+    padding: 14px;
+    background-color: var(--papel);
+}
+
+.cartao-numero {
+    font-family: 'Archivo', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.cartao-rotulo {
+    font-size: 0.82rem;
+    color: var(--tinta-clara);
+    margin-top: 2px;
+}
+
+.cartao-alerta {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--alerta);
+    margin-top: 6px;
+}
+
+/* Item de lista do painel: processo com pendencia ou prioridade */
+.item-painel {
+    display: block;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--linha);
+}
+
+.item-painel:last-child {
+    border-bottom: none;
+}
+
+.item-painel a {
+    color: var(--tinta);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.96rem;
+}
+
+.item-painel a:hover {
+    text-decoration: underline;
+}
+
+.item-linha {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 3px;
+}
+
+.selo {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.texto-pendente {
+    font-size: 0.85rem;
+    color: var(--alerta);
+}
+
+.texto-prazo {
+    font-size: 0.82rem;
+    color: var(--tinta-clara);
+}
+
+.texto-prazo.vencido {
+    color: var(--alerta);
+    font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------
+   14. Barra de filtros combinados (tela de processos)
+   --------------------------------------------------------------------- */
+.barra-filtros {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    background-color: var(--papel-branco);
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.barra-filtros label {
+    font-weight: 600;
+}
+
+.barra-filtros select {
+    padding: 6px 10px;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    font-family: inherit;
+    font-size: 0.9rem;
+    background-color: var(--papel-branco);
+    color: var(--tinta);
+    max-width: 190px;
+}
+
+.barra-filtros select:focus {
+    outline: 2px solid var(--folha);
+    outline-offset: -1px;
+}
+
+/* Indica de onde veio o resultado: Model ou stored procedure. */
+#rotulo-fonte {
+    margin-left: auto;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.78rem;
+}
+
+@media (max-width: 700px) {
+    .barra-filtros select {
+        max-width: none;
+        flex: 1;
+    }
+
+    #rotulo-fonte {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+/* ---------------------------------------------------------------------
+   19. Tela de login e barra do usuario logado
+   --------------------------------------------------------------------- */
+
+/* A tela de login nao tem cabecalho nem abas: e a porta de entrada,
+   e nenhuma navegacao faz sentido antes de a pessoa se identificar. */
+.tela-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    background-color: var(--tinta);
+}
+
+.caixa-login {
+    width: 100%;
+    max-width: 380px;
+    background-color: var(--papel-branco);
+    border-radius: var(--raio);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    padding: 36px 32px;
+}
+
+.marca-login {
+    font-size: 1.8rem;
+    color: var(--tinta);
+    padding-bottom: 2px;
+}
+
+.subtitulo-login {
+    color: var(--tinta-clara);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+}
+
+/* O formulario de login e de coluna unica, ao contrario dos demais. */
+.formulario-login {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: none;
+}
+
+.formulario-login .acoes-formulario {
+    margin-top: 20px;
+}
+
+.formulario-login .botao-principal {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Nome e perfil de quem esta logado, no canto do cabecalho. */
+.usuario-sessao {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+}
+
+.usuario-dados {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.2;
+}
+
+.usuario-nome {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* O perfil aparece sempre visivel de proposito: e ele que determina o
+   que a pessoa pode fazer, entao vale deixar claro na tela. */
+.usuario-perfil {
+    font-size: 0.78rem;
+    color: rgba(247, 246, 243, 0.65);
+}

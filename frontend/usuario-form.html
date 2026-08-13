@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <title>Cadastro de usuário - TabFlower</title>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html">Painel</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="processos.html">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html" class="ativa">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+
+        <h1 class="titulo-pagina" id="titulo">Novo usuário</h1>
+        <p class="subtitulo-pagina" id="subtitulo">
+            A senha é guardada criptografada. Nem o administrador consegue
+            lê-la depois.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <form class="formulario" id="form-usuario">
+
+            <div class="grupo-campos">
+
+                <div class="campo campo-largo">
+                    <label for="nome">
+                        Nome completo <span class="obrigatorio">*</span>
+                    </label>
+                    <input type="text" id="nome" required maxlength="120">
+                </div>
+
+                <div class="campo">
+                    <label for="email">
+                        E-mail <span class="obrigatorio">*</span>
+                    </label>
+                    <input type="email" id="email" required maxlength="120">
+                    <span class="dica">Usado para entrar no sistema.</span>
+                </div>
+
+                <div class="campo">
+                    <label for="perfil_id">
+                        Perfil <span class="obrigatorio">*</span>
+                    </label>
+                    <select id="perfil_id" required></select>
+                    <span class="dica" id="dica-perfil"></span>
+                </div>
+
+                <div class="campo campo-largo" id="bloco-senha">
+                    <label for="senha">
+                        Senha <span class="obrigatorio">*</span>
+                    </label>
+                    <input type="password" id="senha" minlength="6">
+                    <span class="dica">Mínimo de 6 caracteres.</span>
+                </div>
+
+            </div>
+
+            <div class="rodape-formulario">
+                <button type="submit" class="botao botao-principal" id="botao-salvar">
+                    Cadastrar usuário
+                </button>
+                <a href="usuarios.html" class="botao">Cancelar</a>
+            </div>
+
+        </form>
+
+        <section class="painel escondido" id="painel-senha" style="max-width:720px; margin-top:16px">
+            <h2 class="titulo-secao">Trocar senha</h2>
+            <p class="dica">
+                A senha atual não pode ser recuperada, apenas substituída.
+            </p>
+            <div class="linha-status">
+                <input type="password" id="senha-nova" placeholder="Nova senha" minlength="6">
+                <button type="button" class="botao" id="botao-senha">Trocar senha</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/usuario-form.js"></script>
+</body>
+</html>

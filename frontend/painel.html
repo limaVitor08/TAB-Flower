@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <title>Painel - TabFlower</title>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html" class="ativa">Painel</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="processos.html">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+
+        <h1 class="titulo-pagina">Painel de gestão</h1>
+        <p class="subtitulo-pagina">
+            Situação do escritório em tempo real. Todos os números desta
+            tela vêm de stored procedures do MySQL.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <!-- Funcionalidade 06 - sp_painel_resumo -->
+        <section class="painel">
+            <h2 class="titulo-secao">Processos por situação</h2>
+            <p class="dica">Fonte: <span class="mono">sp_painel_resumo</span></p>
+            <div class="cartoes" id="resumo"></div>
+        </section>
+
+        <div class="colunas">
+
+            <!-- Funcionalidades 14 e 15 - sp_processos_prioritarios -->
+            <section class="painel">
+                <h2 class="titulo-secao">Prioridades</h2>
+                <p class="dica">
+                    Fonte: <span class="mono">sp_processos_prioritarios</span>
+                </p>
+                <div class="linha-status">
+                    <select id="filtro-peso">
+                        <option value="">Todos os processos</option>
+                        <option value="1">Com algum marcador</option>
+                        <option value="2">Prioridade ou Urgente</option>
+                        <option value="3">Somente Urgente</option>
+                    </select>
+                </div>
+                <ul class="checklist" id="prioritarios"></ul>
+            </section>
+
+            <!-- Funcionalidade 12 - sp_pendencias_checklist -->
+            <section class="painel">
+                <h2 class="titulo-secao">Documentação pendente</h2>
+                <p class="dica">
+                    Fonte: <span class="mono">sp_pendencias_checklist</span>
+                </p>
+                <ul class="checklist" id="pendencias"></ul>
+            </section>
+
+        </div>
+
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/painel.js"></script>
+</body>
+</html>

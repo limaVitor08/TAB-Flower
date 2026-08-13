@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <title>Avisos - TabFlower</title>
+</head>
+<body>
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html">Painel</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="processos.html">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+        <h1 class="titulo-pagina">Avisos</h1>
+        <p class="subtitulo-pagina">
+            Gerados pelo sistema quando um documento é anexado a um processo.
+            Vão direto para o advogado responsável, sem ninguém precisar avisar.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <div class="barra-filtros">
+            <label class="dica" style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="apenas-nao-lidas">
+                Apenas não lidos
+            </label>
+
+            <span class="dica" id="rotulo-fonte">Fonte: sp_notificacoes_advogado</span>
+        </div>
+
+        <div id="lista" class="lista"></div>
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/notificacoes.js"></script>
+</body>
+</html>

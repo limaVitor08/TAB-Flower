@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - TabFlower</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html">Painel</a></li>
+                    <li><a href="clientes.html" class="ativa">Clientes</a></li>
+                    <li><a href="processos.html">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+
+        <h1 class="titulo-pagina">Clientes</h1>
+        <p class="subtitulo-pagina">
+            Busque pelo nome ou pelo CPF/CNPJ. Cada cliente cadastrado ganha
+            uma pasta padronizada no servidor.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <div class="barra-acoes">
+            <form class="busca" id="form-busca">
+                <input type="text"
+                       id="campo-busca"
+                       placeholder="Nome ou CPF/CNPJ"
+                       aria-label="Buscar cliente">
+                <button type="submit" class="botao">Buscar</button>
+            </form>
+
+            <button type="button" class="botao" id="botao-limpar">Ver todos</button>
+
+            <div class="espacador"></div>
+
+            <label class="dica" style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="mostrar-inativos">
+                Mostrar inativos
+            </label>
+
+            <a href="cliente-form.html" class="botao botao-principal">Novo cliente</a>
+        </div>
+
+        <div id="lista" class="lista"></div>
+
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/clientes.js"></script>
+</body>
+</html>

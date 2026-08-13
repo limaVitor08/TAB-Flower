@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <title>Detalhe do processo - TabFlower</title>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html">Painel</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="processos.html" class="ativa">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+
+        <div id="aviso" class="escondido"></div>
+
+        <h1 class="titulo-pagina" id="titulo">Carregando...</h1>
+        <p class="subtitulo-pagina mono" id="numero"></p>
+
+        <div class="barra-acoes">
+            <a href="processos.html" class="botao">Voltar</a>
+            <div class="espacador"></div>
+            <a href="#" class="botao" id="link-editar">Editar processo</a>
+        </div>
+
+        <section class="painel" id="dados"></section>
+
+        <section class="painel">
+            <h2 class="titulo-secao">Marcadores de prioridade</h2>
+            <p class="dica">
+                Definem a ordem do painel de prioridades. Urgente pesa mais
+                que Prioridade, que pesa mais que Prazo curto.
+            </p>
+            <div class="linha-status">
+                <select id="novo-marcador"></select>
+                <button type="button" class="botao" id="botao-marcador">
+                    Aplicar marcador
+                </button>
+            </div>
+            <div class="item-linha" id="marcadores" style="margin-top:12px"></div>
+        </section>
+
+        <section class="painel">
+            <h2 class="titulo-secao">Situação do processo</h2>
+            <p class="dica">
+                Mudar a fase registra automaticamente quem mudou e quando.
+            </p>
+            <div class="linha-status">
+                <select id="novo-status"></select>
+                <input type="text" id="observacao-status"
+                       placeholder="Observação (opcional)">
+                <button type="button" class="botao botao-principal" id="botao-status">
+                    Atualizar situação
+                </button>
+            </div>
+        </section>
+
+        <section class="painel">
+            <h2 class="titulo-secao">Documentos anexados</h2>
+            <p class="dica">
+                O sistema renomeia o arquivo, guarda na pasta certa do cliente,
+                risca o item do checklist e avisa o advogado responsável.
+            </p>
+
+            <form class="linha-status" id="form-upload" enctype="multipart/form-data">
+                <select id="categoria-documento" required></select>
+                <input type="file" id="arquivo"
+                       accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" required>
+                <button type="submit" class="botao botao-principal" id="botao-enviar">
+                    Anexar
+                </button>
+            </form>
+
+            <ul class="checklist" id="documentos"></ul>
+        </section>
+
+        <div class="colunas">
+
+            <section class="painel">
+                <h2 class="titulo-secao">Checklist de documentos</h2>
+                <p class="dica" id="resumo-checklist"></p>
+                <ul class="checklist" id="checklist"></ul>
+            </section>
+
+            <section class="painel">
+                <h2 class="titulo-secao">Histórico de situações</h2>
+                <ol class="historico" id="historico"></ol>
+            </section>
+
+        </div>
+
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/processo-detalhe.js"></script>
+</body>
+</html>

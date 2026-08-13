@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <title>Importação - TabFlower</title>
+</head>
+<body>
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html">Painel</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="processos.html">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html" class="ativa">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+        <h1 class="titulo-pagina">Importação de clientes</h1>
+        <p class="subtitulo-pagina">
+            Traz para o sistema os cadastros que hoje vivem em planilhas
+            paralelas. Cada linha passa pelas mesmas regras do cadastro
+            manual: CPF conferido, duplicidade bloqueada e pasta criada.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <section class="painel">
+            <h2 class="titulo-secao">Enviar planilha</h2>
+            <p class="dica">
+                Aceita .csv e .xlsx. A primeira linha precisa ser o cabeçalho.
+                Colunas reconhecidas: nome, documento, tipo_pessoa, email,
+                telefone, endereco, cidade, estado e observacao.
+            </p>
+
+            <form class="linha-status" id="form-importacao" enctype="multipart/form-data">
+                <input type="file" id="arquivo" accept=".csv,.xlsx" required>
+                <button type="submit" class="botao botao-principal" id="botao-enviar">
+                    Importar
+                </button>
+                <a href="#" class="botao" id="link-modelo" download>Baixar modelo</a>
+            </form>
+
+            <div id="resultado" class="escondido"></div>
+        </section>
+
+        <section class="painel">
+            <h2 class="titulo-secao">Importações realizadas</h2>
+            <p class="dica">
+                Cada carga fica registrada. Se uma planilha veio errada, dá
+                para desfazer só ela, sem tocar nos cadastros feitos à mão.
+            </p>
+            <div id="lista" class="lista" style="margin-top:14px"></div>
+        </section>
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/importacoes.js"></script>
+</body>
+</html>

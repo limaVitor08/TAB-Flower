@@ -1,0 +1,18 @@
+# Ambiente e segredos
+backend/.env
+backend/venv/
+venv/
+
+# Gerados pelo Python
+__pycache__/
+*.pyc
+
+# Arquivos enviados pelos usuarios (ficam so na maquina)
+backend/arquivos/
+
+# Registro de erros gerado pela aplicacao
+*.log
+
+# Editores e ferramentas
+.vscode/
+.idea/

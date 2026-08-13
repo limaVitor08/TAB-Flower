@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <title>Cadastro de processo - TabFlower</title>
+</head>
+<body>
+
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html">Painel</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="processos.html" class="ativa">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+
+        <h1 class="titulo-pagina" id="titulo">Novo processo</h1>
+        <p class="subtitulo-pagina" id="subtitulo">
+            Ao salvar, o checklist de documentos obrigatórios do tipo escolhido
+            é montado automaticamente.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <form class="formulario" id="form-processo">
+
+            <div class="grupo-campos">
+
+                <div class="campo campo-largo">
+                    <label for="numero_processo">
+                        Número do processo <span class="obrigatorio">*</span>
+                    </label>
+                    <input type="text" id="numero_processo" class="mono" required
+                           maxlength="30" placeholder="0001234-56.2026.8.13.0024">
+                    <span class="dica" id="dica-numero">
+                        Não pode ser alterado depois do cadastro.
+                    </span>
+                </div>
+
+                <div class="campo campo-largo">
+                    <label for="titulo_processo">
+                        Título <span class="obrigatorio">*</span>
+                    </label>
+                    <input type="text" id="titulo_processo" required maxlength="150"
+                           placeholder="Ação de cobrança - contrato de prestação de serviços">
+                </div>
+
+                <div class="campo">
+                    <label for="cliente_id">
+                        Cliente <span class="obrigatorio">*</span>
+                    </label>
+                    <select id="cliente_id" required></select>
+                </div>
+
+                <div class="campo">
+                    <label for="advogado_id">
+                        Advogado responsável <span class="obrigatorio">*</span>
+                    </label>
+                    <select id="advogado_id" required></select>
+                    <span class="dica">Recebe as notificações deste processo.</span>
+                </div>
+
+                <div class="campo">
+                    <label for="tipo_processo_id">
+                        Tipo de processo <span class="obrigatorio">*</span>
+                    </label>
+                    <select id="tipo_processo_id" required></select>
+                    <span class="dica">Define o checklist de documentos.</span>
+                </div>
+
+                <div class="campo">
+                    <label for="status_id">Status inicial</label>
+                    <select id="status_id"></select>
+                </div>
+
+                <div class="campo">
+                    <label for="data_abertura">Data de abertura</label>
+                    <input type="date" id="data_abertura">
+                </div>
+
+                <div class="campo">
+                    <label for="prazo_final">Prazo final</label>
+                    <input type="date" id="prazo_final">
+                </div>
+
+                <div class="campo">
+                    <label for="comarca">Comarca</label>
+                    <input type="text" id="comarca" maxlength="100">
+                </div>
+
+                <div class="campo">
+                    <label for="valor_causa">Valor da causa</label>
+                    <input type="number" id="valor_causa" step="0.01" min="0">
+                </div>
+
+                <div class="campo campo-largo">
+                    <label for="descricao">Descrição</label>
+                    <textarea id="descricao"></textarea>
+                </div>
+
+            </div>
+
+            <div class="rodape-formulario">
+                <button type="submit" class="botao botao-principal" id="botao-salvar">
+                    Cadastrar processo
+                </button>
+                <a href="processos.html" class="botao">Cancelar</a>
+            </div>
+
+        </form>
+
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/processo-form.js"></script>
+</body>
+</html>

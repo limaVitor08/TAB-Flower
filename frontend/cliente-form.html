@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de cliente - TabFlower</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <div class="marca">Tab<span>Flower</span></div>
+            <nav>
+                <ul class="abas">
+                    <li><a href="painel.html">Painel</a></li>
+                    <li><a href="clientes.html" class="ativa">Clientes</a></li>
+                    <li><a href="processos.html">Processos</a></li>
+                    <li><a href="documentos.html">Documentos</a></li>
+                    <li><a href="notificacoes.html">Avisos</a></li>
+                    <li><a href="usuarios.html">Usuários</a></li>
+                    <li><a href="checklists.html">Checklists</a></li>
+                    <li><a href="importacoes.html">Importação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina">
+
+        <h1 class="titulo-pagina" id="titulo">Novo cliente</h1>
+        <p class="subtitulo-pagina" id="subtitulo">
+            O CPF ou CNPJ é conferido automaticamente e não pode se repetir.
+        </p>
+
+        <div id="aviso" class="escondido"></div>
+
+        <form class="formulario" id="form-cliente">
+
+            <div class="grupo-campos">
+
+                <div class="campo">
+                    <label for="tipo_pessoa">
+                        Tipo de pessoa <span class="obrigatorio">*</span>
+                    </label>
+                    <select id="tipo_pessoa" required>
+                        <option value="F">Pessoa física (CPF)</option>
+                        <option value="J">Pessoa jurídica (CNPJ)</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="documento">
+                        CPF / CNPJ <span class="obrigatorio">*</span>
+                    </label>
+                    <input type="text" id="documento" class="mono" required
+                           placeholder="000.000.000-00" maxlength="18">
+                    <span class="dica" id="dica-documento">
+                        Não pode ser alterado depois do cadastro.
+                    </span>
+                </div>
+
+                <div class="campo campo-largo">
+                    <label for="nome">
+                        Nome completo / Razão social <span class="obrigatorio">*</span>
+                    </label>
+                    <input type="text" id="nome" required maxlength="150">
+                </div>
+
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" maxlength="120">
+                </div>
+
+                <div class="campo">
+                    <label for="telefone">Telefone</label>
+                    <input type="text" id="telefone" class="mono" maxlength="20">
+                </div>
+
+                <div class="campo campo-largo">
+                    <label for="endereco">Endereço</label>
+                    <input type="text" id="endereco" maxlength="200">
+                </div>
+
+                <div class="campo">
+                    <label for="cidade">Cidade</label>
+                    <input type="text" id="cidade" maxlength="80">
+                </div>
+
+                <div class="campo">
+                    <label for="estado">Estado (UF)</label>
+                    <input type="text" id="estado" maxlength="2"
+                           placeholder="MG" style="text-transform: uppercase;">
+                </div>
+
+                <div class="campo campo-largo">
+                    <label for="observacao">Observações</label>
+                    <textarea id="observacao"></textarea>
+                </div>
+
+            </div>
+
+            <div class="rodape-formulario">
+                <button type="submit" class="botao botao-principal" id="botao-salvar">
+                    Cadastrar cliente
+                </button>
+                <a href="clientes.html" class="botao">Cancelar</a>
+            </div>
+
+        </form>
+
+    </main>
+
+    <script charset="UTF-8" src="js/api.js"></script>
+    <script charset="UTF-8" src="js/cliente-form.js"></script>
+</body>
+</html>
