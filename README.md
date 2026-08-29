@@ -11,7 +11,7 @@ Disciplina: Projeto de Software — Prof. Gleison Brito
 
 ## O problema
 
-A parte administrativa de um escritório de advocacia perde um tempo absurdo com tarefa manual: criar pasta pra cada cliente, renomear PDF escaneado um por um, conferir checklist no papel e ainda manter planilha paralela que nunca bate com a realidade. Resultado: demora pra achar arquivo, risco de sumir documento e ninguém sabe dizer quem mexeu em quê quando algo dá errado.
+A parte administrativa de um escritório de advocacia perde um tempo absurdo com tarefa manual: criar pasta para cada cliente, renomear PDF escaneado um por um, conferir checklist no papel e ainda manter planilha paralela que nunca bate com a realidade. Resultado: demora para achar arquivo, risco de sumir documento e ninguém sabe dizer quem mexeu em quê quando algo dá errado.
 
 O TabFlower junta cliente, processo e documento num só lugar, cria a pasta do cliente automaticamente, padroniza o nome dos arquivos, troca o checklist de papel por um digital e guarda quem fez cada ação.
 
@@ -229,7 +229,7 @@ Abaixo estão enumeradas as **10 funcionalidades completas entregues nesta etapa
 
 1. **Autenticação de Usuário (Login):** Validação de credenciais de acesso e emissão de token de sessão seguro (`AuthController` → `LoginService` → `Usuario` / `db.Model`).
 2. **Cadastrar Cliente:** Cadastro de pessoas físicas e jurídicas com validação de regras de negócio de CPF/CNPJ e bloqueio de duplicidade no Service (`ClienteController` → `CriarClienteService` → `Cliente` / `db.Model`).
-3. **Listar Clientes:** Consulta padronizada de registros de clientes ativos com paginação e filtros (`ClienteController` → `Cliente` / `db.Model.listar_todos`).
+3. **Listar Clientes:** Listagem dos clientes ativos em ordem alfabética, com filtro para incluir também os inativos (`ClienteController` → `Cliente` / `db.Model.listar_todos`).
 4. **Atualizar Cliente:** Edição de dados cadastrais com persistência direta (`ClienteController` → `Cliente` / `db.Model.atualizar`).
 5. **Excluir Cliente:** Exclusão lógica (desativação) preservando histórico e integridade referencial (`ClienteController` → `Cliente` / `db.Model.remover`).
 6. **Buscar Cliente por Nome:** Busca parcial com contagem agregada de processos via Stored Procedure (`ClienteController` → `ClienteRepository.buscar_por_nome` → `sp_buscar_clientes_por_nome`).
@@ -270,9 +270,9 @@ Além das 10 funcionalidades principais da entrega, o sistema contempla as segui
 
 **Máscara só no frontend.** O banco guarda o CPF limpo, só número (`52998224725`), porque fica mais fácil comparar e indexar. Formatar bonito é problema de tela.
 
-**Avanço automático de fase, mas só quando dá pra ter certeza.** Quando o último documento obrigatório é anexado, o processo passa sozinho de "Aguardando documentos" pra "Pronto para protocolo", com registro no histórico. Limitamos isso de propósito: o sistema só decide sozinho o que ele mesmo consegue confirmar no banco. Se já foi protocolado no fórum ou não, isso depende do mundo lá fora e continua sendo entrada manual. E o avanço automático sempre avisa na tela — senão a pessoa acha que clicou em algo errado.
+**Avanço automático de fase, mas só quando dá para ter certeza.** Quando o último documento obrigatório é anexado, o processo passa sozinho de "Aguardando documentos" para "Pronto para protocolo", com registro no histórico. Limitamos isso de propósito: o sistema só decide sozinho o que ele mesmo consegue confirmar no banco. Se já foi protocolado no fórum ou não, isso depende do mundo lá fora e continua sendo entrada manual. E o avanço automático sempre avisa na tela — senão a pessoa acha que clicou em algo errado.
 
-**Importação não trava tudo por causa de uma linha ruim.** Cada erro fica registrado com o número da linha, pra secretária corrigir só o que deu problema. E a importação usa o mesmo `CriarClienteService` do cadastro manual — senão o cliente que veio de planilha entraria com qualidade pior que o cadastro normal, que é exatamente o problema que a gente queria resolver.
+**Importação não trava tudo por causa de uma linha ruim.** Cada erro fica registrado com o número da linha, para a secretária corrigir só o que deu problema. E a importação usa o mesmo `CriarClienteService` do cadastro manual — senão o cliente que veio de planilha entraria com qualidade pior que o cadastro normal, que é exatamente o problema que a gente queria resolver.
 
 **Excluir documento reabre a pendência do checklist.** Se aquele arquivo cobria um item do checklist e some, o item volta a aparecer como pendente. Senão o processo ia parecer completo sem estar.
 
@@ -403,9 +403,9 @@ O CORS do backend está liberado para `http://127.0.0.1:3000` e `http://localhos
 
 ### Por que existe
 
-Antes do login, o frontend simplesmente informava quem estava operando (`usuario_id = 1`, fixo no JavaScript) e o backend acreditava. Isso fazia da Funcionalidade 20 — bloquear a exclusão definitiva por usuário comum — algo decorativo: bastava abrir o F12 e trocar esse número pra virar Administrador.
+Antes do login, o frontend simplesmente informava quem estava operando (`usuario_id = 1`, fixo no JavaScript) e o backend acreditava. Isso fazia da Funcionalidade 20 — bloquear a exclusão definitiva por usuário comum — algo decorativo: bastava abrir o F12 e trocar esse número para virar Administrador.
 
-O login resolve isso: o backend passa a descobrir sozinho quem tá falando, sem perguntar pro frontend.
+O login resolve isso: o backend passa a descobrir sozinho quem está falando, sem perguntar para o frontend.
 
 ### Como funciona, resumindo
 
@@ -414,7 +414,7 @@ No login o servidor devolve um token assinado. O navegador guarda esse token e m
 ### O caminho completo
 
 1. A pessoa digita e-mail e senha em `login.html`.
-2. `LoginService` compara a senha com o hash do banco (`werkzeug.check_password_hash`). Se o e-mail não existe, a senha tá errada ou o usuário tá inativo, a mensagem devolvida é sempre a mesma — "E-mail ou senha inválidos" — pra não dar pista de quais e-mails existem no sistema.
+2. `LoginService` compara a senha com o hash do banco (`werkzeug.check_password_hash`). Se o e-mail não existe, a senha está errada ou o usuário está inativo, a mensagem devolvida é sempre a mesma — "E-mail ou senha inválidos" — para não dar pista de quais e-mails existem no sistema.
 3. Dando certo, `utils/token.py` gera um token assinado com a `SECRET_KEY`, guardando só o id do usuário e o horário.
 4. `api.js` guarda o token no `localStorage` e manda ele no cabeçalho `Authorization: Bearer <token>` em toda chamada.
 5. No backend, `utils/autenticacao.py` roda antes de qualquer Controller, confere o token, busca o usuário no banco e deixa disponível em `flask.g.usuario_atual`.
@@ -424,16 +424,16 @@ No login o servidor devolve um token assinado. O navegador guarda esse token e m
 
 | Camada | Onde | O que faz |
 |---|---|---|
-| **Autenticação** | `utils/autenticacao.py` | Confere se a pessoa tá logada. Sem token válido, `401`. |
+| **Autenticação** | `utils/autenticacao.py` | Confere se a pessoa está logada. Sem token válido, `401`. |
 | **Autorização** | Services de exclusão | Confere o que ela pode fazer, olhando `perfil.pode_excluir`. Sem permissão, `403`. |
 
 A autorização continua vindo do banco, pelo id do perfil, do jeito que já foi modelado desde a Primeira Etapa. O token não muda isso, só garante que o `perfil_id` consultado é mesmo da pessoa que digitou a senha.
 
 ### Quem pode o quê
 
-Só perfil com `pode_excluir = TRUE` (hoje, só o Admin) pode excluir documento, cliente, processo, usuário ou desfazer importação. Cadastrar e editar continua liberado pra qualquer um logado — travar isso ia inutilizar o sistema pra secretária, que é quem mais usa no dia a dia.
+Só perfil com `pode_excluir = TRUE` (hoje, só o Admin) pode excluir documento, cliente, processo, usuário ou desfazer importação. Cadastrar e editar continua liberado para qualquer um logado — travar isso ia inutilizar o sistema para a secretária, que é quem mais usa no dia a dia.
 
-O módulo de usuários é diferente, porque é por ali que dá pra ganhar poder no sistema:
+O módulo de usuários é diferente, porque é por ali que dá para ganhar poder no sistema:
 
 | Rota | Quem pode |
 |---|---|
@@ -443,17 +443,17 @@ O módulo de usuários é diferente, porque é por ali que dá pra ganhar poder 
 | `PATCH /api/usuarios/<id>/senha` | Admin, ou a própria pessoa trocando a senha dela |
 | `DELETE /api/usuarios/<id>` | Só Admin, e ninguém desativa a própria conta |
 
-As três primeiras rotas são restritas por causa do campo `perfil_id`: sem essa trava, qualquer um faria um `PUT` no próprio id mandando `perfil_id = 1` e virava Admin, ou trocava a senha do Admin e entrava com a conta dele. Só a trava de exclusão não seria suficiente — dava pra se promover antes.
+As três primeiras rotas são restritas por causa do campo `perfil_id`: sem essa trava, qualquer um faria um `PUT` no próprio id mandando `perfil_id = 1` e virava Admin, ou trocava a senha do Admin e entrava com a conta dele. Só a trava de exclusão não seria suficiente — dava para se promover antes.
 
 As leituras ficaram liberadas de propósito: a tela de formulário precisa listar os perfis, e saber o nome dos colegas de escritório não é informação sensível aqui.
 
-Os botões continuam aparecendo pra todo mundo. Quem não pode, clica e o backend devolve `403` com uma frase explicando a regra — é melhor do que o botão simplesmente sumir sem dizer por quê.
+Os botões continuam aparecendo para todo mundo. Quem não pode, clica e o backend devolve `403` com uma frase explicando a regra — é melhor do que o botão simplesmente sumir sem dizer por quê.
 
 ### Escolhas de projeto
 
 **Token em vez de cookie de sessão.** O frontend roda no Live Preview (porta 3000) e a API no Flask (porta 5000), origens diferentes. Cookie entre origens diferentes dá dor de cabeça: `supports_credentials` no CORS, `credentials: 'include'` em toda chamada, e ainda esbarra no bloqueio de cookie de terceiro do navegador. Quando falha, falha calado — o usuário "desloga sozinho" sem aviso. Token no header não tem esses problemas.
 
-**`itsdangerous` em vez de JWT.** Já vem instalado junto com o Flask, então nem mexeu no `requirements.txt`. Resolve o mesmo problema (assinar e conferir dado) sem adicionar mais uma lib pra manter.
+**`itsdangerous` em vez de JWT.** Já vem instalado junto com o Flask, então nem mexeu no `requirements.txt`. Resolve o mesmo problema (assinar e conferir dado) sem adicionar mais uma lib para manter.
 
 **Proteção registrada uma vez só, no `routes.py`.** Em vez de repetir a checagem em cada Controller, o `before_request` fica nos Blueprints, num lugar só. Assim rota nova já nasce protegida por padrão.
 
@@ -463,12 +463,12 @@ Os botões continuam aparecendo pra todo mundo. Quem não pode, clica e o backen
 
 ### O que ficou de fora
 
-Esse login é suficiente pro escopo do TCC, não é sistema de produção. Ficou faltando, de propósito:
+Esse login é suficiente para o escopo do TCC, não é sistema de produção. Ficou faltando, de propósito:
 
 - Logout no servidor (revogar token). Sair só apaga o token do navegador; ele continua valendo até vencer.
 - Bloqueio depois de várias tentativas de senha erradas.
 - `localStorage` é acessível por JavaScript da própria página. Num sistema real usaria cookie `HttpOnly`, mas aí voltam os problemas de origem cruzada citados acima.
-- Leitura, cadastro e edição de clientes, processos e documentos ficam liberados pra qualquer um logado. Isso é proposital, não esquecimento — é o trabalho do dia a dia da secretária.
+- Leitura, cadastro e edição de clientes, processos e documentos ficam liberados para qualquer um logado. Isso é proposital, não esquecimento — é o trabalho do dia a dia da secretária.
 
 ## Limitações conhecidas
 
@@ -476,8 +476,8 @@ Esse login é suficiente pro escopo do TCC, não é sistema de produção. Ficou
 
 **Validação de CPF/CNPJ confere só os dígitos verificadores, não se o documento existe de verdade.** Isso exigiria consulta à Receita Federal, fora do escopo do projeto.
 
-**Upload é validado por extensão e tamanho, não pelo conteúdo do arquivo.** Dá pra renomear qualquer coisa pra `.pdf` e enviar. A equipe decidiu não conferir os bytes do arquivo porque o sistema roda numa rede interna, entre pessoas conhecidas.
+**Upload é validado por extensão e tamanho, não pelo conteúdo do arquivo.** Dá para renomear qualquer coisa para `.pdf` e enviar. A equipe decidiu não conferir os bytes do arquivo porque o sistema roda numa rede interna, entre pessoas conhecidas.
 
-**Erro inesperado vai pro log (`backend/tabflower.log`).** Na tela aparece sempre uma frase genérica, porque o erro original pode conter nome de tabela ou trecho de SQL. Se algo der errado numa demonstração, o motivo real tá nesse arquivo.
+**Erro inesperado vai para o log (`backend/tabflower.log`).** Na tela aparece sempre uma frase genérica, porque o erro original pode conter nome de tabela ou trecho de SQL. Se algo der errado numa demonstração, o motivo real está nesse arquivo.
 
-**`log_auditoria` registra só exclusões, restaurações e logins.** Cadastro e edição comuns não entram ali — tá previsto (`CRIAR`, `ATUALIZAR`), mas ficou pra depois.
+**`log_auditoria` registra só exclusões, restaurações e logins.** Cadastro e edição comuns não entram ali — está previsto (`CRIAR`, `ATUALIZAR`), mas ficou para depois.
