@@ -1,10 +1,9 @@
 """
-Caso de uso: abrir um novo processo judicial.
+Abre um processo novo.
 
-Funcionalidades atendidas:
-  06 - Painel Central de Gestao (o processo passa a existir no painel)
-  11 - Checklist Obrigatório (o checklist e montado automaticamente)
-  07 - Atualizacao de Status (a primeira fase entra no histórico)
+Além de criar o processo, monta o checklist dele a partir do molde do
+tipo (funcionalidade 11) e grava a primeira fase no histórico
+(funcionalidade 7). A partir daí ele já aparece no painel.
 """
 
 import logging
@@ -28,9 +27,8 @@ class CriarProcessoService:
         """Abre o processo e monta o checklist dele.
 
         criado_por vem de g.usuario_atual, num parâmetro separado de
-        "dados" - que é o JSON que o navegador enviou. É esse id que fica
-        no primeiro registro do histórico, respondendo "quem abriu este
-        processo?".
+        "dados", que é o JSON que o navegador enviou. É esse id que fica
+        no primeiro registro do histórico.
         """
         numero = (dados.get("numero_processo") or "").strip()
         titulo = (dados.get("titulo") or "").strip()
@@ -87,10 +85,6 @@ class CriarProcessoService:
             criado_em=datetime.now(),
             ativo=True,
         )
-        # --- As três escritas entram num commit só ---
-        # Um processo gravado sem o checklist apareceria como se não
-        # exigisse documento nenhum, e a Funcionalidade 11 sumiria
-        # justamente no processo em que ela mais importa: o recém-aberto.
         try:
             processo.salvar(confirmar=False)
 
@@ -131,5 +125,3 @@ class CriarProcessoService:
                     entregue=False,
                 )
             )
-
-        # Sem commit: faz parte da transação do executar().

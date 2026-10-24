@@ -1,20 +1,11 @@
 """
-Caso de uso: trocar a senha de um usuário.
+Troca a senha de um usuário.
 
-Este Service tem DOIS caminhos de entrada, e a diferença entre eles e a
-razão de o arquivo existir assim:
-
-  definir_senha()  - troca a senha sem perguntar quem esta pedindo.
-                     Usado pelo criar_primeiro_usuario.py, que roda no
-                     terminal, onde não existe usuário logado.
-
-  executar()       - troca a senha a pedido de alguem logado na API.
-                     Aqui a permissão e conferida.
-
-Sem essa separação, ou o script do terminal quebraria (não tem como
-informar um usuário logado), ou a rota da API ficaria sem checagem - que
-era exatamente o problema: qualquer pessoa logada trocava a senha do
-Administrador e assumia a conta dele.
+Tem dois caminhos. O definir_senha() troca sem conferir quem pediu e é
+usado pelo criar_primeiro_usuario.py, no terminal. O executar() é o da
+API, cada um troca a própria senha, e só o Admin troca a de outra
+pessoa. Sem essa regra, qualquer um trocaria a senha do Admin e entraria
+com a conta dele.
 """
 
 from werkzeug.security import generate_password_hash
@@ -28,10 +19,6 @@ class AlterarSenhaService:
     @staticmethod
     def definir_senha(id_usuario, senha_nova):
         """Troca a senha SEM checar permissão.
-
-        Uso interno, fora da API: chamada pelo criar_primeiro_usuario.py,
-        que roda no terminal. Quem executa o script já tem acesso ao banco
-        e ao código da máquina, entao não ha privilegio a proteger ali.
         """
         usuario = Usuario.buscar_por_id(id_usuario)
         if not usuario:
@@ -52,7 +39,7 @@ class AlterarSenhaService:
         """Troca a senha a pedido de alguem logado na API.
 
         Qualquer pessoa pode trocar a PRÓPRIA senha. Trocar a senha de
-        outra pessoa e privilegio administrativo - sem essa regra, uma
+        outra pessoa e privilegio administrativo. Sem essa regra, uma
         Secretária trocaria a senha do Administrador, entraria com ela e
         teria acesso total, tornando inutil toda a Funcionalidade 20.
         """

@@ -1,85 +1,186 @@
 <!DOCTYPE html>
+<!-- processos>html> Raiz da página, com idioma português do Brasil -->
 <html lang="pt-BR">
+<!-- processos>head> Parte invisível da página: configurações, título da aba e arquivos ligados -->
 <head>
+    <!-- processos>head>meta> Usa a codificação UTF-8 para os acentos aparecerem certo -->
     <meta charset="UTF-8">
+    <!-- processos>head>meta> Ajusta a página à largura da tela (celular) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- processos>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- processos>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- processos>head>link> Carrega as fontes Archivo (títulos), Roboto Mono (números) e Source Sans 3 (texto) -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <!-- processos>head>link> Liga o arquivo de estilo do site (css/estilo.css) -->
+    <!-- [CSS] css/estilo.css -->
     <link rel="stylesheet" href="css/estilo.css">
+    <!-- processos>head>title> Texto da aba do navegador: "Processos - TabFlower" -->
     <title>Processos - TabFlower</title>
 </head>
+<!-- processos>body> Corpo da página: tudo que aparece na tela -->
+<!-- [CSS] body -->
 <body>
 
+    <!-- processos>header> Faixa do topo com o logo, o menu de abas e o usuário logado -->
+    <!-- [CSS] .cabecalho -->
     <header class="cabecalho">
+        <!-- processos>header>div> Organiza o topo: logo, abas e usuário lado a lado -->
+        <!-- [CSS] .cabecalho-conteudo | .cabecalho-conteudo @media (max-width: 700px) -->
+        <!-- [JS] api.js: montarBarraUsuario() -->
         <div class="cabecalho-conteudo">
+            <!-- processos>header>div>div> Logo TabFlower -->
+            <!-- [CSS] .marca -->
+            <!-- processos>header>div>div>span> Palavra "Flower" do logo -->
+            <!-- [CSS] .marca span -->
             <div class="marca">Tab<span>Flower</span></div>
+            <!-- processos>header>div>nav> Menu de navegação entre as telas -->
             <nav>
+                <!-- processos>header>div>nav>ul> Lista das abas do menu -->
+                <!-- [CSS] .abas | .abas @media (max-width: 700px) -->
                 <ul class="abas">
+                    <!-- processos>header>div>nav>ul>li> Item do menu: aba "Painel" -->
+                    <!-- processos>header>div>nav>ul>li>a> Link para a tela "Painel" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="painel.html">Painel</a></li>
+                    <!-- processos>header>div>nav>ul>li> Item do menu: aba "Clientes" -->
+                    <!-- processos>header>div>nav>ul>li>a> Link para a tela "Clientes" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="clientes.html">Clientes</a></li>
+                    <!-- processos>header>div>nav>ul>li> Item do menu: aba "Processos" -->
+                    <!-- processos>header>div>nav>ul>li>a> Link para a tela "Processos" (aba da página atual, fica destacada) -->
+                    <!-- [CSS] .abas a | .abas a:hover | .abas a.ativa -->
                     <li><a href="processos.html" class="ativa">Processos</a></li>
+                    <!-- processos>header>div>nav>ul>li> Item do menu: aba "Documentos" -->
+                    <!-- processos>header>div>nav>ul>li>a> Link para a tela "Documentos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="documentos.html">Documentos</a></li>
+                    <!-- processos>header>div>nav>ul>li> Item do menu: aba "Avisos" -->
+                    <!-- processos>header>div>nav>ul>li>a> Link para a tela "Avisos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="notificacoes.html">Avisos</a></li>
+                    <!-- processos>header>div>nav>ul>li> Item do menu: aba "Usuários" -->
+                    <!-- processos>header>div>nav>ul>li>a> Link para a tela "Usuários" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="usuarios.html">Usuários</a></li>
+                    <!-- processos>header>div>nav>ul>li> Item do menu: aba "Checklists" -->
+                    <!-- processos>header>div>nav>ul>li>a> Link para a tela "Checklists" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="checklists.html">Checklists</a></li>
+                    <!-- processos>header>div>nav>ul>li> Item do menu: aba "Importação" -->
+                    <!-- processos>header>div>nav>ul>li>a> Link para a tela "Importação" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="importacoes.html">Importação</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- processos>main> Área principal da lista de processos -->
+    <!-- [CSS] .pagina -->
     <main class="pagina">
 
+        <!-- processos>main>h1> Título da página: "Processos" -->
+        <!-- [CSS] .titulo-pagina -->
         <h1 class="titulo-pagina">Processos</h1>
+        <!-- processos>main>p> Texto explicativo abaixo do título -->
+        <!-- [CSS] .subtitulo-pagina -->
         <p class="subtitulo-pagina">
             Busque pelo número da ação, pelo título ou pelo nome do cliente.
         </p>
 
+        <!-- processos>main>div> Caixa de mensagens de erro ou sucesso (começa escondida) -->
+        <!-- [CSS] .escondido -->
+        <!-- [JS] processos.js: tela.aviso -->
         <div id="aviso" class="escondido"></div>
 
+        <!-- processos>main>div> Barra com busca, filtros e botão de novo processo -->
+        <!-- [CSS] .barra-acoes -->
         <div class="barra-acoes">
+            <!-- processos>main>div>form> Formulário de busca de processos -->
+            <!-- [CSS] .busca -->
+            <!-- [JS] processos.js: tela.formBusca -->
             <form class="busca" id="form-busca">
+                <!-- processos>main>div>form>input> Campo onde se digita número, título ou nome do cliente -->
+                <!-- [CSS] .busca input | .busca input:focus -->
+                <!-- [JS] processos.js: tela.campoBusca -->
                 <input type="text" id="campo-busca"
                        placeholder="Número, título ou nome do cliente"
                        aria-label="Buscar processo">
+                <!-- processos>main>div>form>button> Botão que dispara a busca -->
+                <!-- [CSS] .botao | .botao:hover -->
                 <button type="submit" class="botao">Buscar</button>
             </form>
 
+            <!-- processos>main>div>button> Botão "Ver todos": limpa busca e filtros -->
+            <!-- [CSS] .botao | .botao:hover -->
+            <!-- [JS] processos.js: tela.botaoLimpar -->
             <button type="button" class="botao" id="botao-limpar">Ver todos</button>
 
+            <!-- processos>main>div>div> Espaço vazio que empurra o botão "Novo processo" para a direita -->
+            <!-- [CSS] .espacador -->
             <div class="espacador"></div>
 
+            <!-- processos>main>div>label> Caixinha "Mostrar arquivados" com o texto ao lado -->
+            <!-- [CSS] .dica | style inline -->
             <label class="dica" style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <!-- processos>main>div>label>input> Caixinha de marcar para incluir os processos arquivados -->
+                <!-- [JS] processos.js: tela.mostrarInativos -->
                 <input type="checkbox" id="mostrar-inativos">
                 Mostrar arquivados
             </label>
 
+            <!-- processos>main>div>a> Botão "Novo processo": abre o formulário de cadastro -->
+            <!-- [CSS] .botao | .botao:hover | .botao-principal | .botao-principal:hover -->
             <a href="processo-form.html" class="botao botao-principal">Novo processo</a>
         </div>
 
-        <!-- Filtros combinados (Funcionalidade 03).
-             Quando qualquer um destes é usado, a tela deixa de usar a
-             listagem simples da Model e passa a chamar a procedure
-             sp_buscar_processos, pela camada Repository. -->
+        <!-- processos>main>div> Faixa com os filtros de situação, advogado e tipo -->
+        <!-- [CSS] .barra-filtros -->
         <div class="barra-filtros">
+            <!-- processos>main>div>label> Rótulo "Situação" -->
+            <!-- [CSS] .dica | .barra-filtros label -->
             <label class="dica" for="filtro-status">Situação</label>
+            <!-- processos>main>div>select> Filtro por situação do processo (preenchido pelo JS) -->
+            <!-- [CSS] .barra-filtros select | .barra-filtros select:focus | .barra-filtros select @media (max-width: 700px) -->
+            <!-- [JS] processos.js: tela.filtroStatus -->
             <select id="filtro-status"></select>
 
+            <!-- processos>main>div>label> Rótulo "Advogado" -->
+            <!-- [CSS] .dica | .barra-filtros label -->
             <label class="dica" for="filtro-advogado">Advogado</label>
+            <!-- processos>main>div>select> Filtro por advogado responsável (preenchido pelo JS) -->
+            <!-- [CSS] .barra-filtros select | .barra-filtros select:focus | .barra-filtros select @media (max-width: 700px) -->
+            <!-- [JS] processos.js: tela.filtroAdvogado -->
             <select id="filtro-advogado"></select>
 
+            <!-- processos>main>div>label> Rótulo "Tipo" -->
+            <!-- [CSS] .dica | .barra-filtros label -->
             <label class="dica" for="filtro-tipo">Tipo</label>
+            <!-- processos>main>div>select> Filtro por tipo de processo (preenchido pelo JS) -->
+            <!-- [CSS] .barra-filtros select | .barra-filtros select:focus | .barra-filtros select @media (max-width: 700px) -->
+            <!-- [JS] processos.js: tela.filtroTipo -->
             <select id="filtro-tipo"></select>
 
+            <!-- processos>main>div>span> Rótulo que mostra de onde veio o resultado (Model ou procedure) -->
+            <!-- [CSS] .dica | #rotulo-fonte | #rotulo-fonte @media (max-width: 700px) -->
+            <!-- [JS] processos.js: tela.rotuloFonte -->
             <span class="dica" id="rotulo-fonte"></span>
         </div>
 
+        <!-- processos>main>div> Lista dos processos (preenchida pelo JS) -->
+        <!-- [CSS] .lista -->
+        <!-- [JS] processos.js: tela.lista -->
         <div id="lista" class="lista"></div>
 
     </main>
 
+    <!-- processos>script> Carrega o api.js: chamadas à API, sessão de login e funções de apoio -->
+    <!-- [JS] js/api.js -->
     <script charset="UTF-8" src="js/api.js"></script>
+    <!-- processos>script> Carrega o processos.js, que faz esta página funcionar -->
+    <!-- [JS] js/processos.js -->
     <script charset="UTF-8" src="js/processos.js"></script>
 </body>
 </html>

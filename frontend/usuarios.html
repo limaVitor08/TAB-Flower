@@ -1,60 +1,134 @@
 <!DOCTYPE html>
+<!-- usuarios>html> Raiz da página, com idioma português do Brasil -->
 <html lang="pt-BR">
+<!-- usuarios>head> Parte invisível da página: configurações, título da aba e arquivos ligados -->
 <head>
+    <!-- usuarios>head>meta> Usa a codificação UTF-8 para os acentos aparecerem certo -->
     <meta charset="UTF-8">
+    <!-- usuarios>head>meta> Ajusta a página à largura da tela (celular) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- usuarios>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- usuarios>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- usuarios>head>link> Carrega as fontes Archivo (títulos), Roboto Mono (números) e Source Sans 3 (texto) -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <!-- usuarios>head>link> Liga o arquivo de estilo do site (css/estilo.css) -->
+    <!-- [CSS] css/estilo.css -->
     <link rel="stylesheet" href="css/estilo.css">
+    <!-- usuarios>head>title> Texto da aba do navegador: "Usuários - TabFlower" -->
     <title>Usuários - TabFlower</title>
 </head>
+<!-- usuarios>body> Corpo da página: tudo que aparece na tela -->
+<!-- [CSS] body -->
 <body>
 
+    <!-- usuarios>header> Faixa do topo com o logo, o menu de abas e o usuário logado -->
+    <!-- [CSS] .cabecalho -->
     <header class="cabecalho">
+        <!-- usuarios>header>div> Organiza o topo: logo, abas e usuário lado a lado -->
+        <!-- [CSS] .cabecalho-conteudo | .cabecalho-conteudo @media (max-width: 700px) -->
+        <!-- [JS] api.js: montarBarraUsuario() -->
         <div class="cabecalho-conteudo">
+            <!-- usuarios>header>div>div> Logo TabFlower -->
+            <!-- [CSS] .marca -->
+            <!-- usuarios>header>div>div>span> Palavra "Flower" do logo -->
+            <!-- [CSS] .marca span -->
             <div class="marca">Tab<span>Flower</span></div>
+            <!-- usuarios>header>div>nav> Menu de navegação entre as telas -->
             <nav>
+                <!-- usuarios>header>div>nav>ul> Lista das abas do menu -->
+                <!-- [CSS] .abas | .abas @media (max-width: 700px) -->
                 <ul class="abas">
+                    <!-- usuarios>header>div>nav>ul>li> Item do menu: aba "Painel" -->
+                    <!-- usuarios>header>div>nav>ul>li>a> Link para a tela "Painel" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="painel.html">Painel</a></li>
+                    <!-- usuarios>header>div>nav>ul>li> Item do menu: aba "Clientes" -->
+                    <!-- usuarios>header>div>nav>ul>li>a> Link para a tela "Clientes" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="clientes.html">Clientes</a></li>
+                    <!-- usuarios>header>div>nav>ul>li> Item do menu: aba "Processos" -->
+                    <!-- usuarios>header>div>nav>ul>li>a> Link para a tela "Processos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="processos.html">Processos</a></li>
+                    <!-- usuarios>header>div>nav>ul>li> Item do menu: aba "Documentos" -->
+                    <!-- usuarios>header>div>nav>ul>li>a> Link para a tela "Documentos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="documentos.html">Documentos</a></li>
+                    <!-- usuarios>header>div>nav>ul>li> Item do menu: aba "Avisos" -->
+                    <!-- usuarios>header>div>nav>ul>li>a> Link para a tela "Avisos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="notificacoes.html">Avisos</a></li>
+                    <!-- usuarios>header>div>nav>ul>li> Item do menu: aba "Usuários" -->
+                    <!-- usuarios>header>div>nav>ul>li>a> Link para a tela "Usuários" (aba da página atual, fica destacada) -->
+                    <!-- [CSS] .abas a | .abas a:hover | .abas a.ativa -->
                     <li><a href="usuarios.html" class="ativa">Usuários</a></li>
+                    <!-- usuarios>header>div>nav>ul>li> Item do menu: aba "Checklists" -->
+                    <!-- usuarios>header>div>nav>ul>li>a> Link para a tela "Checklists" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="checklists.html">Checklists</a></li>
+                    <!-- usuarios>header>div>nav>ul>li> Item do menu: aba "Importação" -->
+                    <!-- usuarios>header>div>nav>ul>li>a> Link para a tela "Importação" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="importacoes.html">Importação</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- usuarios>main> Área principal da lista de usuários -->
+    <!-- [CSS] .pagina -->
     <main class="pagina">
 
+        <!-- usuarios>main>h1> Título da página: "Usuários" -->
+        <!-- [CSS] .titulo-pagina -->
         <h1 class="titulo-pagina">Usuários</h1>
+        <!-- usuarios>main>p> Texto explicativo abaixo do título -->
+        <!-- [CSS] .subtitulo-pagina -->
         <p class="subtitulo-pagina">
             Equipe do escritório. Só o perfil Admin pode excluir documentos
             em definitivo.
         </p>
 
+        <!-- usuarios>main>div> Caixa de mensagens de erro ou sucesso (começa escondida) -->
+        <!-- [CSS] .escondido -->
+        <!-- [JS] usuarios.js: tela.aviso -->
         <div id="aviso" class="escondido"></div>
 
+        <!-- usuarios>main>div> Barra com a caixinha de inativos e o botão de novo usuário -->
+        <!-- [CSS] .barra-acoes -->
         <div class="barra-acoes">
+            <!-- usuarios>main>div>div> Espaço vazio que empurra os itens para a direita -->
+            <!-- [CSS] .espacador -->
             <div class="espacador"></div>
 
+            <!-- usuarios>main>div>label> Caixinha "Mostrar inativos" com o texto ao lado -->
+            <!-- [CSS] .dica | style inline -->
             <label class="dica" style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <!-- usuarios>main>div>label>input> Caixinha de marcar para incluir os usuários desativados -->
+                <!-- [JS] usuarios.js: tela.mostrarInativos -->
                 <input type="checkbox" id="mostrar-inativos">
                 Mostrar inativos
             </label>
 
+            <!-- usuarios>main>div>a> Botão "Novo usuário": abre o formulário de cadastro -->
+            <!-- [CSS] .botao | .botao:hover | .botao-principal | .botao-principal:hover -->
             <a href="usuario-form.html" class="botao botao-principal">Novo usuário</a>
         </div>
 
+        <!-- usuarios>main>div> Lista dos usuários (preenchida pelo JS) -->
+        <!-- [CSS] .lista -->
+        <!-- [JS] usuarios.js: tela.lista -->
         <div id="lista" class="lista"></div>
 
     </main>
 
+    <!-- usuarios>script> Carrega o api.js: chamadas à API, sessão de login e funções de apoio -->
+    <!-- [JS] js/api.js -->
     <script charset="UTF-8" src="js/api.js"></script>
+    <!-- usuarios>script> Carrega o usuarios.js, que faz esta página funcionar -->
+    <!-- [JS] js/usuarios.js -->
     <script charset="UTF-8" src="js/usuarios.js"></script>
 </body>
 </html>

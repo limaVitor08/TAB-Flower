@@ -1,43 +1,88 @@
 <!DOCTYPE html>
+<!-- login>html> Raiz da página, com idioma português do Brasil -->
 <html lang="pt-BR">
+<!-- login>head> Parte invisível da página: configurações, título da aba e arquivos ligados -->
 <head>
+    <!-- login>head>meta> Usa a codificação UTF-8 para os acentos aparecerem certo -->
     <meta charset="UTF-8">
+    <!-- login>head>meta> Ajusta a página à largura da tela (celular) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- login>head>title> Texto da aba do navegador: "Entrar - TabFlower" -->
     <title>Entrar - TabFlower</title>
 
+    <!-- login>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- login>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- login>head>link> Carrega as fontes Archivo (títulos), Roboto Mono (números) e Source Sans 3 (texto) -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 
+    <!-- login>head>link> Liga o arquivo de estilo do site (css/estilo.css) -->
+    <!-- [CSS] css/estilo.css -->
     <link rel="stylesheet" href="css/estilo.css">
 </head>
+<!-- login>body> Corpo da tela de login -->
+<!-- [CSS] body | .tela-login -->
 <body class="tela-login">
 
+    <!-- login>main> Caixa branca central com o logo e o formulário de entrada -->
+    <!-- [CSS] .caixa-login -->
     <main class="caixa-login">
 
+        <!-- login>main>div> Logo TabFlower dentro da caixa de login -->
+        <!-- [CSS] .marca | .marca-login -->
+        <!-- login>main>div>span> Palavra "Flower" do logo -->
+        <!-- [CSS] .marca span -->
         <div class="marca marca-login">Tab<span>Flower</span></div>
 
+        <!-- login>main>p> Frase de apresentação do sistema abaixo do logo -->
+        <!-- [CSS] .subtitulo-login -->
         <p class="subtitulo-login">
             Gestão documental e processual do escritório.
         </p>
 
+        <!-- login>main>div> Caixa de mensagem de erro do login (começa escondida) -->
+        <!-- [CSS] .escondido -->
+        <!-- [JS] login.js: tela.aviso -->
         <div id="aviso" class="escondido"></div>
 
+        <!-- login>main>form> Formulário de login com e-mail, senha e botão Entrar -->
+        <!-- [CSS] .formulario | .formulario-login -->
+        <!-- [JS] login.js: tela.form -->
         <form class="formulario formulario-login" id="form-login">
 
+            <!-- login>main>form>div> Bloco do campo de e-mail -->
+            <!-- [CSS] .campo | .campo-largo -->
             <div class="campo campo-largo">
+                <!-- login>main>form>div>label> Rótulo "E-mail" -->
+                <!-- [CSS] .campo label -->
                 <label for="email">E-mail</label>
+                <!-- login>main>form>div>input> Campo onde a pessoa digita o e-mail -->
+                <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                <!-- [JS] login.js: tela.email -->
                 <input type="email" id="email" required autofocus
                        placeholder="voce@tabflower.com" autocomplete="username">
             </div>
 
+            <!-- login>main>form>div> Bloco do campo de senha -->
+            <!-- [CSS] .campo | .campo-largo -->
             <div class="campo campo-largo">
+                <!-- login>main>form>div>label> Rótulo "Senha" -->
+                <!-- [CSS] .campo label -->
                 <label for="senha">Senha</label>
+                <!-- login>main>form>div>input> Campo onde a pessoa digita a senha (texto escondido) -->
+                <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                <!-- [JS] login.js: tela.senha -->
                 <input type="password" id="senha" required
                        autocomplete="current-password">
             </div>
 
+            <!-- login>main>form>div> Área do botão de enviar -->
+            <!-- [CSS] .formulario-login .acoes-formulario -->
             <div class="acoes-formulario">
+                <!-- login>main>form>div>button> Botão Entrar -->
+                <!-- [CSS] .botao | .botao:hover | .botao-principal | .botao-principal:hover | .formulario-login .botao-principal -->
+                <!-- [JS] login.js: tela.botao -->
                 <button type="submit" class="botao botao-principal" id="botao-entrar">
                     Entrar
                 </button>
@@ -47,7 +92,11 @@
 
     </main>
 
+    <!-- login>script> Carrega o api.js: chamadas à API, sessão de login e funções de apoio -->
+    <!-- [JS] js/api.js -->
     <script charset="UTF-8" src="js/api.js"></script>
+    <!-- login>script> Carrega o login.js, que faz esta página funcionar -->
+    <!-- [JS] js/login.js -->
     <script charset="UTF-8" src="js/login.js"></script>
 </body>
 </html>

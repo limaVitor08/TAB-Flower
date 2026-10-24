@@ -1,15 +1,9 @@
 """
-Caso de uso: atualizar os dados de um usuário.
+Atualiza os dados de um usuário.
 
-A senha Não passa por aqui: tem Service próprio, porque trocar senha e um
-caso de uso diferente de corrigir um nome ou mudar de perfil.
-
-Esta edicao e restrita ao Administrador por causa de um campo especifico:
-perfil_id. A Model aceita perfil_id entre os campos editaveis (e deve
-aceitar - trocar alguem de funcao no escritório e uma operação legitima),
-mas quem decide QUEM pode fazer isso e regra de negocio, e regra de
-negocio mora no Service. Sem esta checagem, qualquer pessoa faria um PUT
-no próprio id mandando perfil_id = 1 e viraria Administrador sozinha.
+A senha não passa por aqui, ela tem um Service próprio. Só o Admin pode
+editar usuários por causa do perfil_id. Sem essa trava, qualquer pessoa
+mandaria um PUT no próprio cadastro com perfil_id = 1 e virava Admin.
 """
 
 from extensions import db

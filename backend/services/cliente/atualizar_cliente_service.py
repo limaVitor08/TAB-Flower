@@ -1,6 +1,4 @@
-"""
-Caso de uso: atualizar os dados de um cliente.
-"""
+"""Atualiza os dados de um cliente."""
 
 from models.cliente import Cliente
 

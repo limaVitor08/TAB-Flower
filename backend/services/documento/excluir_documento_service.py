@@ -1,25 +1,13 @@
 """
-Caso de uso: excluir um documento.
+Exclui um documento (funcionalidade 20).
 
-Funcionalidade 20 (Restricao de Exclusão). E o caso de uso que responde
-diretamente a dor levantada na entrevista: "o log de alterações e
-inexistente, entao quando algo some, não sabemos quem moveu ou apagou".
+1 - Só o Admin pode excluir.
+2 - A exclusão é só uma marcação, o registro e o arquivo continuam existindo.
 
-Duas travas:
-  1. Somente perfis com pode_excluir = TRUE (hoje, apenas o Admin).
-  2. A exclusão e lógica. O registro e o arquivo continuam existindo.
-
-Se o documento abatia uma pendência do checklist, a pendência volta a
-aparecer - senao o processo pareceria completo sem estar.
-
-## Atomicidade
-
-Excluir um documento mexe em ate quatro tabelas: documento,
-checklist_processo, processo (status), historico_status - mais o
-log_auditoria. Tudo entra num commit so. Se o processo não conseguisse
-voltar de fase, o documento também não seria marcado como excluido: o
-sistema nunca fica dizendo que a documentação esta completa quando o
-arquivo que a completava sumiu.
+Se o documento cobria um item do checklist, o item volta a ficar
+pendente, e o processo pode voltar de fase. Isso tudo, junto com o log de
+auditoria, entra num commit só. Assim o sistema nunca diz que a
+documentação está completa depois que o arquivo que a completava saiu.
 """
 
 import logging
@@ -42,11 +30,7 @@ class ExcluirDocumentoService:
     @staticmethod
     def executar(id_documento, usuario):
         """Exclui logicamente o documento.
-
-        Recebe o objeto do usuário logado (g.usuario_atual), e não um id:
-        quem chamou já autenticou essa pessoa, então buscá-la no banco de
-        novo seria uma consulta a mais para chegar ao mesmo lugar. É o
-        mesmo formato dos Services de exclusão de cliente e de processo.
+        Recebe o objeto do usuário logado (g.usuario_atual), e não um id.
         """
         documento = Documento.buscar_por_id(id_documento)
         if not documento:
@@ -67,8 +51,6 @@ class ExcluirDocumentoService:
 
             documento.remover(usuario_id=usuario.id, confirmar=False)
 
-            # Contrapartida do avanço automático: se o processo tinha subido
-            # de fase por estar completo, ele volta para "aguardando".
             retorno = None
             if documento.processo_id:
                 processo = Processo.buscar_por_id(documento.processo_id)
@@ -95,7 +77,7 @@ class ExcluirDocumentoService:
 
     @staticmethod
     def restaurar(id_documento, usuario):
-        """Desfaz a exclusão. Também restrito ao Admin."""
+        """Desfaz a exclusão. Restrito ao Admin."""
         documento = Documento.buscar_por_id(id_documento)
         if not documento:
             raise LookupError("Documento não encontrado.")
@@ -108,7 +90,6 @@ class ExcluirDocumentoService:
                 "Somente o Administrador pode restaurar documentos."
             )
 
-        # Auditoria antes: o commit do restaurar() grava as duas coisas.
         RegistrarAuditoriaService.registrar(
             usuario_id=usuario.id,
             acao="RESTAURAR",
@@ -132,4 +113,3 @@ class ExcluirDocumentoService:
         item.entregue = False
         item.entregue_em = None
         item.documento_id = None
-        # Sem commit: faz parte da transação do executar().

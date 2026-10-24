@@ -1,11 +1,9 @@
 """
-Caso de uso: desativar um usuário.
+Desativa um usuário.
 
-Funcionalidade 20 (Restricao de Exclusão).
-
-Usuário nunca e apagado: processos apontam para o advogado responsavel e
-o log de auditoria registra quem fez cada ação. Apagar quebraria as duas
-coisas e destruiria a rastreabilidade que o escritório não tem hoje.
+Usuário nunca é apagado de verdade, porque os processos apontam para o
+advogado responsável e o log de auditoria aponta para quem fez cada
+ação. Apagar quebraria as duas coisas.
 """
 
 from models.processo import Processo
@@ -26,8 +24,8 @@ class ExcluirUsuarioService:
             )
 
         # Ninguem se desativa. Se o unico Administrador se desativasse,
-        # ninguem mais administraria o sistema - daria para recuperar pelo
-        # criar_primeiro_usuario.py, mas evitar o problema e melhor do que
+        # ninguem mais administraria o sistema. Daria para recuperar pelo
+        # criar_primeiro_usuario.py, mas evitar o problema é melhor do que
         # documentar a saida de emergencia.
         if usuario_logado.id == id_usuario:
             raise ValueError("Você não pode desativar a própria conta.")
@@ -53,8 +51,6 @@ class ExcluirUsuarioService:
                 "Transfira os processos para outro advogado antes de desativá-lo."
             )
 
-        # Registrada antes do remover(): o commit do remover() grava a
-        # desativação e o log na mesma transação.
         RegistrarAuditoriaService.registrar(
             usuario_id=usuario_logado.id,
             acao="EXCLUIR",

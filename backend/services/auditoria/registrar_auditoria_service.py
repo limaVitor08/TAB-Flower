@@ -1,42 +1,18 @@
 """
-Caso de uso: registrar uma ação sensível no log de auditoria.
-
-Complementa a Funcionalidade 20 (Restrição de Exclusão). A tabela
-log_auditoria existe desde a Primeira Etapa, mas só agora, com o login,
-o sistema sabe quem de fato executou cada ação.
-
-Por que a escrita fica num Service e não no Controller: o Controller só
-traduz HTTP. Quem sabe que "isto foi uma exclusão de cliente" é o caso de
-uso, e é ele quem chama este registro.
-
-## Por que este Service NÃO faz commit
-
-Este é o ponto que vale explicar na apresentação.
-
-Se o registro de auditoria fosse gravado com um commit próprio, ele viraria
-uma segunda transação: a exclusão poderia entrar e o log falhar, ou o
-contrário. O banco ficaria dizendo que algo foi excluído sem ninguém ter
-excluído, ou o oposto.
-
-Em vez disso, o Service apenas coloca a linha na sessão (`db.session.add`).
-Quem chama registra a auditoria ANTES de gravar a alteração, e o commit que
-grava a alteração leva o log junto, na mesma transação. Ou os dois entram,
-ou nenhum entra. Isso é atomicidade.
+Registra uma ação importante no log de auditoria.
+Quem chama este Service é o caso de uso, porque é ele que sabe que
+aquilo foi, por exemplo, a exclusão de um cliente.
+Se o log tivesse um commit próprio, poderia existir exclusão sem
+registro, ou registro de uma exclusão que não aconteceu.
 """
-
 from datetime import datetime
-
 from extensions import db
 from models.auditoria import LogAuditoria
-
-
 class RegistrarAuditoriaService:
     """Prepara o registro de auditoria. O commit é de quem chama."""
-
     @staticmethod
     def registrar(usuario_id, acao, entidade, entidade_id=None, descricao=None):
         """Coloca uma linha de auditoria na sessão, sem gravar ainda.
-
         usuario_id  quem fez (vem sempre de g.usuario_atual, nunca da requisição)
         acao        CRIAR, ATUALIZAR, EXCLUIR, RESTAURAR, LOGIN ou DOWNLOAD
         entidade    nome da tabela afetada ("cliente", "processo", ...)
@@ -53,6 +29,5 @@ class RegistrarAuditoriaService:
             descricao=(descricao or "")[:255] or None,
             criado_em=datetime.now(),
         )
-
         db.session.add(registro)
         return registro

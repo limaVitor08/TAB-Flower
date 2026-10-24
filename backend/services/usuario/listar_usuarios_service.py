@@ -1,6 +1,4 @@
-"""
-Caso de uso: listar os usuários do sistema.
-"""
+"""Lista os usuários do sistema."""
 
 from models.usuario import Usuario
 

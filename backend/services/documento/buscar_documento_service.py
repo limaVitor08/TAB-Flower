@@ -1,6 +1,4 @@
-"""
-Caso de uso: buscar um documento específico.
-"""
+"""Busca um documento pelo id."""
 
 from models.documento import Documento
 

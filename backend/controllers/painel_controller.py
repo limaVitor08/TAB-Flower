@@ -1,9 +1,8 @@
 """
 Controller do Painel.
 
-Camada de Apresentação das funcionalidades da Terceira Etapa. Todas as
-rotas deste Controller passam por Services que usam Repository, e todo
-Repository chama uma stored procedure do MySQL.
+As rotas de resumo, pendências e prioritários passam por um Service, que
+usa o Repository, que chama uma stored procedure do MySQL.
 """
 
 from flask import jsonify, request
@@ -20,18 +19,18 @@ class PainelController:
 
     @staticmethod
     def resumo():
-        """GET /api/painel/resumo - sp_painel_resumo"""
+        """GET /api/painel/resumo: sp_painel_resumo"""
         return jsonify(ResumoPainelService.executar()), 200
 
     @staticmethod
     def pendencias():
-        """GET /api/painel/pendências?advogado_id= - sp_pendencias_checklist"""
+        """GET /api/painel/pendências?advogado_id=: sp_pendencias_checklist"""
         advogado_id = request.args.get("advogado_id") or None
         return jsonify(PendenciasService.executar(advogado_id)), 200
 
     @staticmethod
     def prioritarios():
-        """GET /api/painel/prioritarios?peso_minimo=1 - sp_processos_prioritarios"""
+        """GET /api/painel/prioritarios?peso_minimo=1: sp_processos_prioritarios"""
         try:
             linhas = ProcessosPrioritariosService.executar(
                 request.args.get("advogado_id") or None,
@@ -44,5 +43,5 @@ class PainelController:
 
     @staticmethod
     def marcadores():
-        """GET /api/painel/marcadores - marcadores fixos do sistema."""
+        """GET /api/painel/marcadores: marcadores fixos do sistema."""
         return jsonify([m.to_dict() for m in Marcador.listar_todos()]), 200

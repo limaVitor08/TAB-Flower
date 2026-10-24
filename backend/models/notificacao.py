@@ -1,10 +1,8 @@
 """
-Model Notificação.
+Model da Notificação (funcionalidades 16 e 17).
 
-Funcionalidade 16 (Disparo de Notificações) e 17 (Direcionamento
-Automático). Quando um documento e anexado a um processo, o sistema
-descobre sozinho quem e o advogado responsavel e cria o aviso para ele.
-Hoje isso e feito por e-mail informal ou no grito, e se perde.
+Quando um documento é anexado a um processo, o sistema descobre sozinho
+quem é o advogado responsável e cria o aviso para ele.
 """
 
 from datetime import datetime
@@ -35,11 +33,10 @@ class Notificacao(db.Model):
     def salvar(self, confirmar=False):
         """Grava o aviso.
 
-        O padrão aqui e confirmar=False, ao contrario das outras Models: a
-        notificação nunca nasce sozinha, ela e sempre consequencia de outra
-        coisa (um documento anexado, por exemplo). Quem comanda o commit e
-        o Service dono daquela operação - senao o aviso poderia ser gravado
-        para um documento que acabou não entrando.
+        Ao contrario das outras Models, a notificação nunca nasce sozinha,
+        ela e sempre consequencia de outracoisa (um documento anexado, por exemplo).
+        Quem comanda o commit é o Service dono daquela operação,
+        senão o aviso poderia ser gravado para um documento que acabou não entrando.
         """
         db.session.add(self)
         if confirmar:

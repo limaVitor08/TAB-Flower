@@ -1,18 +1,12 @@
 """
-Caso de uso: cadastrar um usuário do sistema.
+Cadastra um usuário do sistema.
 
-A senha nunca e guardada como texto. O werkzeug gera um hash com sal, e
-e esse hash que vai para o banco. Nem o administrador consegue ler a
-senha de ninguem - só conferir se a digitada corresponde ao hash.
+A senha nunca é gravada como texto, o werkzeug gera um hash com sal, e só
+o hash vai para o banco. Nem o Admin consegue ver a senha de alguém.
 
-Como no AlterarSenhaService, existem dois caminhos de entrada:
-
-  criar()     - cadastra sem checar permissão. Usado pelo
-                criar_primeiro_usuario.py, que roda no terminal, quando
-                ainda não existe nenhum usuário para estar logado.
-
-  executar()  - cadastra a pedido de alguem logado na API, conferindo a
-                permissão antes.
+Tem dois jeitos de cadastrar. O criar() não confere permissão e é usado
+pelo criar_primeiro_usuario.py, no terminal, quando ainda não existe
+ninguém logado. O executar() é o da API e só deixa o Admin cadastrar.
 """
 
 from datetime import datetime
@@ -29,7 +23,7 @@ class CriarUsuarioService:
     def criar(dados):
         """Cadastra o usuário SEM checar permissão.
 
-        Uso interno, fora da API: e assim que o primeiro Administrador do
+        Uso interno, fora da API. É assim que o primeiro Administrador do
         sistema nasce, pelo script de terminal. Não ha usuário logado para
         conferir, e quem roda o script já tem acesso ao banco.
         """
@@ -66,13 +60,6 @@ class CriarUsuarioService:
 
     @staticmethod
     def executar(dados, usuario_logado):
-        """Cadastra o usuário a pedido de alguem logado na API.
-
-        Só quem pode excluir registros pode cadastrar gente nova. O motivo
-        e direto: quem cadastra usuário escolhe o perfil dele, entao quem
-        pudesse cadastrar criaria um Administrador para si mesmo e daria a
-        volta em toda a Funcionalidade 20.
-        """
         if not usuario_logado.perfil or not usuario_logado.perfil.pode_excluir:
             raise PermissionError(
                 f"O perfil {usuario_logado.perfil.nome if usuario_logado.perfil else 'atual'} "

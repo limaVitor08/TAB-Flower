@@ -1,29 +1,23 @@
-/* =====================================================================
-   TabFlower - Configuração de checklists
-   =====================================================================
-   Funcionalidade 13 (Configuração de Checklist).
-
-   Esta tela edita o MOLDE: a lista de documentos que cada tipo de
-   processo exige. O molde é copiado uma única vez, no momento em que um
-   processo é aberto.
-
-   Consequência importante, avisada na própria tela: mudar o molde hoje
-   não altera o checklist de um processo já protocolado. Se alterasse,
-   um processo fechado no mês passado poderia voltar a aparecer como
-   incompleto por causa de uma exigência criada depois.
-   ===================================================================== */
-
+// [JS] checklists> Atalhos para os elementos da configuração de checklists
 const tela = {
+    // [JS] checklists>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
+    // [JS] checklists>main>div>select> Recebe os tipos da API; ao trocar, mostra as exigências daquele tipo
     tipoProcesso: document.getElementById('tipo-processo'),
+    // [JS] checklists>main>section>ul> Desenha cada exigência com os botões Tornar opcional/obrigatório e Remover
     itens: document.getElementById('itens'),
+    // [JS] checklists>main>section>div>select> Mostra só as categorias livres; avisa quando todas já foram usadas
     novaCategoria: document.getElementById('nova-categoria'),
+    // [JS] checklists>main>section>div>label>input> Lê se está marcada ao acrescentar
     novoObrigatorio: document.getElementById('nova-obrigatorio'),
+    // [JS] checklists>main>section>div>button> Adiciona a exigência e redesenha a lista; fica travado se não houver categoria livre
     botaoAdicionar: document.getElementById('botao-adicionar')
 };
 
+// [JS] checklists> Guarda todas as categorias de documento vindas da API
 let categorias = [];
 
+// [JS] checklists>main>section>ul> Desenha as exigências: bolinha vermelha (obrigatória) ou cinza (opcional), sigla e botões
 function desenharItens(lista) {
     if (lista.length === 0) {
         tela.itens.innerHTML = `
@@ -60,7 +54,7 @@ function desenharItens(lista) {
         </li>`).join('');
 }
 
-/** Só oferece categorias que ainda não estão na lista deste tipo. */
+// [JS] checklists>main>section>div>select> Mostra só as categorias que este tipo ainda não exige; trava o botão se não sobrar nenhuma
 function atualizarCategoriasDisponiveis(jaUsadas) {
     const usados = new Set(jaUsadas.map((i) => i.categoria_id));
     const livres = categorias.filter((c) => !usados.has(c.id));
@@ -78,6 +72,7 @@ function atualizarCategoriasDisponiveis(jaUsadas) {
     tela.botaoAdicionar.disabled = false;
 }
 
+// [JS] checklists>main>section>ul> Busca as exigências do tipo escolhido e redesenha a lista
 async function carregarItens() {
     limparAviso(tela.aviso);
 
@@ -97,6 +92,7 @@ async function carregarItens() {
     }
 }
 
+// [JS] checklists>main>div>select> Prepara a tela: busca tipos e categorias, preenche a lista de tipos e carrega o primeiro
 async function prepararTela() {
     try {
         const opcoes = await api.checklists.opcoes();
@@ -112,8 +108,10 @@ async function prepararTela() {
     }
 }
 
+// [JS] checklists>main>div>select> Trocar o tipo de processo carrega as exigências dele
 tela.tipoProcesso.addEventListener('change', carregarItens);
 
+// [JS] checklists>main>section>div>button> Acrescentar: envia a categoria e se é obrigatória, depois redesenha
 tela.botaoAdicionar.addEventListener('click', async () => {
     limparAviso(tela.aviso);
     tela.botaoAdicionar.disabled = true;
@@ -139,6 +137,7 @@ tela.botaoAdicionar.addEventListener('click', async () => {
     }
 });
 
+// [JS] checklists>main>section>ul> Cliques na lista: Tornar opcional/obrigatório alterna; Remover pede confirmação e tira a exigência
 tela.itens.addEventListener('click', async (evento) => {
     const alternar = evento.target.closest('[data-alternar]');
     const remover = evento.target.closest('[data-remover]');
@@ -171,4 +170,5 @@ tela.itens.addEventListener('click', async (evento) => {
     }
 });
 
+// [JS] checklists> Prepara a tela assim que a página abre
 prepararTela();

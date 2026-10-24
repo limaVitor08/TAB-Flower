@@ -1,29 +1,24 @@
-/* =====================================================================
-   TabFlower - Acervo de documentos
-   =====================================================================
-   Funcionalidades atendidas:
-     09 - Identificação de Categoria (permite corrigir a classificação)
-     10 - Renomeação Automática (mostra o nome gerado pelo sistema)
-     20 - Restricao de Exclusão (exclui logicamente e permite restaurar)
-   ===================================================================== */
-
+// [JS] documentos> Atalhos para os elementos do acervo
 const tela = {
+    // [JS] documentos>main>div> Desenha cada documento com categoria editável e botões Baixar, Excluir ou Restaurar
     lista: document.getElementById('lista'),
+    // [JS] documentos>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
+    // [JS] documentos>main>div>form> Filtra a lista já carregada, sem chamar a API de novo
     formBusca: document.getElementById('form-busca'),
+    // [JS] documentos>main>div>form>input> Lê o texto do filtro
     campoBusca: document.getElementById('campo-busca'),
+    // [JS] documentos>main>div>button> Limpa o campo e mostra a lista completa
     botaoLimpar: document.getElementById('botao-limpar'),
+    // [JS] documentos>main>div>label>input> Ao marcar ou desmarcar, recarrega a lista
     mostrarExcluidos: document.getElementById('mostrar-excluidos')
 };
 
-/* Quem está executando a ação vem da sessão, no backend, a partir do
-   token. A tela não informa mais nenhum id de usuário: se informasse,
-   seria ignorado. */
-
+// [JS] documentos> Guarda as categorias e os documentos carregados, para filtrar sem chamar a API de novo
 let categorias = [];
 let documentos = [];
 
-/** Monta o select de categoria de uma ficha, já com a atual marcada. */
+// [JS] documentos>main>div>article>div>div>select> Monta a listinha para trocar a categoria do documento na própria ficha
 function selectCategoria(documento) {
     const opcoes = categorias
         .map((c) => `<option value="${c.id}"${c.id === documento.categoria_id ? ' selected' : ''}>${escaparHtml(c.nome)}</option>`)
@@ -32,6 +27,7 @@ function selectCategoria(documento) {
     return `<select class="select-categoria" data-doc="${documento.id}">${opcoes}</select>`;
 }
 
+// [JS] documentos>main>div>article> Monta a ficha do documento: nome padronizado, categoria, cliente, tamanho, link do processo e botões
 function montarFicha(d) {
     const classeInativa = d.excluido ? ' inativa' : '';
 
@@ -66,6 +62,7 @@ function montarFicha(d) {
     `;
 }
 
+// [JS] documentos>main>div> Desenha a lista de fichas ou a caixa de "nenhum documento"
 function desenhar(lista) {
     if (lista.length === 0) {
         tela.lista.innerHTML = `
@@ -78,7 +75,7 @@ function desenhar(lista) {
     tela.lista.innerHTML = lista.map(montarFicha).join('');
 }
 
-/** Filtra na memória: a lista de documentos do escritório e pequena. */
+// [JS] documentos>main>div>form> Filtra os documentos pelo nome, cliente ou categoria
 function filtrar(termo) {
     const t = termo.toLowerCase();
     return documentos.filter((d) =>
@@ -88,6 +85,7 @@ function filtrar(termo) {
     );
 }
 
+// [JS] documentos>main>div> Busca categorias e documentos na API e desenha a lista (aplicando o filtro, se houver)
 async function carregar() {
     limparAviso(tela.aviso);
     tela.lista.innerHTML = '<div class="vazio">Carregando...</div>';
@@ -109,22 +107,23 @@ async function carregar() {
     }
 }
 
-/* --- eventos --- */
-
+// [JS] documentos>main>div>form> Ao enviar o filtro, redesenha só os documentos que batem
 tela.formBusca.addEventListener('submit', (evento) => {
     evento.preventDefault();
     const termo = tela.campoBusca.value.trim();
     desenhar(termo ? filtrar(termo) : documentos);
 });
 
+// [JS] documentos>main>div>button> Ver todos: limpa o filtro e mostra tudo
 tela.botaoLimpar.addEventListener('click', () => {
     tela.campoBusca.value = '';
     desenhar(documentos);
 });
 
+// [JS] documentos>main>div>label>input> Marcar ou desmarcar Mostrar excluídos recarrega a lista
 tela.mostrarExcluidos.addEventListener('change', carregar);
 
-/* Corrigir a categoria: Funcionalidade 09. */
+// [JS] documentos>main>div> Trocar a categoria numa ficha salva a correção na API
 tela.lista.addEventListener('change', async (evento) => {
     const select = evento.target.closest('.select-categoria');
     if (!select) {
@@ -143,14 +142,12 @@ tela.lista.addEventListener('change', async (evento) => {
     }
 });
 
+// [JS] documentos>main>div> Cliques nas fichas: Baixar faz o download, Excluir pede confirmação, Restaurar desfaz a exclusão
 tela.lista.addEventListener('click', async (evento) => {
     const excluir = evento.target.closest('[data-excluir]');
     const restaurar = evento.target.closest('[data-restaurar]');
     const baixar = evento.target.closest('[data-baixar]');
 
-    // O download passa por JavaScript porque o navegador não envia o
-    // cabeçalho Authorization num link clicado - sem o token, a API
-    // recusaria o pedido.
     if (baixar) {
         evento.preventDefault();
         try {
@@ -201,4 +198,5 @@ tela.lista.addEventListener('click', async (evento) => {
     }
 });
 
+// [JS] documentos> Carrega o acervo assim que a página abre
 carregar();

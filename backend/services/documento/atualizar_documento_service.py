@@ -1,8 +1,8 @@
 """
-Caso de uso: corrigir a categoria de um documento.
+Corrige a categoria de um documento (funcionalidade 9).
 
-Funcionalidade 09. Se a secretaria classificou errado no envio, a
-correção acontece aqui - sem mexer no arquivo que já esta no disco.
+Serve para quando a secretária escolheu a categoria errada no envio. O
+arquivo que já está no disco não é mexido.
 """
 
 from extensions import db

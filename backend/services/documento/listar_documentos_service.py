@@ -1,6 +1,4 @@
-"""
-Caso de uso: listar documentos.
-"""
+"""Lista documentos, todos ou só os de um processo ou de um cliente."""
 
 from models.documento import Documento
 

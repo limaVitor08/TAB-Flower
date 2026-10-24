@@ -1,11 +1,10 @@
 """
 Models do checklist de documentos.
 
-checklist_modelo   -> o molde: o que cada TIPO de processo exige.
-checklist_processo -> a copia aplicada a um processo específico.
-
-Separar os dois evita que mudar o molde hoje altere o checklist de um
-processo já protocolado no mes passado.
+O checklist_modelo é o molde. O que cada tipo de processo exige. O
+checklist_processo é a cópia que vai para cada processo aberto.
+Separamos os dois para que mudar o molde hoje não mexa no checklist de
+um processo aberto no mês passado.
 """
 
 from extensions import db

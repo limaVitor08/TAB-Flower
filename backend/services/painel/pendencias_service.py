@@ -1,9 +1,5 @@
 """
-Caso de uso: listar os processos com documentação incompleta.
-
-Funcionalidade 12 - Mapeamento de Pendências.
-
-Substitui o checklist impresso e o "vou dar uma olhada nas pastas".
+Lista os processos que ainda têm documento faltando (funcionalidade 12).
 """
 
 from repositories.processo_repository import ProcessoRepository

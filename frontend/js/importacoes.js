@@ -1,33 +1,22 @@
-/* =====================================================================
-   TabFlower - Importação em lote
-   =====================================================================
-   Funcionalidade 18 (Importação em Lote)
-   Funcionalidade 19 (Organização de Legado)
-
-   O ponto central desta tela é a importação PARCIAL: uma linha ruim não
-   derruba as outras. A planilha de legado do escritório tem CPF errado,
-   nome em branco e cliente repetido, e exigir um arquivo perfeito faria
-   a secretária desistir na primeira tentativa.
-
-   Por isso o resultado mostra os três números separados e lista os erros
-   com o número da linha, para ela corrigir só o que falhou.
-   ===================================================================== */
-
+// [JS] importacoes> Atalhos para os elementos da importação
 const tela = {
+    // [JS] importacoes>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
+    // [JS] importacoes>main>section>form> Ao enviar, importa a planilha e mostra o resultado
     form: document.getElementById('form-importacao'),
+    // [JS] importacoes>main>section>form>input> Pega o arquivo escolhido para enviar
     arquivo: document.getElementById('arquivo'),
+    // [JS] importacoes>main>section>form>button> Mostra "Importando..." enquanto a planilha é processada
     botaoEnviar: document.getElementById('botao-enviar'),
+    // [JS] importacoes>main>section>form>a> Baixa o modelo levando o token de login
     linkModelo: document.getElementById('link-modelo'),
+    // [JS] importacoes>main>section>div> Aparece com os cartões de total, sucesso, erro e a lista de linhas que falharam
     resultado: document.getElementById('resultado'),
+    // [JS] importacoes>main>section>div> Desenha cada carga com os botões Ver clientes e Desfazer
     lista: document.getElementById('lista')
 };
 
-/* O lote é registrado em nome de quem está logado. O backend descobre
-   isso pelo token, então a tela não manda mais nenhum id de usuário. */
-
-/* O modelo é baixado por JavaScript, e não por link direto, porque o
-   download precisa levar o token no cabeçalho da requisição. */
+// [JS] importacoes>main>section>form>a> Baixar modelo: baixa o CSV de exemplo pelo JS (um link comum não levaria o token)
 tela.linkModelo.href = '#';
 tela.linkModelo.addEventListener('click', async (evento) => {
     evento.preventDefault();
@@ -38,10 +27,7 @@ tela.linkModelo.addEventListener('click', async (evento) => {
     }
 });
 
-/* ---------------------------------------------------------------------
-   Resultado da carga
-   --------------------------------------------------------------------- */
-
+// [JS] importacoes>main>section>div> Mostra o resultado da carga: três cartões (linhas, cadastrados, com problema) e a lista de linhas que falharam
 function mostrarResultado(lote) {
     const houveErro = lote.total_erro > 0;
 
@@ -77,10 +63,7 @@ function mostrarResultado(lote) {
         ${erros}`;
 }
 
-/* ---------------------------------------------------------------------
-   Histórico de importações
-   --------------------------------------------------------------------- */
-
+// [JS] importacoes>main>section>div>article> Monta a ficha de uma importação: arquivo, situação, quantos entraram, erros, data e botões
 function montarFicha(lote) {
     const cor = lote.situacao === 'CONCLUIDA' ? '#2f6f4e' : '#c2410c';
 
@@ -117,6 +100,7 @@ function montarFicha(lote) {
         </article>`;
 }
 
+// [JS] importacoes>main>section>div> Busca o histórico de importações e desenha a lista
 async function carregarHistorico() {
     tela.lista.innerHTML = '<div class="vazio">Carregando...</div>';
 
@@ -139,10 +123,7 @@ async function carregarHistorico() {
     }
 }
 
-/* ---------------------------------------------------------------------
-   Eventos
-   --------------------------------------------------------------------- */
-
+// [JS] importacoes>main>section>form> Envia a planilha, mostra o resultado e um aviso com o total; depois recarrega o histórico
 tela.form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparAviso(tela.aviso);
@@ -179,6 +160,7 @@ tela.form.addEventListener('submit', async (evento) => {
     }
 });
 
+// [JS] importacoes>main>section>div> Cliques nas fichas: Ver clientes mostra/esconde os nomes da carga; Desfazer pede confirmação e desativa a carga
 tela.lista.addEventListener('click', async (evento) => {
     const ver = evento.target.closest('[data-ver]');
     const desfazer = evento.target.closest('[data-desfazer]');
@@ -231,4 +213,5 @@ tela.lista.addEventListener('click', async (evento) => {
     }
 });
 
+// [JS] importacoes> Carrega o histórico assim que a página abre
 carregarHistorico();

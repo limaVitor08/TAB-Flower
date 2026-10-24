@@ -1,8 +1,4 @@
-"""
-Caso de uso: buscar um processo específico.
-
-Funcionalidade 03 (Busca por Processo).
-"""
+"""Busca um processo pelo id ou pelo número (funcionalidade 3)."""
 
 from models.processo import Processo
 

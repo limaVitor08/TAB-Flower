@@ -1,8 +1,7 @@
 """
 Controller do Processo.
 
-Camada de Apresentação. Le a requisição, chama o Service e devolve JSON.
-Sem regra de negocio, sem SQL.
+Lê a requisição, chama o Service e devolve JSON.
 """
 
 from flask import g, jsonify, request
@@ -71,7 +70,7 @@ class ProcessoController:
             return jsonify({"erro": "Envie os dados do processo em JSON."}), 400
 
         try:
-            # O autor vai num parâmetro próprio, fora de "dados": assim o
+            # O autor vai num parâmetro próprio, fora de "dados". Assim o
             # Service não tem como confundir o que veio do formulário com
             # quem está logado.
             processo = CriarProcessoService.executar(dados, g.usuario_atual.id)
@@ -98,13 +97,10 @@ class ProcessoController:
 
     @staticmethod
     def atualizar_status(id_processo):
-        """PATCH /api/processos/1/status - Funcionalidade 07"""
+        """PATCH /api/processos/1/status: Funcionalidade 07"""
         dados = request.get_json(silent=True) or {}
 
         try:
-            # Quem mudou a fase vem do token, nunca do corpo da requisição:
-            # o histórico só serve para responder "quem mudou isto?" se o
-            # autor não puder ser escolhido por quem está mandando o pedido.
             processo = AtualizarStatusService.executar(
                 id_processo,
                 dados.get("status_id"),
@@ -134,7 +130,7 @@ class ProcessoController:
 
     @staticmethod
     def historico(id_processo):
-        """GET /api/processos/1/histórico - Funcionalidade 07"""
+        """GET /api/processos/1/histórico: Funcionalidade 07"""
         registros = HistoricoStatus.listar_do_processo(id_processo)
         return jsonify([r.to_dict() for r in registros]), 200
 
@@ -149,7 +145,7 @@ class ProcessoController:
         """GET /api/processos/busca?termo=&status_id=&advogado_id=&tipo_id=
 
         Funcionalidade 03. Chama sp_buscar_processos pela camada
-        Repository: busca combinada em número, título e nome do cliente,
+        Repository. Busca combinada em número, título e nome do cliente,
         com filtros opcionais.
         """
         try:
@@ -166,12 +162,12 @@ class ProcessoController:
 
     @staticmethod
     def listar_marcadores(id_processo):
-        """GET /api/processos/1/marcadores - Funcionalidade 14"""
+        """GET /api/processos/1/marcadores: Funcionalidade 14"""
         return jsonify(MarcadoresService.listar_do_processo(id_processo)), 200
 
     @staticmethod
     def aplicar_marcador(id_processo):
-        """POST /api/processos/1/marcadores - Funcionalidade 14"""
+        """POST /api/processos/1/marcadores: Funcionalidade 14"""
         dados = request.get_json(silent=True) or {}
 
         try:
@@ -190,7 +186,7 @@ class ProcessoController:
 
     @staticmethod
     def remover_marcador(id_processo, id_marcador):
-        """DELETE /api/processos/1/marcadores/2 - Funcionalidade 14"""
+        """DELETE /api/processos/1/marcadores/2: Funcionalidade 14"""
         try:
             marcadores = MarcadoresService.remover(id_processo, id_marcador)
         except LookupError as erro:

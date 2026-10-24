@@ -1,19 +1,11 @@
 """
-Caso de uso: avançar a situação do processo quando a documentação fica
-completa.
+Avança o processo de fase quando a documentação fica completa.
 
-Funcionalidade 07 (Atualização de Status), em conjunto com a 11 e a 12.
-
-Por que este avanço é automático e os outros não: o sistema só pode
-decidir sozinho o que ele mesmo consegue verificar. "A documentação está
-completa" é uma informação que vive inteira dentro do banco, então dá
-para concluir sem perguntar a ninguém. Já "foi protocolado no fórum"
-depende do mundo lá fora, e nenhuma automação adivinharia isso.
-
-A regra é deliberadamente estreita: o avanço só acontece quando o
-processo está na PRIMEIRA fase configurada, que é justamente a fase que
-o checklist governa. Um processo em andamento não muda de situação
-sozinho porque alguém anexou um documento.
+O sistema só decide sozinho o que ele consegue conferir no banco. Saber
+se todos os documentos obrigatórios chegaram dá para conferir. Saber se
+o processo já foi protocolado no fórum, não. Por isso o avanço é só da
+primeira fase para a segunda, que é a fase controlada pelo checklist. Um
+processo em andamento não muda de fase porque alguém anexou um arquivo.
 """
 
 from models.checklist import ChecklistProcesso
@@ -32,9 +24,6 @@ class AvancarStatusAutomaticoService:
         """Chamado depois que um documento é anexado.
 
         Devolve o novo status se houve avanço, ou None se nada mudou.
-
-        Nada é confirmado aqui: este avanço é consequência do anexo, e quem
-        grava tudo de uma vez é o EnviarDocumentoService.
         """
         if AvancarStatusAutomaticoService._tem_pendencia(processo.id):
             return None
@@ -62,11 +51,6 @@ class AvancarStatusAutomaticoService:
     @staticmethod
     def ao_reabrir_pendencia(processo, usuario_id=None):
         """Chamado depois que um documento é excluído.
-
-        A contrapartida do avanço: se o processo tinha subido de fase por
-        estar completo e voltou a ter pendência, ele desce de volta. Sem
-        isso, um processo apareceria como "Pronto para protocolo" com
-        documento faltando.
         """
         if not AvancarStatusAutomaticoService._tem_pendencia(processo.id):
             return None
@@ -94,9 +78,8 @@ class AvancarStatusAutomaticoService:
 
     @staticmethod
     def _tem_pendencia(processo_id):
-        """Ainda falta algum documento OBRIGATÓRIO?
-
-        Itens opcionais não seguram o processo: eles existem no checklist
+        """
+        Itens opcionais não seguram o processo,eles existem no checklist
         para lembrar a secretária, não para bloquear o andamento.
         """
         pendente = ChecklistProcesso.query.filter_by(

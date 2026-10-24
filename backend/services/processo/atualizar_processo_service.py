@@ -1,6 +1,4 @@
-"""
-Caso de uso: atualizar os dados de um processo.
-"""
+"""Atualiza os dados de um processo."""
 
 from models.processo import Processo
 from models.usuario import Usuario

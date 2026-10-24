@@ -1,40 +1,28 @@
-/* =====================================================================
-   TabFlower - Tela de listagem de processos
-   =====================================================================
-   Esta tela demonstra, num lugar só, a regra de decisão da arquitetura:
-
-     Sem termo e sem filtro  -> listagem simples, resolvida pela Model
-                                (Active Record), via /api/processos.
-     Com termo ou filtro     -> consulta combinada, resolvida pelo
-                                Repository chamando a stored procedure
-                                sp_buscar_processos.
-
-   O rótulo no canto direito da barra de filtros mostra qual dos dois
-   caminhos produziu o resultado que está na tela.
-
-   Funcionalidades atendidas:
-     03 - Busca por Processo
-     06 - Painel Central de Gestão
-     20 - Restrição de Exclusão (arquiva, não apaga)
-   ===================================================================== */
-
+// [JS] processos> Atalhos para os elementos da lista de processos
 const tela = {
+    // [JS] processos>main>div> Desenha uma ficha por processo com os botões Arquivar e Abrir
     lista: document.getElementById('lista'),
+    // [JS] processos>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
+    // [JS] processos>main>div>form> Ao enviar, refaz a busca com o termo e os filtros
     formBusca: document.getElementById('form-busca'),
+    // [JS] processos>main>div>form>input> Lê o termo digitado
     campoBusca: document.getElementById('campo-busca'),
+    // [JS] processos>main>div>button> Zera o campo e as três listas de filtro e recarrega
     botaoLimpar: document.getElementById('botao-limpar'),
+    // [JS] processos>main>div>label>input> Ao marcar ou desmarcar, recarrega a lista
     mostrarInativos: document.getElementById('mostrar-inativos'),
+    // [JS] processos>main>div>select> Recebe as situações da API; ao trocar, refaz a busca
     filtroStatus: document.getElementById('filtro-status'),
+    // [JS] processos>main>div>select> Recebe os advogados da API; ao trocar, refaz a busca
     filtroAdvogado: document.getElementById('filtro-advogado'),
+    // [JS] processos>main>div>select> Recebe os tipos da API; ao trocar, refaz a busca
     filtroTipo: document.getElementById('filtro-tipo'),
+    // [JS] processos>main>div>span> Escreve "Fonte: Model (CRUD)" ou "Fonte: sp_buscar_processos"
     rotuloFonte: document.getElementById('rotulo-fonte')
 };
 
-/* ---------------------------------------------------------------------
-   Desenho da lista
-   --------------------------------------------------------------------- */
-
+// [JS] processos>main>div>article> Monta a ficha de um processo: título, selo colorido da situação, número, cliente, advogado, prazo e botões
 function montarFicha(processo) {
     const classeInativa = processo.ativo ? '' : ' inativa';
     const cor = processo.status_cor || '#6b7280';
@@ -74,6 +62,7 @@ function montarFicha(processo) {
     `;
 }
 
+// [JS] processos>main>div> Desenha a lista de fichas ou a caixa de "nenhum processo"
 function desenharLista(processos, houveFiltro) {
     if (processos.length === 0) {
         const mensagem = houveFiltro
@@ -89,11 +78,7 @@ function desenharLista(processos, houveFiltro) {
     tela.lista.innerHTML = processos.map(montarFicha).join('');
 }
 
-/* ---------------------------------------------------------------------
-   Filtros
-   --------------------------------------------------------------------- */
-
-/** Preenche os três selects com os dados vindos de /api/processos/opcoes. */
+// [JS] processos>main>div>select> Preenche as três listas de filtro com situações, advogados e tipos vindos da API
 async function carregarFiltros() {
     try {
         const opcoes = await api.processos.opcoes();
@@ -114,7 +99,7 @@ async function carregarFiltros() {
     }
 }
 
-/** Reúne o que o usuário escolheu. */
+// [JS] processos>main>div> Junta o termo da busca e os filtros escolhidos
 function filtrosAtuais() {
     return {
         termo: tela.campoBusca.value.trim(),
@@ -124,15 +109,12 @@ function filtrosAtuais() {
     };
 }
 
-/** Algum critério foi informado? */
+// [JS] processos> Diz se a pessoa usou busca ou algum filtro
 function temFiltro(f) {
     return Boolean(f.termo || f.statusId || f.advogadoId || f.tipoId);
 }
 
-/* ---------------------------------------------------------------------
-   Carga
-   --------------------------------------------------------------------- */
-
+// [JS] processos>main>div> Carrega a lista: sem filtro usa a listagem simples (Model); com filtro usa a busca da procedure e mostra a fonte
 async function carregar() {
     limparAviso(tela.aviso);
     tela.lista.innerHTML = '<div class="vazio">Carregando...</div>';
@@ -144,11 +126,9 @@ async function carregar() {
         let processos;
 
         if (usarProcedure) {
-            // Caminho do Repository: consulta combinada no banco.
             processos = await api.processos.buscar(filtros);
             tela.rotuloFonte.textContent = 'Fonte: sp_buscar_processos';
         } else {
-            // Caminho da Model: listagem simples, CRUD puro.
             processos = await api.processos.listar(tela.mostrarInativos.checked);
             tela.rotuloFonte.textContent = 'Fonte: Model (CRUD)';
         }
@@ -161,10 +141,7 @@ async function carregar() {
     }
 }
 
-/* ---------------------------------------------------------------------
-   Arquivamento (Funcionalidade 20)
-   --------------------------------------------------------------------- */
-
+// [JS] processos>main>div>article>div>button> Pergunta se pode arquivar e, se sim, arquiva o processo e recarrega
 async function arquivar(id, numero) {
     const confirmou = confirm(
         `Arquivar o processo ${numero}?\n\n` +
@@ -185,15 +162,13 @@ async function arquivar(id, numero) {
     }
 }
 
-/* ---------------------------------------------------------------------
-   Eventos
-   --------------------------------------------------------------------- */
-
+// [JS] processos>main>div>form> Ao enviar a busca, recarrega a lista
 tela.formBusca.addEventListener('submit', (evento) => {
     evento.preventDefault();
     carregar();
 });
 
+// [JS] processos>main>div>button> Ver todos: limpa busca e filtros e recarrega
 tela.botaoLimpar.addEventListener('click', () => {
     tela.campoBusca.value = '';
     tela.filtroStatus.value = '';
@@ -202,14 +177,15 @@ tela.botaoLimpar.addEventListener('click', () => {
     carregar();
 });
 
-// Trocar um filtro já dispara a busca: obrigar a clicar em Buscar depois
-// de escolher uma situação seria um passo a mais sem motivo.
+// [JS] processos>main>div>select> Trocar qualquer filtro recarrega a lista
 tela.filtroStatus.addEventListener('change', carregar);
 tela.filtroAdvogado.addEventListener('change', carregar);
 tela.filtroTipo.addEventListener('change', carregar);
 
+// [JS] processos>main>div>label>input> Marcar ou desmarcar Mostrar arquivados recarrega a lista
 tela.mostrarInativos.addEventListener('change', carregar);
 
+// [JS] processos>main>div> Clique no botão Arquivar de qualquer ficha da lista
 tela.lista.addEventListener('click', (evento) => {
     const botao = evento.target.closest('[data-arquivar]');
     if (botao) {
@@ -217,6 +193,5 @@ tela.lista.addEventListener('click', (evento) => {
     }
 });
 
-/* Carga inicial: filtros primeiro, para os selects já existirem quando a
-   lista for desenhada. */
+// [JS] processos> Ao abrir a página: preenche os filtros e depois carrega a lista
 carregarFiltros().then(carregar);

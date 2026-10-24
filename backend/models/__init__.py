@@ -1,14 +1,10 @@
 """
-Registro central das Models.
+Carrega todas as Models de uma vez.
 
-O SQLAlchemy só resolve chaves estrangeiras e relacoes entre tabelas se
-TODAS as Models estiverem carregadas. Como algumas se referem a outras
-pelo nome (checklist_processo aponta para documento, por exemplo), basta
-uma ficar de fora para a aplicação quebrar ao subir, com um erro do tipo
-"could not find table".
-
-Importar tudo aqui resolve de uma vez: qualquer "from models.X import Y"
-carrega este arquivo antes, e a partir dai o mapeamento esta montado.
+O SQLAlchemy só entende as chaves estrangeiras se todas as Models
+estiverem carregadas. Se uma ficar de fora, a aplicação quebra ao subir
+com um erro do tipo "could not find table". Importando tudo aqui,
+qualquer "from models.X import Y" já carrega o resto.
 """
 
 from models.cliente import Cliente

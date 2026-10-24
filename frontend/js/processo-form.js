@@ -1,46 +1,53 @@
-/* =====================================================================
-   TabFlower - Cadastro e edicao de processo
-   =====================================================================
-   A mesma tela serve para os dois casos: com ?id=1 na URL, entra em
-   modo de edicao.
-
-   Ao cadastrar, o backend monta sozinho o checklist de documentos
-   obrigatórios do tipo escolhido (Funcionalidade 11).
-   ===================================================================== */
-
+// [JS] processo-form> Atalhos para os campos do formulário de processo
 const campos = {
+    // [JS] processo-form>main>form>div>div>input> Formata o número enquanto digita; fica bloqueado na edição
     numero: document.getElementById('numero_processo'),
+    // [JS] processo-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     titulo: document.getElementById('titulo_processo'),
+    // [JS] processo-form>main>form>div>div>select> Recebe os clientes ativos da API; fica bloqueada na edição
     cliente: document.getElementById('cliente_id'),
+    // [JS] processo-form>main>form>div>div>select> Recebe os advogados da API; avisa se não houver nenhum
     advogado: document.getElementById('advogado_id'),
+    // [JS] processo-form>main>form>div>div>select> Recebe os tipos da API; fica bloqueada na edição
     tipo: document.getElementById('tipo_processo_id'),
+    // [JS] processo-form>main>form>div>div>select> Recebe as situações da API; fica bloqueada na edição
     status: document.getElementById('status_id'),
+    // [JS] processo-form>main>form>div>div>input> Já vem com a data de hoje no cadastro; fica bloqueado na edição
     dataAbertura: document.getElementById('data_abertura'),
+    // [JS] processo-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     prazoFinal: document.getElementById('prazo_final'),
+    // [JS] processo-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     comarca: document.getElementById('comarca'),
+    // [JS] processo-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     valorCausa: document.getElementById('valor_causa'),
+    // [JS] processo-form>main>form>div>div>textarea> Preenchida na edição e enviada ao salvar
     descricao: document.getElementById('descricao')
 };
 
+// [JS] processo-form> Atalhos para título, formulário, avisos e botão
 const tela = {
+    // [JS] processo-form>main>form> Ao enviar, cadastra ou atualiza e abre o detalhe do processo
     form: document.getElementById('form-processo'),
+    // [JS] processo-form>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
+    // [JS] processo-form>main>h1> Troca para "Editar processo" quando a página abre com ?id=
     titulo: document.getElementById('titulo'),
+    // [JS] processo-form>main>p> Troca o texto no modo de edição
     subtitulo: document.getElementById('subtitulo'),
+    // [JS] processo-form>main>form>div>button> Troca para "Salvar alterações" na edição e mostra "Salvando..." enquanto espera
     botaoSalvar: document.getElementById('botao-salvar'),
+    // [JS] processo-form>main>form>div>div>span> Muda o texto da dica no modo de edição
     dicaNumero: document.getElementById('dica-numero')
 };
 
-/* Mascara do número do processo (padrão CNJ).
-   Formatação e coisa de tela: o valor digitado com pontuação e enviado
-   assim mesmo, porque o número do processo e um identificador oficial e
-   o escritório o consulta nesse formato. */
+// [JS] processo-form>main>form>div>div>input> Formata o número do processo enquanto digita
 aplicarMascara(campos.numero, formatarNumeroProcesso);
 
+// [JS] processo-form> Lê o ?id= da URL: com id a tela edita, sem id cadastra
 const idProcesso = new URLSearchParams(window.location.search).get('id');
 const modoEdicao = Boolean(idProcesso);
 
-/** Preenche um select com uma lista de itens. */
+// [JS] processo-form>main>form>div>div>select> Coloca as opções dentro de uma lista (select)
 function preencherSelect(select, itens, vazio = null) {
     select.innerHTML = '';
 
@@ -59,7 +66,7 @@ function preencherSelect(select, itens, vazio = null) {
     });
 }
 
-/** Carrega tudo que os selects precisam antes de liberar o formulario. */
+// [JS] processo-form>main>form>div>div>select> Busca clientes, tipos, situações e advogados e preenche as listas; avisa se faltar advogado ou cliente
 async function carregarOpcoes() {
     const [opcoes, clientes] = await Promise.all([
         api.processos.opcoes(),
@@ -71,7 +78,6 @@ async function carregarOpcoes() {
     preencherSelect(campos.status, opcoes.status);
     preencherSelect(campos.advogado, opcoes.advogados, 'Selecione o advogado');
 
-    // Sem advogado cadastrado não da para abrir processo nenhum.
     if (opcoes.advogados.length === 0) {
         mostrarAviso(
             tela.aviso,
@@ -90,6 +96,7 @@ async function carregarOpcoes() {
     }
 }
 
+// [JS] processo-form>main> Prepara a tela: no cadastro põe a data de hoje; na edição bloqueia campos fixos e preenche com os dados do processo
 async function prepararTela() {
     try {
         await carregarOpcoes();
@@ -100,7 +107,6 @@ async function prepararTela() {
     }
 
     if (!modoEdicao) {
-        // Cadastro novo abre com a data de hoje já preenchida.
         campos.dataAbertura.value = new Date().toISOString().split('T')[0];
         return;
     }
@@ -114,10 +120,6 @@ async function prepararTela() {
     campos.tipo.disabled = true;
     campos.cliente.disabled = true;
     campos.status.disabled = true;
-    // A data de abertura e dado histórico do processo, como o número da
-    // acao. Ela ficava habilitada mas não era enviada no salvamento: a
-    // pessoa alterava, lia "salvo com sucesso" e nada mudava. Travar o
-    // campo e coerente com os outros e não engana ninguem.
     campos.dataAbertura.disabled = true;
     tela.dicaNumero.textContent = 'Este campo não pode ser alterado.';
 
@@ -141,6 +143,7 @@ async function prepararTela() {
     }
 }
 
+// [JS] processo-form>main>form> Junta os valores dos campos para enviar à API (campos fixos só no cadastro)
 function coletarDados() {
     const dados = {
         titulo: campos.titulo.value.trim(),
@@ -151,7 +154,6 @@ function coletarDados() {
         prazo_final: campos.prazoFinal.value || null
     };
 
-    // Campos travados na edicao só vao no cadastro.
     if (!modoEdicao) {
         dados.numero_processo = campos.numero.value.trim();
         dados.cliente_id = Number(campos.cliente.value) || null;
@@ -163,6 +165,7 @@ function coletarDados() {
     return dados;
 }
 
+// [JS] processo-form>main>form> Ao salvar: cadastra ou atualiza e abre o detalhe do processo; se der erro, mostra a mensagem no topo
 tela.form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparAviso(tela.aviso);
@@ -190,4 +193,5 @@ tela.form.addEventListener('submit', async (evento) => {
     }
 });
 
+// [JS] processo-form> Prepara a tela assim que a página abre
 prepararTela();

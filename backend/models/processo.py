@@ -1,11 +1,9 @@
 """
-Model Processo.
+Models do Processo e do histórico de fases.
 
-Camada de Domínio / Persistência Simples.
-
-Representa a ação judicial. E a entidade central do sistema: liga o
-cliente ao advogado responsavel, carrega o status e reune os documentos,
-o checklist e os marcadores de prioridade.
+O processo é a parte central do sistema. Liga o cliente ao advogado
+responsável, guarda a fase atual e junta os documentos, o checklist e os
+marcadores.
 """
 
 from extensions import db
@@ -13,10 +11,6 @@ from extensions import db
 
 class HistoricoStatus(db.Model):
     """Registro de cada mudanca de fase do processo.
-
-    Funcionalidade 07 (Atualizacao de Status). Guardar o histórico e o que
-    permite responder "ha quanto tempo este processo esta parado nesta
-    fase", coisa que a planilha do escritório nunca conseguiu dizer.
     """
 
     __tablename__ = "historico_status"
@@ -120,7 +114,7 @@ class Processo(db.Model):
     def atualizar(self, dados):
         """Altera os campos permitidos.
 
-        O número do processo fica de fora: ele identifica a ação no
+        O número do processo fica de fora. Ele identifica a ação no
         tribunal e trocar geraria um registro paralelo do mesmo caso.
         O status também fica de fora, porque tem caso de uso próprio
         (AtualizarStatusService), que grava o histórico.

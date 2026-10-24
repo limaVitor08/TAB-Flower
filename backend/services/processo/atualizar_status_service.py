@@ -1,11 +1,9 @@
 """
-Caso de uso: mudar a fase do processo.
+Muda a fase do processo (funcionalidade 7).
 
-Funcionalidade 07 (Atualizacao de Status).
-
-Tem Service próprio porque não e uma edicao qualquer: além de gravar o
-novo status, precisa registrar a mudanca no histórico. E o histórico e o
-que substitui a planilha paralela do escritório.
+Tem um Service só para isso porque não é uma edição comum. Além de
+trocar a fase, precisa registrar a mudança no histórico. É esse
+histórico que substitui a planilha que o escritório usava.
 """
 
 import logging
@@ -27,16 +25,6 @@ class AtualizarStatusService:
         observacao=None,
         confirmar=True,
     ):
-        """Muda a fase do processo e registra a mudanca no histórico.
-
-        As duas escritas andam juntas: um status novo sem linha no
-        histórico deixaria o processo com uma fase que ninguem sabe quando
-        nem por que mudou - exatamente o que a planilha do escritório fazia.
-
-        confirmar=False quando esta mudanca e consequencia de outra
-        operação (anexar ou excluir documento). Nesse caso o commit e do
-        Service que comecou tudo, para as tabelas entrarem juntas.
-        """
         processo = Processo.buscar_por_id(id_processo)
         if not processo:
             raise LookupError("Processo não encontrado.")

@@ -1,12 +1,9 @@
 """
-Caso de uso: aplicar e remover marcadores de um processo.
+Aplica e remove marcadores de um processo (funcionalidade 14).
 
-Funcionalidade 14 - Marcadores Visuais.
-
-Os marcadores são fixos, definidos pelo sistema (Urgente, Prioridade,
-Prazo curto). O usuário não cria marcadores novos, apenas aplica os que
-existem - e cada um tem um peso, que e o que ordena o painel de
-prioridades.
+Os marcadores são Urgente, Prioridade e Prazo curto. O usuário
+não cria marcador novo, só aplica os que existem. Cada um tem um peso,
+e é esse peso que ordena o painel de prioridades.
 """
 
 from datetime import datetime
@@ -76,22 +73,6 @@ class MarcadoresService:
 
     @staticmethod
     def remover(processo_id, marcador_id):
-        """Tira um marcador do processo.
-
-        Diferente do resto do sistema, aqui a exclusão é física. O motivo
-        é a natureza da tabela: processo_marcador é uma tabela de VÍNCULO,
-        não de registro de negócio. Ela guarda "este processo está com a
-        etiqueta Urgente", e tirar a etiqueta é desfazer o vínculo, não
-        apagar um documento ou um cliente.
-
-        Marcá-lo como inativo exigiria uma coluna nova e um filtro em toda
-        consulta que usa marcadores - inclusive dentro da procedure
-        sp_processos_prioritarios - sem nada a ganhar: ninguém precisa
-        saber que um processo já teve a etiqueta Urgente no mês passado.
-
-        É o mesmo raciocínio já aplicado ao molde de checklist, em
-        services/checklist/gerenciar_modelo_service.py.
-        """
         resultado = db.session.execute(
             text(
                 "DELETE FROM processo_marcador "

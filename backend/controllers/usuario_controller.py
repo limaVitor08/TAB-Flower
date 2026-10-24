@@ -1,11 +1,8 @@
 """
 Controller do Usuário.
 
-Camada de Apresentação. Le a requisição, chama o Service, devolve JSON.
-
-Nota importante: o campo senha_hash NUNCA aparece na resposta. O
-to_dict() da Model não o inclui, entao não ha risco de vazar o hash
-das senhas pela API.
+Lê a requisição, chama o Service e devolve JSON. O senha_hash nunca
+aparece na resposta, porque o to_dict() da Model não inclui esse campo.
 """
 
 from flask import g, jsonify, request

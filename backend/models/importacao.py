@@ -1,22 +1,14 @@
 """
-Model ImportacaoLote.
-
-Funcionalidade 18 (Importação em Lote) e 19 (Organização de Legado).
-
-Cada carga de planilha vira uma linha nesta tabela, com a contagem de
-acertos e erros e o log do que falhou. É isso que permite responder
-"quais clientes entraram naquela importação de terça?" e desfazer uma
-carga que veio errada, sem tocar nos cadastros feitos à mão.
+Model do lote de importação (funcionalidades 18 e 19).
+Cada planilha importada vira uma linha nesta tabela, com quantas linhas
+deram certo, quantas deram erro e o motivo de cada erro. É por ela que
+dá para ver quais clientes vieram de qual planilha e desfazer uma
+importação errada sem mexer nos cadastros feitos à mão.
 """
-
 from datetime import datetime
-
 from extensions import db
-
-
 class ImportacaoLote(db.Model):
     __tablename__ = "importacao_lote"
-
     id = db.Column(db.Integer, primary_key=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"))
     nome_arquivo = db.Column(db.String(200), nullable=False)
@@ -31,14 +23,11 @@ class ImportacaoLote(db.Model):
     log_erros = db.Column(db.Text)
     criado_em = db.Column(db.DateTime)
     finalizado_em = db.Column(db.DateTime)
-
     usuario = db.relationship("Usuario", lazy="joined")
-
     def salvar(self):
         db.session.add(self)
         db.session.commit()
         return self
-
     def finalizar(self, situacao, total_sucesso, total_erro, log_erros):
         self.situacao = situacao
         self.total_sucesso = total_sucesso
@@ -47,15 +36,12 @@ class ImportacaoLote(db.Model):
         self.finalizado_em = datetime.now()
         db.session.commit()
         return self
-
     @staticmethod
     def buscar_por_id(id_importacao):
         return db.session.get(ImportacaoLote, id_importacao)
-
     @staticmethod
     def listar_todas():
         return ImportacaoLote.query.order_by(ImportacaoLote.criado_em.desc()).all()
-
     def to_dict(self):
         return {
             "id": self.id,
@@ -71,4 +57,4 @@ class ImportacaoLote(db.Model):
             "finalizado_em": (
                 self.finalizado_em.isoformat() if self.finalizado_em else None
             ),
-        }
+            }

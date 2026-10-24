@@ -1,8 +1,9 @@
 """
-Registro central das rotas da API.
+Registro de todas as rotas da API.
 
-Regra da arquitetura: a rota aponta para o Controller e nada mais.
-Não existe lógica de negocio nem SQL neste arquivo.
+Cada rota aponta para um método de Controller. É aqui também que a
+proteção por token é ligada em todos os Blueprints, menos no de login e
+no de status.
 """
 
 import logging
@@ -47,7 +48,7 @@ def status():
 
 # ---------------------------------------------------------------------
 # Autenticação
-# Único Blueprint que fica público - é ele que devolve o token que
+# Único Blueprint que fica público, é ele que devolve o token que
 # todas as outras rotas passam a exigir.
 # ---------------------------------------------------------------------
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
@@ -173,7 +174,7 @@ def registrar_rotas(app):
 
     Todos exigem login, exceto o de status (diagnóstico) e o de auth
     (é ele que fornece o token). A proteção é aplicada aqui, uma única
-    vez, em vez de em cada Controller - assim nenhuma rota nova corre o
+    vez em vez de em cada Controller, assim nenhuma rota nova corre o
     risco de esquecer a checagem.
     """
     blueprints_protegidos = (

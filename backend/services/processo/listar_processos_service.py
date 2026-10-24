@@ -1,6 +1,4 @@
-"""
-Caso de uso: listar os processos.
-"""
+"""Lista os processos, todos ou só os de um cliente."""
 
 from models.processo import Processo
 

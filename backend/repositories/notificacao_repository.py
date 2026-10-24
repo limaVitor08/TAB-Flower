@@ -1,7 +1,7 @@
 """
 Repository da Notificação.
 
-Camada de Persistência Especializada.
+Busca os avisos de um usuário chamando uma stored procedure.
 """
 
 from sqlalchemy import text
@@ -14,7 +14,7 @@ class NotificacaoRepository:
 
     @staticmethod
     def do_advogado(usuario_id, apenas_nao_lidas=False):
-        """Funcionalidades 16 e 17 - Notificações com contexto.
+        """Funcionalidades 16 e 17: Notificações com contexto.
 
         Chama sp_notificacoes_advogado, que junta o aviso ao processo, ao
         cliente e ao documento que o originou. Sem esse JOIN a tela diria

@@ -1,76 +1,174 @@
 <!DOCTYPE html>
+<!-- painel>html> Raiz da página, com idioma português do Brasil -->
 <html lang="pt-BR">
+<!-- painel>head> Parte invisível da página: configurações, título da aba e arquivos ligados -->
 <head>
+    <!-- painel>head>meta> Usa a codificação UTF-8 para os acentos aparecerem certo -->
     <meta charset="UTF-8">
+    <!-- painel>head>meta> Ajusta a página à largura da tela (celular) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- painel>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- painel>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- painel>head>link> Carrega as fontes Archivo (títulos), Roboto Mono (números) e Source Sans 3 (texto) -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <!-- painel>head>link> Liga o arquivo de estilo do site (css/estilo.css) -->
+    <!-- [CSS] css/estilo.css -->
     <link rel="stylesheet" href="css/estilo.css">
+    <!-- painel>head>title> Texto da aba do navegador: "Painel - TabFlower" -->
     <title>Painel - TabFlower</title>
 </head>
+<!-- painel>body> Corpo da página: tudo que aparece na tela -->
+<!-- [CSS] body -->
 <body>
 
+    <!-- painel>header> Faixa do topo com o logo, o menu de abas e o usuário logado -->
+    <!-- [CSS] .cabecalho -->
     <header class="cabecalho">
+        <!-- painel>header>div> Organiza o topo: logo, abas e usuário lado a lado -->
+        <!-- [CSS] .cabecalho-conteudo | .cabecalho-conteudo @media (max-width: 700px) -->
+        <!-- [JS] api.js: montarBarraUsuario() -->
         <div class="cabecalho-conteudo">
+            <!-- painel>header>div>div> Logo TabFlower -->
+            <!-- [CSS] .marca -->
+            <!-- painel>header>div>div>span> Palavra "Flower" do logo -->
+            <!-- [CSS] .marca span -->
             <div class="marca">Tab<span>Flower</span></div>
+            <!-- painel>header>div>nav> Menu de navegação entre as telas -->
             <nav>
+                <!-- painel>header>div>nav>ul> Lista das abas do menu -->
+                <!-- [CSS] .abas | .abas @media (max-width: 700px) -->
                 <ul class="abas">
+                    <!-- painel>header>div>nav>ul>li> Item do menu: aba "Painel" -->
+                    <!-- painel>header>div>nav>ul>li>a> Link para a tela "Painel" (aba da página atual, fica destacada) -->
+                    <!-- [CSS] .abas a | .abas a:hover | .abas a.ativa -->
                     <li><a href="painel.html" class="ativa">Painel</a></li>
+                    <!-- painel>header>div>nav>ul>li> Item do menu: aba "Clientes" -->
+                    <!-- painel>header>div>nav>ul>li>a> Link para a tela "Clientes" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="clientes.html">Clientes</a></li>
+                    <!-- painel>header>div>nav>ul>li> Item do menu: aba "Processos" -->
+                    <!-- painel>header>div>nav>ul>li>a> Link para a tela "Processos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="processos.html">Processos</a></li>
+                    <!-- painel>header>div>nav>ul>li> Item do menu: aba "Documentos" -->
+                    <!-- painel>header>div>nav>ul>li>a> Link para a tela "Documentos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="documentos.html">Documentos</a></li>
+                    <!-- painel>header>div>nav>ul>li> Item do menu: aba "Avisos" -->
+                    <!-- painel>header>div>nav>ul>li>a> Link para a tela "Avisos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="notificacoes.html">Avisos</a></li>
+                    <!-- painel>header>div>nav>ul>li> Item do menu: aba "Usuários" -->
+                    <!-- painel>header>div>nav>ul>li>a> Link para a tela "Usuários" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="usuarios.html">Usuários</a></li>
+                    <!-- painel>header>div>nav>ul>li> Item do menu: aba "Checklists" -->
+                    <!-- painel>header>div>nav>ul>li>a> Link para a tela "Checklists" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="checklists.html">Checklists</a></li>
+                    <!-- painel>header>div>nav>ul>li> Item do menu: aba "Importação" -->
+                    <!-- painel>header>div>nav>ul>li>a> Link para a tela "Importação" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="importacoes.html">Importação</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- painel>main> Área principal do painel de gestão -->
+    <!-- [CSS] .pagina -->
     <main class="pagina">
 
+        <!-- painel>main>h1> Título da página: "Painel de gestão" -->
+        <!-- [CSS] .titulo-pagina -->
         <h1 class="titulo-pagina">Painel de gestão</h1>
+        <!-- painel>main>p> Texto explicativo abaixo do título -->
+        <!-- [CSS] .subtitulo-pagina -->
         <p class="subtitulo-pagina">
             Situação do escritório em tempo real. Todos os números desta
             tela vêm de stored procedures do MySQL.
         </p>
 
+        <!-- painel>main>div> Caixa de mensagens de erro ou sucesso (começa escondida) -->
+        <!-- [CSS] .escondido -->
+        <!-- [JS] painel.js: tela.aviso -->
         <div id="aviso" class="escondido"></div>
 
-        <!-- Funcionalidade 06 - sp_painel_resumo -->
+        <!-- painel>main>section> Bloco do resumo de processos por situação -->
+        <!-- [CSS] .painel -->
         <section class="painel">
+            <!-- painel>main>section>h2> Título do bloco: "Processos por situação" -->
+            <!-- [CSS] .titulo-secao -->
             <h2 class="titulo-secao">Processos por situação</h2>
+            <!-- painel>main>section>p> Indica qual stored procedure do MySQL fornece os dados deste bloco -->
+            <!-- [CSS] .dica -->
+            <!-- painel>main>section>p>span> Nome da procedure, em fonte de máquina -->
+            <!-- [CSS] .mono -->
             <p class="dica">Fonte: <span class="mono">sp_painel_resumo</span></p>
+            <!-- painel>main>section>div> Grade onde entram os cartões de cada situação (preenchida pelo JS) -->
+            <!-- [CSS] .cartoes -->
+            <!-- [JS] painel.js: tela.resumo -->
             <div class="cartoes" id="resumo"></div>
         </section>
 
+        <!-- painel>main>div> Divide os blocos de Prioridades e Pendências em duas colunas -->
+        <!-- [CSS] .colunas | .colunas @media (max-width: 800px) -->
         <div class="colunas">
 
-            <!-- Funcionalidades 14 e 15 - sp_processos_prioritarios -->
+            <!-- painel>main>div>section> Bloco da lista de processos por prioridade -->
+            <!-- [CSS] .painel -->
             <section class="painel">
+                <!-- painel>main>div>section>h2> Título do bloco: "Prioridades" -->
+                <!-- [CSS] .titulo-secao -->
                 <h2 class="titulo-secao">Prioridades</h2>
+                <!-- painel>main>div>section>p> Indica qual stored procedure do MySQL fornece os dados deste bloco -->
+                <!-- [CSS] .dica -->
                 <p class="dica">
+                    <!-- painel>main>div>section>p>span> Nome da procedure, em fonte de máquina -->
+                    <!-- [CSS] .mono -->
                     Fonte: <span class="mono">sp_processos_prioritarios</span>
                 </p>
+                <!-- painel>main>div>section>div> Linha do filtro de prioridade -->
+                <!-- [CSS] .linha-status -->
                 <div class="linha-status">
+                    <!-- painel>main>div>section>div>select> Filtro que escolhe quais prioridades aparecem -->
+                    <!-- [CSS] .linha-status select -->
+                    <!-- [JS] painel.js: tela.filtroPeso -->
                     <select id="filtro-peso">
+                        <!-- painel>main>div>section>div>select>option> Opção "Todos os processos" -->
                         <option value="">Todos os processos</option>
+                        <!-- painel>main>div>section>div>select>option> Opção "Com algum marcador" -->
                         <option value="1">Com algum marcador</option>
+                        <!-- painel>main>div>section>div>select>option> Opção "Prioridade ou Urgente" -->
                         <option value="2">Prioridade ou Urgente</option>
+                        <!-- painel>main>div>section>div>select>option> Opção "Somente Urgente" -->
                         <option value="3">Somente Urgente</option>
                     </select>
                 </div>
+                <!-- painel>main>div>section>ul> Lista dos processos prioritários (preenchida pelo JS) -->
+                <!-- [CSS] .checklist -->
+                <!-- [JS] painel.js: tela.prioritarios -->
                 <ul class="checklist" id="prioritarios"></ul>
             </section>
 
-            <!-- Funcionalidade 12 - sp_pendencias_checklist -->
+            <!-- painel>main>div>section> Bloco da lista de processos com documento faltando -->
+            <!-- [CSS] .painel -->
             <section class="painel">
+                <!-- painel>main>div>section>h2> Título do bloco: "Documentação pendente" -->
+                <!-- [CSS] .titulo-secao -->
                 <h2 class="titulo-secao">Documentação pendente</h2>
+                <!-- painel>main>div>section>p> Indica qual stored procedure do MySQL fornece os dados deste bloco -->
+                <!-- [CSS] .dica -->
                 <p class="dica">
+                    <!-- painel>main>div>section>p>span> Nome da procedure, em fonte de máquina -->
+                    <!-- [CSS] .mono -->
                     Fonte: <span class="mono">sp_pendencias_checklist</span>
                 </p>
+                <!-- painel>main>div>section>ul> Lista dos processos com documentação pendente (preenchida pelo JS) -->
+                <!-- [CSS] .checklist -->
+                <!-- [JS] painel.js: tela.pendencias -->
                 <ul class="checklist" id="pendencias"></ul>
             </section>
 
@@ -78,7 +176,11 @@
 
     </main>
 
+    <!-- painel>script> Carrega o api.js: chamadas à API, sessão de login e funções de apoio -->
+    <!-- [JS] js/api.js -->
     <script charset="UTF-8" src="js/api.js"></script>
+    <!-- painel>script> Carrega o painel.js, que faz esta página funcionar -->
+    <!-- [JS] js/painel.js -->
     <script charset="UTF-8" src="js/painel.js"></script>
 </body>
 </html>

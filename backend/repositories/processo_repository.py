@@ -1,8 +1,8 @@
 """
 Repository do Processo.
 
-Camada de Persistência Especializada. Todas as consultas deste arquivo
-são chamadas a stored procedures do MySQL.
+Todas as consultas deste arquivo chamam stored procedures do MySQL. A
+busca de processos e as três consultas do painel.
 """
 
 from sqlalchemy import text
@@ -47,16 +47,16 @@ class ProcessoRepository:
 
     @staticmethod
     def painel_resumo():
-        """Funcionalidade 06 - Painel Central de Gestao.
+        """Funcionalidade 06: Painel Central de Gestao.
 
-        Chama sp_painel_resumo: quantos processos existem em cada fase e
+        Quantos processos existem em cada fase e
         quantos estao com prazo vencido ou vencendo.
         """
         return _linhas(db.session.execute(text("CALL sp_painel_resumo()")))
 
     @staticmethod
     def pendencias_checklist(advogado_id=None):
-        """Funcionalidade 12 - Mapeamento de Pendências.
+        """Funcionalidade 12: Mapeamento de Pendências.
 
         Chama sp_pendencias_checklist. Devolve apenas processos que ainda
         tem documento faltando, com a lista de nomes já montada.
@@ -69,7 +69,7 @@ class ProcessoRepository:
 
     @staticmethod
     def prioritarios(advogado_id=None, peso_minimo=None):
-        """Funcionalidades 14 e 15 - Marcadores e Filtros de Prioridade.
+        """Funcionalidades 14 e 15: Marcadores e Filtros de Prioridade.
 
         Chama sp_processos_prioritarios, que ordena por peso do marcador
         e depois por proximidade do prazo.

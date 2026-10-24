@@ -1,45 +1,49 @@
-/* =====================================================================
-   TabFlower - Detalhe do processo
-   =====================================================================
-   Esta e a tela que substitui a pasta física com etiquetas. Reune:
-
-     07 - Atualizacao de Status (com registro no histórico)
-     11 - Checklist Obrigatório
-     12 - Mapeamento de Pendências
-   ===================================================================== */
-
+// [JS] processo-detalhe> Atalhos para os elementos do detalhe do processo
 const tela = {
+    // [JS] processo-detalhe>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
+    // [JS] processo-detalhe>main>h1> Troca pelo título do processo vindo da API
     titulo: document.getElementById('titulo'),
+    // [JS] processo-detalhe>main>p> Escreve o número do processo vindo da API
     numero: document.getElementById('numero'),
+    // [JS] processo-detalhe>main>section> Desenha situação, cliente, advogado, tipo, comarca, valor, datas e descrição
     dados: document.getElementById('dados'),
+    // [JS] processo-detalhe>main>div>a> Coloca o link certo para o formulário de edição deste processo
     linkEditar: document.getElementById('link-editar'),
+    // [JS] processo-detalhe>main>section>div>select> Recebe as situações da API e marca a atual
     selectStatus: document.getElementById('novo-status'),
+    // [JS] processo-detalhe>main>section>div>input> Lê a observação e limpa depois de salvar
     observacao: document.getElementById('observacao-status'),
+    // [JS] processo-detalhe>main>section>div>button> Muda a fase do processo e recarrega a página
     botaoStatus: document.getElementById('botao-status'),
+    // [JS] processo-detalhe>main>div>section>ul> Desenha cada item com bolinha verde (entregue) ou vermelha (pendente)
     checklist: document.getElementById('checklist'),
+    // [JS] processo-detalhe>main>div>section>p> Escreve quantos documentos faltam
     resumoChecklist: document.getElementById('resumo-checklist'),
+    // [JS] processo-detalhe>main>div>section>ol> Desenha cada mudança com data, fases e observação
     historico: document.getElementById('historico'),
+    // [JS] processo-detalhe>main>section>form> Ao enviar, faz o upload e avisa se o processo avançou de fase sozinho
     formUpload: document.getElementById('form-upload'),
+    // [JS] processo-detalhe>main>section>form>select> Recebe as categorias da API
     categoriaDocumento: document.getElementById('categoria-documento'),
+    // [JS] processo-detalhe>main>section>form>input> Pega o arquivo escolhido para enviar
     arquivo: document.getElementById('arquivo'),
+    // [JS] processo-detalhe>main>section>form>button> Mostra "Enviando..." enquanto o arquivo sobe
     botaoEnviar: document.getElementById('botao-enviar'),
+    // [JS] processo-detalhe>main>section>ul> Desenha cada documento com botões Baixar e Excluir
     documentos: document.getElementById('documentos'),
+    // [JS] processo-detalhe>main>section>div>select> Recebe Urgente, Prioridade e Prazo curto da API
     selectMarcador: document.getElementById('novo-marcador'),
+    // [JS] processo-detalhe>main>section>div>button> Aplica o marcador escolhido e redesenha os selos
     botaoMarcador: document.getElementById('botao-marcador'),
+    // [JS] processo-detalhe>main>section>div> Desenha um selo colorido por marcador, com um × para remover
     marcadores: document.getElementById('marcadores')
 };
 
-/* Sem tela de login, o sistema ainda não sabe quem esta operando.
-   O autor das ações que exigem permissão vem da sessão, no backend,
-   a partir do token - a tela não informa mais nenhum id de usuário. */
-
+// [JS] processo-detalhe> Lê o ?id= da URL para saber qual processo mostrar
 const idProcesso = new URLSearchParams(window.location.search).get('id');
 
-/* ---------------------------------------------------------------------
-   Dados do processo
-   --------------------------------------------------------------------- */
-
+// [JS] processo-detalhe>main>section> Escreve título e número, ajusta o link de editar e desenha a grade de dados do processo
 function desenharDados(p) {
     tela.titulo.textContent = p.titulo;
     tela.numero.textContent = p.numero_processo;
@@ -73,10 +77,7 @@ function desenharDados(p) {
     `;
 }
 
-/* ---------------------------------------------------------------------
-   Checklist e pendências (Funcionalidades 11 e 12)
-   --------------------------------------------------------------------- */
-
+// [JS] processo-detalhe>main>div>section>ul> Desenha o checklist: bolinha verde se entregue, vermelha se pendente, e selo "Opcional"
 function desenharChecklist(itens) {
     if (itens.length === 0) {
         tela.resumoChecklist.textContent =
@@ -103,10 +104,7 @@ function desenharChecklist(itens) {
     `).join('');
 }
 
-/* ---------------------------------------------------------------------
-   Histórico (Funcionalidade 07)
-   --------------------------------------------------------------------- */
-
+// [JS] processo-detalhe>main>div>section>ol> Desenha a linha do tempo com data, mudança de fase e observação
 function desenharHistorico(registros) {
     if (registros.length === 0) {
         tela.historico.innerHTML = '<li class="dica">Nenhuma mudança registrada.</li>';
@@ -134,10 +132,7 @@ function desenharHistorico(registros) {
     }).join('');
 }
 
-/* ---------------------------------------------------------------------
-   Carga da tela
-   --------------------------------------------------------------------- */
-
+// [JS] processo-detalhe>main> Carrega tudo do processo: dados, checklist, histórico, categorias, documentos, marcadores e situações
 async function carregar() {
     if (!idProcesso) {
         mostrarAviso(tela.aviso, 'Nenhum processo informado no endereço.');
@@ -145,7 +140,6 @@ async function carregar() {
     }
 
     try {
-        // As três chamadas saem juntas, não uma esperando a outra.
         const [processo, itens, registros] = await Promise.all([
             api.processos.buscarPorId(idProcesso),
             api.processos.checklist(idProcesso),
@@ -171,8 +165,7 @@ async function carregar() {
     }
 }
 
-/* --- Atualizacao de situação (Funcionalidade 07) --- */
-
+// [JS] processo-detalhe>main>section>div>button> Atualizar situação: envia a nova fase com a observação e recarrega
 tela.botaoStatus.addEventListener('click', async () => {
     limparAviso(tela.aviso);
     tela.botaoStatus.disabled = true;
@@ -193,10 +186,7 @@ tela.botaoStatus.addEventListener('click', async () => {
     }
 });
 
-/* ---------------------------------------------------------------------
-   Documentos (Funcionalidades 09, 10, 16, 17 e 20)
-   --------------------------------------------------------------------- */
-
+// [JS] processo-detalhe>main>section>ul> Desenha a lista de documentos anexados com nome padronizado, tamanho e botões
 function desenharDocumentos(docs) {
     if (docs.length === 0) {
         tela.documentos.innerHTML =
@@ -225,6 +215,7 @@ function desenharDocumentos(docs) {
     `).join('');
 }
 
+// [JS] processo-detalhe>main>section>ul> Busca na API os documentos deste processo
 async function carregarDocumentos() {
     try {
         const docs = await api.documentos.listar({ processoId: idProcesso });
@@ -235,6 +226,7 @@ async function carregarDocumentos() {
     }
 }
 
+// [JS] processo-detalhe>main>section>form>select> Preenche a lista de categorias de documento
 async function carregarCategorias() {
     try {
         const categorias = await api.documentos.categorias();
@@ -248,6 +240,7 @@ async function carregarCategorias() {
     }
 }
 
+// [JS] processo-detalhe>main>section>form> Envia o arquivo; avisa o nome dado pelo sistema e se o processo avançou de fase sozinho
 tela.formUpload.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparAviso(tela.aviso);
@@ -255,7 +248,6 @@ tela.formUpload.addEventListener('submit', async (evento) => {
     tela.botaoEnviar.disabled = true;
     tela.botaoEnviar.textContent = 'Enviando...';
 
-    // FormData e o que permite mandar arquivo junto com os outros campos.
     const dados = new FormData();
     dados.append('arquivo', tela.arquivo.files[0]);
     dados.append('categoria_id', tela.categoriaDocumento.value);
@@ -264,10 +256,6 @@ tela.formUpload.addEventListener('submit', async (evento) => {
     try {
         const doc = await api.documentos.enviar(dados);
 
-        // O backend devolve avanco_status quando este anexo fechou o
-        // checklist obrigatório e o processo mudou de fase sozinho.
-        // A automação precisa ser dita em voz alta: se o processo pular
-        // de fase calado, quem anexou acha que clicou errado.
         let mensagem =
             `Documento anexado como ${doc.nome_padronizado}. ` +
             'O advogado responsável foi notificado.';
@@ -281,7 +269,6 @@ tela.formUpload.addEventListener('submit', async (evento) => {
         mostrarAviso(tela.aviso, mensagem, 'sucesso');
 
         tela.formUpload.reset();
-        // Recarrega tudo: o checklist pode ter mudado com este anexo.
         await carregar();
     } catch (erro) {
         mostrarAviso(tela.aviso, erro.message);
@@ -291,12 +278,10 @@ tela.formUpload.addEventListener('submit', async (evento) => {
     }
 });
 
+// [JS] processo-detalhe>main>section>ul> Cliques na lista de documentos: Baixar faz o download; Excluir pede confirmação e avisa se o processo voltou de fase
 tela.documentos.addEventListener('click', async (evento) => {
     const baixar = evento.target.closest('[data-baixar]');
 
-    // O download passa por JavaScript porque o navegador não envia o
-    // cabeçalho Authorization num link clicado - sem o token, a API
-    // recusaria o pedido.
     if (baixar) {
         evento.preventDefault();
         try {
@@ -332,8 +317,6 @@ tela.documentos.addEventListener('click', async (evento) => {
 
         let mensagem = resposta.mensagem;
 
-        // Contrapartida do avanço: a pendência reabriu e o processo
-        // desceu de volta.
         if (resposta.retorno_status) {
             mensagem +=
                 ` A pendência do checklist reabriu, então o processo ` +
@@ -347,14 +330,7 @@ tela.documentos.addEventListener('click', async (evento) => {
     }
 });
 
-/* ---------------------------------------------------------------------
-   Marcadores de prioridade (Funcionalidade 14)
-
-   São fixos, definidos pelo sistema. O usuário aplica e remove, não cria.
-   O peso de cada um e o que ordena o painel de prioridades, que roda pela
-   procedure sp_processos_prioritarios.
-   --------------------------------------------------------------------- */
-
+// [JS] processo-detalhe>main>section>div> Desenha os selos coloridos dos marcadores aplicados, cada um com um × para remover
 function desenharMarcadores(aplicados) {
     if (aplicados.length === 0) {
         tela.marcadores.innerHTML =
@@ -375,6 +351,7 @@ function desenharMarcadores(aplicados) {
         </span>`).join('');
 }
 
+// [JS] processo-detalhe>main>section>div>select> Busca os marcadores disponíveis e os já aplicados
 async function carregarMarcadores() {
     try {
         const [disponiveis, aplicados] = await Promise.all([
@@ -393,6 +370,7 @@ async function carregarMarcadores() {
     }
 }
 
+// [JS] processo-detalhe>main>section>div>button> Aplicar marcador: aplica o escolhido e redesenha os selos
 tela.botaoMarcador.addEventListener('click', async () => {
     limparAviso(tela.aviso);
     tela.botaoMarcador.disabled = true;
@@ -410,6 +388,7 @@ tela.botaoMarcador.addEventListener('click', async () => {
     }
 });
 
+// [JS] processo-detalhe>main>section>div> Clique no × de um selo remove o marcador
 tela.marcadores.addEventListener('click', async (evento) => {
     const botao = evento.target.closest('[data-remover-marcador]');
     if (!botao) {
@@ -426,4 +405,5 @@ tela.marcadores.addEventListener('click', async (evento) => {
     }
 });
 
+// [JS] processo-detalhe> Carrega o processo assim que a página abre
 carregar();

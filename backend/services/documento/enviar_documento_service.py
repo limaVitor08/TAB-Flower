@@ -1,29 +1,15 @@
 """
-Caso de uso: anexar um documento a um processo.
+Anexa um documento a um processo.
 
-E o caso de uso mais denso do sistema, porque uma única ação da secretaria
-dispara quatro funcionalidades de uma vez:
+É o caso de uso mais completo do sistema. Um único envio classifica o
+arquivo (funcionalidade 9), dá o nome padronizado (10), marca o item no
+checklist (11) e avisa o advogado do processo (17).
 
-  09 - Identificação de Categoria (o arquivo entra classificado)
-  10 - Renomeação Automática (o sistema gera o nome padronizado)
-  11 - Checklist Obrigatório (o item correspondente e marcado como entregue)
-  17 - Direcionamento Automático (o advogado do processo e notificado)
-
-Hoje isso e feito na mao: abrir o PDF, ver o que e, renomear, arrastar
-para a pasta certa, riscar do checklist impresso e avisar o advogado.
-
-## Atomicidade
-
-Uma unica ação da secretaria escreve em quatro tabelas: documento,
-checklist_processo, notificacao e (as vezes) processo + historico_status.
-
-Todas essas escritas acontecem numa transação so, com um unico
-db.session.commit() no fim. Se qualquer uma falhar, o rollback desfaz
-todas: não existe documento gravado sem o checklist ter sido riscado, nem
-processo que avançou de fase sem o documento que causou o avanço.
-
-Antes, cada etapa gravava por conta propria. Se a terceira falhasse, as
-duas primeiras já estavam no banco e ninguem tinha como saber disso.
+Tudo isso grava em várias tabelas, mas com um commit só no final. Se
+qualquer parte falhar, o rollback desfaz tudo, e o arquivo que já tinha
+sido salvo é apagado do disco. Assim nunca fica documento gravado sem o
+checklist marcado, nem processo que mudou de fase sem o documento que
+causou a mudança.
 """
 
 import logging
@@ -53,13 +39,6 @@ import os
 
 logger = logging.getLogger("tabflower")
 
-# O limite vem do Config, e não e escrito de novo aqui: se o valor fosse
-# repetido, mudar um e esquecer o outro deixaria a API recusando 16 MB
-# enquanto o Service acha que o limite e outro.
-#
-# O Flask ja barra a requisicao antes de chegar neste Service, usando o
-# MAX_CONTENT_LENGTH. A checagem abaixo e a rede de seguranca de quem
-# chamar o Service por outro caminho (o script de terminal, por exemplo).
 TAMANHO_MAXIMO_BYTES = Config.MAX_CONTENT_LENGTH
 
 
@@ -72,9 +51,7 @@ class EnviarDocumentoService:
 
         autor_id vem sempre de g.usuario_atual, num parâmetro próprio, e
         nunca de dentro de "dados". "dados" e o formulario que o navegador
-        mandou, e nada que veio de fora pode dizer quem enviou o arquivo -
-        senao bastaria alterar um campo no F12 para o documento aparecer
-        como enviado por outra pessoa.
+        mandou, e nada que veio de fora pode dizer quem enviou o arquivo.
         """
         if arquivo is None or not arquivo.filename:
             raise ValueError("Nenhum arquivo foi enviado.")
@@ -123,7 +100,6 @@ class EnviarDocumentoService:
             raise ValueError("Informe o processo ou o cliente do documento.")
 
         # Cliente vindo do legado pode não ter pasta. Cria agora.
-        # Sem commit aqui: a alteração entra junto com o resto, no fim.
         if not cliente.caminho_pasta:
             cliente.caminho_pasta = criar_estrutura_cliente(
                 cliente.nome, cliente.documento
@@ -158,7 +134,6 @@ class EnviarDocumentoService:
             excluido=False,
         )
 
-        # --- A partir daqui, tudo entra num commit só ---
         try:
             # confirmar=False: o flush gera o id do documento (o checklist e
             # a notificação precisam dele) sem fechar a transação.
@@ -176,17 +151,13 @@ class EnviarDocumentoService:
 
                 # Se este anexo fechou o checklist obrigatório, o processo
                 # muda de fase sozinho. O Service devolve qual foi a nova
-                # fase para a tela poder avisar o usuário - automação
-                # escondida assusta quem está operando.
+                # fase para a tela poder avisar o usuário.
                 avanco = AvancarStatusAutomaticoService.ao_completar_checklist(
                     processo, autor_id
                 )
 
             db.session.commit()
         except Exception as erro:
-            # Uma falha em qualquer etapa desfaz todas as anteriores, e o
-            # arquivo já gravado sai do disco - senao ficaria um PDF orfao
-            # na pasta do cliente, sem nenhum registro no banco.
             db.session.rollback()
             if os.path.exists(caminho_absoluto):
                 os.remove(caminho_absoluto)
@@ -202,7 +173,7 @@ class EnviarDocumentoService:
         """Converte para int com seguranca.
 
         Os dados chegam de um formulario multipart, entao tudo vem como
-        texto - inclusive os ids.
+        texto.
         """
         try:
             return int(valor)
@@ -215,7 +186,7 @@ class EnviarDocumentoService:
 
         Procura o item daquela categoria que ainda esta pendente. Se o
         documento não corresponde a nenhuma exigência do tipo de processo,
-        nada acontece - o anexo e válido, só não abate pendência nenhuma.
+        nada acontece.
         """
         item = ChecklistProcesso.query.filter_by(
             processo_id=processo.id,
@@ -229,17 +200,10 @@ class EnviarDocumentoService:
         item.entregue = True
         item.entregue_em = datetime.now()
         item.documento_id = documento.id
-        # Sem commit: faz parte da transação do executar().
 
     @staticmethod
     def _notificar_advogado(processo, categoria, documento):
         """Funcionalidades 16 e 17: avisa quem e responsavel pelo caso.
-
-        O sistema cruza o documento com o advogado_id do processo. Ninguem
-        precisa lembrar de avisar, e o aviso não se perde numa conversa.
-
-        O salvar() da Notificacao não confirma: o aviso entra junto com o
-        documento que o originou, no commit do executar().
         """
         Notificacao(
             usuario_destino_id=processo.advogado_id,

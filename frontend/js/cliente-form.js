@@ -1,44 +1,46 @@
-/* =====================================================================
-   TabFlower - Tela de cadastro e edicao de cliente
-   =====================================================================
-   A mesma tela serve para os dois casos. Se a URL trouxer ?id=1, ela
-   carrega o cliente e entra em modo de edicao.
-
-   Funcionalidades atendidas:
-     04 - Validação de Documento (a mensagem vem da API)
-     05 - Bloqueio de Duplicidade (idem)
-     08 - Geração de Diretórios (acontece no backend ao cadastrar)
-   ===================================================================== */
-
+// [JS] cliente-form> Atalhos para os campos do formulário de cliente
 const campos = {
+    // [JS] cliente-form>main>form>div>div>select> Troca o exemplo do campo de documento; fica bloqueada na edição
     tipoPessoa: document.getElementById('tipo_pessoa'),
+    // [JS] cliente-form>main>form>div>div>input> Formata com pontos e traço enquanto digita; fica bloqueado na edição
     documento: document.getElementById('documento'),
+    // [JS] cliente-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     nome: document.getElementById('nome'),
+    // [JS] cliente-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     email: document.getElementById('email'),
+    // [JS] cliente-form>main>form>div>div>input> Formata como (31) 99999-9999 enquanto digita
     telefone: document.getElementById('telefone'),
+    // [JS] cliente-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     endereco: document.getElementById('endereco'),
+    // [JS] cliente-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     cidade: document.getElementById('cidade'),
+    // [JS] cliente-form>main>form>div>div>input> Deixa só 2 letras maiúsculas enquanto digita
     estado: document.getElementById('estado'),
+    // [JS] cliente-form>main>form>div>div>textarea> Preenchida na edição e enviada ao salvar
     observacao: document.getElementById('observacao')
 };
 
+// [JS] cliente-form> Atalhos para título, formulário, avisos e botão
 const tela = {
+    // [JS] cliente-form>main>form> Ao enviar, cadastra ou atualiza o cliente e volta para a lista
     form: document.getElementById('form-cliente'),
+    // [JS] cliente-form>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
+    // [JS] cliente-form>main>h1> Troca para "Editar cliente" quando a página abre com ?id=
     titulo: document.getElementById('titulo'),
+    // [JS] cliente-form>main>p> Troca o texto no modo de edição
     subtitulo: document.getElementById('subtitulo'),
+    // [JS] cliente-form>main>form>div>button> Troca para "Salvar alterações" na edição e mostra "Salvando..." enquanto espera
     botaoSalvar: document.getElementById('botao-salvar'),
+    // [JS] cliente-form>main>form>div>div>span> Muda o texto da dica no modo de edição
     dicaDocumento: document.getElementById('dica-documento')
 };
 
-// Le o ?id=1 da URL. Se não houver, estamos cadastrando.
+// [JS] cliente-form> Lê o ?id= da URL: com id a tela edita, sem id cadastra
 const idCliente = new URLSearchParams(window.location.search).get('id');
 const modoEdicao = Boolean(idCliente);
 
-/* ---------------------------------------------------------------------
-   Preparacao da tela
-   --------------------------------------------------------------------- */
-
+// [JS] cliente-form>main> No modo edição: troca títulos, bloqueia tipo e documento e preenche os campos com os dados do cliente
 async function prepararTela() {
     if (!modoEdicao) {
         return;
@@ -49,7 +51,6 @@ async function prepararTela() {
         'O CPF/CNPJ fica bloqueado: alterar o documento burlaria o controle de duplicidade.';
     tela.botaoSalvar.textContent = 'Salvar alterações';
 
-    // Documento e tipo de pessoa não mudam depois do cadastro.
     campos.documento.disabled = true;
     campos.tipoPessoa.disabled = true;
     tela.dicaDocumento.textContent = 'Este campo não pode ser alterado.';
@@ -72,27 +73,19 @@ async function prepararTela() {
     }
 }
 
-/* ---------------------------------------------------------------------
-   Mascaras dos campos
-   Formatação e coisa de tela. O backend recebe e guarda os valores
-   limpos, sem pontuação.
-   --------------------------------------------------------------------- */
-
+// [JS] cliente-form>main>form>div>div>input> Liga as máscaras de documento, telefone e estado
 aplicarMascara(campos.documento, formatarDocumento);
 aplicarMascara(campos.telefone, formatarTelefone);
 aplicarMascara(campos.estado, formatarUF);
 
-// Ao trocar o tipo de pessoa, o exemplo do campo acompanha.
+// [JS] cliente-form>main>form>div>div>select> Ao trocar o tipo de pessoa, troca o exemplo do campo de documento
 campos.tipoPessoa.addEventListener('change', () => {
     campos.documento.placeholder = campos.tipoPessoa.value === 'F'
         ? '000.000.000-00'
         : '00.000.000/0000-00';
 });
 
-/* ---------------------------------------------------------------------
-   Envio
-   --------------------------------------------------------------------- */
-
+// [JS] cliente-form>main>form> Junta os valores dos campos para enviar à API (documento só no cadastro)
 function coletarDados() {
     const dados = {
         nome: campos.nome.value.trim(),
@@ -104,7 +97,6 @@ function coletarDados() {
         observacao: campos.observacao.value.trim()
     };
 
-    // Tipo e documento só vao na criação: na edicao eles estao travados.
     if (!modoEdicao) {
         dados.tipo_pessoa = campos.tipoPessoa.value;
         dados.documento = somenteNumeros(campos.documento.value);
@@ -113,6 +105,7 @@ function coletarDados() {
     return dados;
 }
 
+// [JS] cliente-form>main>form> Ao salvar: cadastra ou atualiza; deu certo volta para a lista, deu erro mostra a mensagem no topo
 tela.form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparAviso(tela.aviso);
@@ -129,12 +122,9 @@ tela.form.addEventListener('submit', async (evento) => {
             await api.clientes.criar(dados);
         }
 
-        // Deu certo: volta para a lista.
         window.location.href = 'clientes.html';
 
     } catch (erro) {
-        // A mensagem vem pronta da API: "CPF inválido", "Já existe um
-        // cliente cadastrado com este documento", etc.
         mostrarAviso(tela.aviso, erro.message);
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -145,4 +135,5 @@ tela.form.addEventListener('submit', async (evento) => {
     }
 });
 
+// [JS] cliente-form> Prepara a tela assim que a página abre
 prepararTela();

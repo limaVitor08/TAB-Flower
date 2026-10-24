@@ -1,9 +1,4 @@
-"""
-Caso de uso: listar os processos por ordem de urgencia.
-
-Funcionalidade 14 - Marcadores Visuais.
-Funcionalidade 15 - Filtros de Prioridade.
-"""
+"""Lista os processos por ordem de urgência (funcionalidades 14 e 15)."""
 
 from repositories.processo_repository import ProcessoRepository
 

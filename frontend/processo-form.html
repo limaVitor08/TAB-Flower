@@ -1,126 +1,291 @@
 <!DOCTYPE html>
+<!-- processo-form>html> Raiz da página, com idioma português do Brasil -->
 <html lang="pt-BR">
+<!-- processo-form>head> Parte invisível da página: configurações, título da aba e arquivos ligados -->
 <head>
+    <!-- processo-form>head>meta> Usa a codificação UTF-8 para os acentos aparecerem certo -->
     <meta charset="UTF-8">
+    <!-- processo-form>head>meta> Ajusta a página à largura da tela (celular) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- processo-form>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- processo-form>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- processo-form>head>link> Carrega as fontes Archivo (títulos), Roboto Mono (números) e Source Sans 3 (texto) -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <!-- processo-form>head>link> Liga o arquivo de estilo do site (css/estilo.css) -->
+    <!-- [CSS] css/estilo.css -->
     <link rel="stylesheet" href="css/estilo.css">
+    <!-- processo-form>head>title> Texto da aba do navegador: "Cadastro de processo - TabFlower" -->
     <title>Cadastro de processo - TabFlower</title>
 </head>
+<!-- processo-form>body> Corpo da página: tudo que aparece na tela -->
+<!-- [CSS] body -->
 <body>
 
+    <!-- processo-form>header> Faixa do topo com o logo, o menu de abas e o usuário logado -->
+    <!-- [CSS] .cabecalho -->
     <header class="cabecalho">
+        <!-- processo-form>header>div> Organiza o topo: logo, abas e usuário lado a lado -->
+        <!-- [CSS] .cabecalho-conteudo | .cabecalho-conteudo @media (max-width: 700px) -->
+        <!-- [JS] api.js: montarBarraUsuario() -->
         <div class="cabecalho-conteudo">
+            <!-- processo-form>header>div>div> Logo TabFlower -->
+            <!-- [CSS] .marca -->
+            <!-- processo-form>header>div>div>span> Palavra "Flower" do logo -->
+            <!-- [CSS] .marca span -->
             <div class="marca">Tab<span>Flower</span></div>
+            <!-- processo-form>header>div>nav> Menu de navegação entre as telas -->
             <nav>
+                <!-- processo-form>header>div>nav>ul> Lista das abas do menu -->
+                <!-- [CSS] .abas | .abas @media (max-width: 700px) -->
                 <ul class="abas">
+                    <!-- processo-form>header>div>nav>ul>li> Item do menu: aba "Painel" -->
+                    <!-- processo-form>header>div>nav>ul>li>a> Link para a tela "Painel" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="painel.html">Painel</a></li>
+                    <!-- processo-form>header>div>nav>ul>li> Item do menu: aba "Clientes" -->
+                    <!-- processo-form>header>div>nav>ul>li>a> Link para a tela "Clientes" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="clientes.html">Clientes</a></li>
+                    <!-- processo-form>header>div>nav>ul>li> Item do menu: aba "Processos" -->
+                    <!-- processo-form>header>div>nav>ul>li>a> Link para a tela "Processos" (aba da página atual, fica destacada) -->
+                    <!-- [CSS] .abas a | .abas a:hover | .abas a.ativa -->
                     <li><a href="processos.html" class="ativa">Processos</a></li>
+                    <!-- processo-form>header>div>nav>ul>li> Item do menu: aba "Documentos" -->
+                    <!-- processo-form>header>div>nav>ul>li>a> Link para a tela "Documentos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="documentos.html">Documentos</a></li>
+                    <!-- processo-form>header>div>nav>ul>li> Item do menu: aba "Avisos" -->
+                    <!-- processo-form>header>div>nav>ul>li>a> Link para a tela "Avisos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="notificacoes.html">Avisos</a></li>
+                    <!-- processo-form>header>div>nav>ul>li> Item do menu: aba "Usuários" -->
+                    <!-- processo-form>header>div>nav>ul>li>a> Link para a tela "Usuários" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="usuarios.html">Usuários</a></li>
+                    <!-- processo-form>header>div>nav>ul>li> Item do menu: aba "Checklists" -->
+                    <!-- processo-form>header>div>nav>ul>li>a> Link para a tela "Checklists" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="checklists.html">Checklists</a></li>
+                    <!-- processo-form>header>div>nav>ul>li> Item do menu: aba "Importação" -->
+                    <!-- processo-form>header>div>nav>ul>li>a> Link para a tela "Importação" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="importacoes.html">Importação</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- processo-form>main> Área principal do formulário de processo -->
+    <!-- [CSS] .pagina -->
     <main class="pagina">
 
+        <!-- processo-form>main>h1> Título da página: "Novo processo" -->
+        <!-- [CSS] .titulo-pagina -->
+        <!-- [JS] processo-form.js: tela.titulo -->
         <h1 class="titulo-pagina" id="titulo">Novo processo</h1>
+        <!-- processo-form>main>p> Texto explicativo abaixo do título -->
+        <!-- [CSS] .subtitulo-pagina -->
+        <!-- [JS] processo-form.js: tela.subtitulo -->
         <p class="subtitulo-pagina" id="subtitulo">
             Ao salvar, o checklist de documentos obrigatórios do tipo escolhido
             é montado automaticamente.
         </p>
 
+        <!-- processo-form>main>div> Caixa de mensagens de erro ou sucesso (começa escondida) -->
+        <!-- [CSS] .escondido -->
+        <!-- [JS] processo-form.js: tela.aviso -->
         <div id="aviso" class="escondido"></div>
 
+        <!-- processo-form>main>form> Formulário de cadastro e edição de processo -->
+        <!-- [CSS] .formulario -->
+        <!-- [JS] processo-form.js: tela.form -->
         <form class="formulario" id="form-processo">
 
+            <!-- processo-form>main>form>div> Grade que organiza os campos em duas colunas -->
+            <!-- [CSS] .grupo-campos | .grupo-campos @media (max-width: 700px) -->
             <div class="grupo-campos">
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Número do processo" -->
+                <!-- [CSS] .campo | .campo-largo -->
                 <div class="campo campo-largo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Número do processo" -->
+                    <!-- [CSS] .campo label -->
                     <label for="numero_processo">
+                        <!-- processo-form>main>form>div>div>label>span> Asterisco que marca o campo como obrigatório -->
+                        <!-- [CSS] .campo label .obrigatorio -->
                         Número do processo <span class="obrigatorio">*</span>
                     </label>
+                    <!-- processo-form>main>form>div>div>input> Campo do número do processo no padrão do CNJ -->
+                    <!-- [CSS] .mono | .campo input | .campo input:focus | .campo input:disabled -->
+                    <!-- [JS] processo-form.js: campos.numero -->
                     <input type="text" id="numero_processo" class="mono" required
                            maxlength="30" placeholder="0001234-56.2026.8.13.0024">
+                    <!-- processo-form>main>form>div>div>span> Dica avisando que o número não pode ser alterado -->
+                    <!-- [CSS] .dica -->
+                    <!-- [JS] processo-form.js: tela.dicaNumero -->
                     <span class="dica" id="dica-numero">
                         Não pode ser alterado depois do cadastro.
                     </span>
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Título" -->
+                <!-- [CSS] .campo | .campo-largo -->
                 <div class="campo campo-largo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Título" -->
+                    <!-- [CSS] .campo label -->
                     <label for="titulo_processo">
+                        <!-- processo-form>main>form>div>div>label>span> Asterisco que marca o campo como obrigatório -->
+                        <!-- [CSS] .campo label .obrigatorio -->
                         Título <span class="obrigatorio">*</span>
                     </label>
+                    <!-- processo-form>main>form>div>div>input> Campo do título do processo -->
+                    <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                    <!-- [JS] processo-form.js: campos.titulo -->
                     <input type="text" id="titulo_processo" required maxlength="150"
                            placeholder="Ação de cobrança - contrato de prestação de serviços">
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Cliente" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Cliente" -->
+                    <!-- [CSS] .campo label -->
                     <label for="cliente_id">
+                        <!-- processo-form>main>form>div>div>label>span> Asterisco que marca o campo como obrigatório -->
+                        <!-- [CSS] .campo label .obrigatorio -->
                         Cliente <span class="obrigatorio">*</span>
                     </label>
+                    <!-- processo-form>main>form>div>div>select> Lista para escolher o cliente (preenchida pelo JS) -->
+                    <!-- [CSS] .campo select | .campo select:focus -->
+                    <!-- [JS] processo-form.js: campos.cliente -->
                     <select id="cliente_id" required></select>
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Advogado responsável" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Advogado responsável" -->
+                    <!-- [CSS] .campo label -->
                     <label for="advogado_id">
+                        <!-- processo-form>main>form>div>div>label>span> Asterisco que marca o campo como obrigatório -->
+                        <!-- [CSS] .campo label .obrigatorio -->
                         Advogado responsável <span class="obrigatorio">*</span>
                     </label>
+                    <!-- processo-form>main>form>div>div>select> Lista para escolher o advogado (preenchida pelo JS) -->
+                    <!-- [CSS] .campo select | .campo select:focus -->
+                    <!-- [JS] processo-form.js: campos.advogado -->
                     <select id="advogado_id" required></select>
+                    <!-- processo-form>main>form>div>div>span> Dica: o advogado escolhido recebe os avisos do processo -->
+                    <!-- [CSS] .dica -->
                     <span class="dica">Recebe as notificações deste processo.</span>
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Tipo de processo" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Tipo de processo" -->
+                    <!-- [CSS] .campo label -->
                     <label for="tipo_processo_id">
+                        <!-- processo-form>main>form>div>div>label>span> Asterisco que marca o campo como obrigatório -->
+                        <!-- [CSS] .campo label .obrigatorio -->
                         Tipo de processo <span class="obrigatorio">*</span>
                     </label>
+                    <!-- processo-form>main>form>div>div>select> Lista para escolher o tipo de processo (preenchida pelo JS) -->
+                    <!-- [CSS] .campo select | .campo select:focus -->
+                    <!-- [JS] processo-form.js: campos.tipo -->
                     <select id="tipo_processo_id" required></select>
+                    <!-- processo-form>main>form>div>div>span> Dica: o tipo define quais documentos o checklist vai pedir -->
+                    <!-- [CSS] .dica -->
                     <span class="dica">Define o checklist de documentos.</span>
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Status inicial" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Status inicial" -->
+                    <!-- [CSS] .campo label -->
                     <label for="status_id">Status inicial</label>
+                    <!-- processo-form>main>form>div>div>select> Lista da situação inicial do processo (preenchida pelo JS) -->
+                    <!-- [CSS] .campo select | .campo select:focus -->
+                    <!-- [JS] processo-form.js: campos.status -->
                     <select id="status_id"></select>
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Data de abertura" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Data de abertura" -->
+                    <!-- [CSS] .campo label -->
                     <label for="data_abertura">Data de abertura</label>
+                    <!-- processo-form>main>form>div>div>input> Campo de data de abertura -->
+                    <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                    <!-- [JS] processo-form.js: campos.dataAbertura -->
                     <input type="date" id="data_abertura">
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Prazo final" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Prazo final" -->
+                    <!-- [CSS] .campo label -->
                     <label for="prazo_final">Prazo final</label>
+                    <!-- processo-form>main>form>div>div>input> Campo de data do prazo final -->
+                    <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                    <!-- [JS] processo-form.js: campos.prazoFinal -->
                     <input type="date" id="prazo_final">
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Comarca" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Comarca" -->
+                    <!-- [CSS] .campo label -->
                     <label for="comarca">Comarca</label>
+                    <!-- processo-form>main>form>div>div>input> Campo da comarca (cidade do fórum) -->
+                    <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                    <!-- [JS] processo-form.js: campos.comarca -->
                     <input type="text" id="comarca" maxlength="100">
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Valor da causa" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Valor da causa" -->
+                    <!-- [CSS] .campo label -->
                     <label for="valor_causa">Valor da causa</label>
+                    <!-- processo-form>main>form>div>div>input> Campo numérico do valor da causa -->
+                    <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                    <!-- [JS] processo-form.js: campos.valorCausa -->
                     <input type="number" id="valor_causa" step="0.01" min="0">
                 </div>
 
+                <!-- processo-form>main>form>div>div> Bloco do campo "Descrição" -->
+                <!-- [CSS] .campo | .campo-largo -->
                 <div class="campo campo-largo">
+                    <!-- processo-form>main>form>div>div>label> Rótulo "Descrição" -->
+                    <!-- [CSS] .campo label -->
                     <label for="descricao">Descrição</label>
+                    <!-- processo-form>main>form>div>div>textarea> Caixa de texto grande para a descrição -->
+                    <!-- [CSS] .campo textarea | .campo textarea:focus -->
+                    <!-- [JS] processo-form.js: campos.descricao -->
                     <textarea id="descricao"></textarea>
                 </div>
 
             </div>
 
+            <!-- processo-form>main>form>div> Rodapé do formulário com os botões -->
+            <!-- [CSS] .rodape-formulario -->
             <div class="rodape-formulario">
+                <!-- processo-form>main>form>div>button> Botão de salvar ("Cadastrar processo") -->
+                <!-- [CSS] .botao | .botao:hover | .botao-principal | .botao-principal:hover -->
+                <!-- [JS] processo-form.js: tela.botaoSalvar -->
                 <button type="submit" class="botao botao-principal" id="botao-salvar">
                     Cadastrar processo
                 </button>
+                <!-- processo-form>main>form>div>a> Botão "Cancelar": volta para a lista sem salvar -->
+                <!-- [CSS] .botao | .botao:hover -->
                 <a href="processos.html" class="botao">Cancelar</a>
             </div>
 
@@ -128,7 +293,11 @@
 
     </main>
 
+    <!-- processo-form>script> Carrega o api.js: chamadas à API, sessão de login e funções de apoio -->
+    <!-- [JS] js/api.js -->
     <script charset="UTF-8" src="js/api.js"></script>
+    <!-- processo-form>script> Carrega o processo-form.js, que faz esta página funcionar -->
+    <!-- [JS] js/processo-form.js -->
     <script charset="UTF-8" src="js/processo-form.js"></script>
 </body>
 </html>

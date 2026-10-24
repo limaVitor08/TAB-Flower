@@ -1,104 +1,238 @@
 <!DOCTYPE html>
+<!-- usuario-form>html> Raiz da página, com idioma português do Brasil -->
 <html lang="pt-BR">
+<!-- usuario-form>head> Parte invisível da página: configurações, título da aba e arquivos ligados -->
 <head>
+    <!-- usuario-form>head>meta> Usa a codificação UTF-8 para os acentos aparecerem certo -->
     <meta charset="UTF-8">
+    <!-- usuario-form>head>meta> Ajusta a página à largura da tela (celular) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- usuario-form>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- usuario-form>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- usuario-form>head>link> Carrega as fontes Archivo (títulos), Roboto Mono (números) e Source Sans 3 (texto) -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <!-- usuario-form>head>link> Liga o arquivo de estilo do site (css/estilo.css) -->
+    <!-- [CSS] css/estilo.css -->
     <link rel="stylesheet" href="css/estilo.css">
+    <!-- usuario-form>head>title> Texto da aba do navegador: "Cadastro de usuário - TabFlower" -->
     <title>Cadastro de usuário - TabFlower</title>
 </head>
+<!-- usuario-form>body> Corpo da página: tudo que aparece na tela -->
+<!-- [CSS] body -->
 <body>
 
+    <!-- usuario-form>header> Faixa do topo com o logo, o menu de abas e o usuário logado -->
+    <!-- [CSS] .cabecalho -->
     <header class="cabecalho">
+        <!-- usuario-form>header>div> Organiza o topo: logo, abas e usuário lado a lado -->
+        <!-- [CSS] .cabecalho-conteudo | .cabecalho-conteudo @media (max-width: 700px) -->
+        <!-- [JS] api.js: montarBarraUsuario() -->
         <div class="cabecalho-conteudo">
+            <!-- usuario-form>header>div>div> Logo TabFlower -->
+            <!-- [CSS] .marca -->
+            <!-- usuario-form>header>div>div>span> Palavra "Flower" do logo -->
+            <!-- [CSS] .marca span -->
             <div class="marca">Tab<span>Flower</span></div>
+            <!-- usuario-form>header>div>nav> Menu de navegação entre as telas -->
             <nav>
+                <!-- usuario-form>header>div>nav>ul> Lista das abas do menu -->
+                <!-- [CSS] .abas | .abas @media (max-width: 700px) -->
                 <ul class="abas">
+                    <!-- usuario-form>header>div>nav>ul>li> Item do menu: aba "Painel" -->
+                    <!-- usuario-form>header>div>nav>ul>li>a> Link para a tela "Painel" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="painel.html">Painel</a></li>
+                    <!-- usuario-form>header>div>nav>ul>li> Item do menu: aba "Clientes" -->
+                    <!-- usuario-form>header>div>nav>ul>li>a> Link para a tela "Clientes" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="clientes.html">Clientes</a></li>
+                    <!-- usuario-form>header>div>nav>ul>li> Item do menu: aba "Processos" -->
+                    <!-- usuario-form>header>div>nav>ul>li>a> Link para a tela "Processos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="processos.html">Processos</a></li>
+                    <!-- usuario-form>header>div>nav>ul>li> Item do menu: aba "Documentos" -->
+                    <!-- usuario-form>header>div>nav>ul>li>a> Link para a tela "Documentos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="documentos.html">Documentos</a></li>
+                    <!-- usuario-form>header>div>nav>ul>li> Item do menu: aba "Avisos" -->
+                    <!-- usuario-form>header>div>nav>ul>li>a> Link para a tela "Avisos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="notificacoes.html">Avisos</a></li>
+                    <!-- usuario-form>header>div>nav>ul>li> Item do menu: aba "Usuários" -->
+                    <!-- usuario-form>header>div>nav>ul>li>a> Link para a tela "Usuários" (aba da página atual, fica destacada) -->
+                    <!-- [CSS] .abas a | .abas a:hover | .abas a.ativa -->
                     <li><a href="usuarios.html" class="ativa">Usuários</a></li>
+                    <!-- usuario-form>header>div>nav>ul>li> Item do menu: aba "Checklists" -->
+                    <!-- usuario-form>header>div>nav>ul>li>a> Link para a tela "Checklists" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="checklists.html">Checklists</a></li>
+                    <!-- usuario-form>header>div>nav>ul>li> Item do menu: aba "Importação" -->
+                    <!-- usuario-form>header>div>nav>ul>li>a> Link para a tela "Importação" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="importacoes.html">Importação</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- usuario-form>main> Área principal do formulário de usuário -->
+    <!-- [CSS] .pagina -->
     <main class="pagina">
 
+        <!-- usuario-form>main>h1> Título da página: "Novo usuário" -->
+        <!-- [CSS] .titulo-pagina -->
+        <!-- [JS] usuario-form.js: tela.titulo -->
         <h1 class="titulo-pagina" id="titulo">Novo usuário</h1>
+        <!-- usuario-form>main>p> Texto explicativo abaixo do título -->
+        <!-- [CSS] .subtitulo-pagina -->
+        <!-- [JS] usuario-form.js: tela.subtitulo -->
         <p class="subtitulo-pagina" id="subtitulo">
             A senha é guardada criptografada. Nem o administrador consegue
             lê-la depois.
         </p>
 
+        <!-- usuario-form>main>div> Caixa de mensagens de erro ou sucesso (começa escondida) -->
+        <!-- [CSS] .escondido -->
+        <!-- [JS] usuario-form.js: tela.aviso -->
         <div id="aviso" class="escondido"></div>
 
+        <!-- usuario-form>main>form> Formulário de cadastro e edição de usuário -->
+        <!-- [CSS] .formulario -->
+        <!-- [JS] usuario-form.js: tela.form -->
         <form class="formulario" id="form-usuario">
 
+            <!-- usuario-form>main>form>div> Grade que organiza os campos em duas colunas -->
+            <!-- [CSS] .grupo-campos | .grupo-campos @media (max-width: 700px) -->
             <div class="grupo-campos">
 
+                <!-- usuario-form>main>form>div>div> Bloco do campo "Nome completo" -->
+                <!-- [CSS] .campo | .campo-largo -->
                 <div class="campo campo-largo">
+                    <!-- usuario-form>main>form>div>div>label> Rótulo "Nome completo" -->
+                    <!-- [CSS] .campo label -->
                     <label for="nome">
+                        <!-- usuario-form>main>form>div>div>label>span> Asterisco que marca o campo como obrigatório -->
+                        <!-- [CSS] .campo label .obrigatorio -->
                         Nome completo <span class="obrigatorio">*</span>
                     </label>
+                    <!-- usuario-form>main>form>div>div>input> Campo do nome do usuário -->
+                    <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                    <!-- [JS] usuario-form.js: campos.nome -->
                     <input type="text" id="nome" required maxlength="120">
                 </div>
 
+                <!-- usuario-form>main>form>div>div> Bloco do campo "E-mail" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- usuario-form>main>form>div>div>label> Rótulo "E-mail" -->
+                    <!-- [CSS] .campo label -->
                     <label for="email">
+                        <!-- usuario-form>main>form>div>div>label>span> Asterisco que marca o campo como obrigatório -->
+                        <!-- [CSS] .campo label .obrigatorio -->
                         E-mail <span class="obrigatorio">*</span>
                     </label>
+                    <!-- usuario-form>main>form>div>div>input> Campo do e-mail, que é o login do usuário -->
+                    <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                    <!-- [JS] usuario-form.js: campos.email -->
                     <input type="email" id="email" required maxlength="120">
+                    <!-- usuario-form>main>form>div>div>span> Dica: o e-mail é usado para entrar no sistema -->
+                    <!-- [CSS] .dica -->
                     <span class="dica">Usado para entrar no sistema.</span>
                 </div>
 
+                <!-- usuario-form>main>form>div>div> Bloco do campo "Perfil" -->
+                <!-- [CSS] .campo -->
                 <div class="campo">
+                    <!-- usuario-form>main>form>div>div>label> Rótulo "Perfil" -->
+                    <!-- [CSS] .campo label -->
                     <label for="perfil_id">
+                        <!-- usuario-form>main>form>div>div>label>span> Asterisco que marca o campo como obrigatório -->
+                        <!-- [CSS] .campo label .obrigatorio -->
                         Perfil <span class="obrigatorio">*</span>
                     </label>
+                    <!-- usuario-form>main>form>div>div>select> Lista dos perfis Admin, Advogado e Secretária (preenchida pelo JS) -->
+                    <!-- [CSS] .campo select | .campo select:focus -->
+                    <!-- [JS] usuario-form.js: campos.perfil -->
                     <select id="perfil_id" required></select>
+                    <!-- usuario-form>main>form>div>div>span> Dica que diz se o perfil escolhido pode excluir documentos -->
+                    <!-- [CSS] .dica -->
+                    <!-- [JS] usuario-form.js: tela.dicaPerfil -->
                     <span class="dica" id="dica-perfil"></span>
                 </div>
 
+                <!-- usuario-form>main>form>div>div> Bloco do campo "Senha" (só aparece no cadastro) -->
+                <!-- [CSS] .campo | .campo-largo -->
+                <!-- [JS] usuario-form.js: tela.blocoSenha -->
                 <div class="campo campo-largo" id="bloco-senha">
+                    <!-- usuario-form>main>form>div>div>label> Rótulo "Senha" -->
+                    <!-- [CSS] .campo label -->
                     <label for="senha">
+                        <!-- usuario-form>main>form>div>div>label>span> Asterisco que marca o campo como obrigatório -->
+                        <!-- [CSS] .campo label .obrigatorio -->
                         Senha <span class="obrigatorio">*</span>
                     </label>
+                    <!-- usuario-form>main>form>div>div>input> Campo da senha inicial, mínimo de 6 caracteres -->
+                    <!-- [CSS] .campo input | .campo input:focus | .campo input:disabled -->
+                    <!-- [JS] usuario-form.js: campos.senha -->
                     <input type="password" id="senha" minlength="6">
+                    <!-- usuario-form>main>form>div>div>span> Dica: a senha precisa ter no mínimo 6 caracteres -->
+                    <!-- [CSS] .dica -->
                     <span class="dica">Mínimo de 6 caracteres.</span>
                 </div>
 
             </div>
 
+            <!-- usuario-form>main>form>div> Rodapé do formulário com os botões -->
+            <!-- [CSS] .rodape-formulario -->
             <div class="rodape-formulario">
+                <!-- usuario-form>main>form>div>button> Botão de salvar ("Cadastrar usuário") -->
+                <!-- [CSS] .botao | .botao:hover | .botao-principal | .botao-principal:hover -->
+                <!-- [JS] usuario-form.js: tela.botaoSalvar -->
                 <button type="submit" class="botao botao-principal" id="botao-salvar">
                     Cadastrar usuário
                 </button>
+                <!-- usuario-form>main>form>div>a> Botão "Cancelar": volta para a lista sem salvar -->
+                <!-- [CSS] .botao | .botao:hover -->
                 <a href="usuarios.html" class="botao">Cancelar</a>
             </div>
 
         </form>
 
+        <!-- usuario-form>main>section> Bloco "Trocar senha" (começa escondido, só aparece na edição) -->
+        <!-- [CSS] .escondido | .painel | style inline -->
+        <!-- [JS] usuario-form.js: tela.painelSenha -->
         <section class="painel escondido" id="painel-senha" style="max-width:720px; margin-top:16px">
+            <!-- usuario-form>main>section>h2> Título do bloco: "Trocar senha" -->
+            <!-- [CSS] .titulo-secao -->
             <h2 class="titulo-secao">Trocar senha</h2>
+            <!-- usuario-form>main>section>p> Avisa que a senha antiga não pode ser vista, só trocada -->
+            <!-- [CSS] .dica -->
             <p class="dica">
                 A senha atual não pode ser recuperada, apenas substituída.
             </p>
+            <!-- usuario-form>main>section>div> Linha com o campo da nova senha e o botão -->
+            <!-- [CSS] .linha-status -->
             <div class="linha-status">
+                <!-- usuario-form>main>section>div>input> Campo da nova senha -->
+                <!-- [CSS] .linha-status input -->
+                <!-- [JS] usuario-form.js: tela.senhaNova -->
                 <input type="password" id="senha-nova" placeholder="Nova senha" minlength="6">
+                <!-- usuario-form>main>section>div>button> Botão "Trocar senha" -->
+                <!-- [CSS] .botao | .botao:hover -->
+                <!-- [JS] usuario-form.js: tela.botaoSenha -->
                 <button type="button" class="botao" id="botao-senha">Trocar senha</button>
             </div>
         </section>
 
     </main>
 
+    <!-- usuario-form>script> Carrega o api.js: chamadas à API, sessão de login e funções de apoio -->
+    <!-- [JS] js/api.js -->
     <script charset="UTF-8" src="js/api.js"></script>
+    <!-- usuario-form>script> Carrega o usuario-form.js, que faz esta página funcionar -->
+    <!-- [JS] js/usuario-form.js -->
     <script charset="UTF-8" src="js/usuario-form.js"></script>
 </body>
 </html>

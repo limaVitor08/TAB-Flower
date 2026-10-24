@@ -1,23 +1,18 @@
-/* =====================================================================
-   TabFlower - Painel de gestao (Terceira Etapa)
-   =====================================================================
-   Esta tela não usa nenhuma consulta simples. Os três paineis vem de
-   stored procedures do MySQL, chamadas pela camada Repository:
-
-     Funcionalidade 06 - sp_painel_resumo
-     Funcionalidade 12 - sp_pendencias_checklist
-     Funcionalidades 14 e 15 - sp_processos_prioritarios
-   ===================================================================== */
-
+// [JS] painel> Atalhos para os elementos do painel
 const tela = {
+    // [JS] painel>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
+    // [JS] painel>main>section>div> Desenha um cartão por situação, com total e alertas de prazo
     resumo: document.getElementById('resumo'),
+    // [JS] painel>main>div>section>ul> Monta um item por processo com marcadores, situação e prazo
     prioritarios: document.getElementById('prioritarios'),
+    // [JS] painel>main>div>section>ul> Monta um item por processo dizendo o que falta entregar
     pendencias: document.getElementById('pendencias'),
+    // [JS] painel>main>div>section>div>select> Ao trocar a opção, recarrega a lista de prioridades
     filtroPeso: document.getElementById('filtro-peso')
 };
 
-/** Descreve o prazo em linguagem humana. */
+// [JS] painel>main>div>section>ul>li> Escreve o prazo do processo; fica vermelho se venceu ou vence em até 7 dias
 function descreverPrazo(prazo, dias) {
     if (!prazo) {
         return '<span class="texto-prazo">Sem prazo definido</span>';
@@ -41,10 +36,7 @@ function descreverPrazo(prazo, dias) {
     return `<span class="texto-prazo">Prazo: ${data}</span>`;
 }
 
-/* ---------------------------------------------------------------------
-   Funcionalidade 06 - Painel Central de Gestao
-   --------------------------------------------------------------------- */
-
+// [JS] painel>main>section>div> Desenha o cartão de total e um cartão por situação, com a cor da situação na faixa de cima
 function desenharResumo(dados) {
     const cartoes = dados.por_status.map((s) => {
         const alertas = [];
@@ -65,7 +57,6 @@ function desenharResumo(dados) {
             </div>`;
     }).join('');
 
-    // Cartao de total geral, calculado pelo Service a partir das linhas.
     const total = `
         <div class="cartao" style="border-top-color:var(--tinta)">
             <div class="cartao-numero">${dados.total_processos}</div>
@@ -78,10 +69,7 @@ function desenharResumo(dados) {
     tela.resumo.innerHTML = total + cartoes;
 }
 
-/* ---------------------------------------------------------------------
-   Funcionalidades 14 e 15 - Marcadores e Filtros de Prioridade
-   --------------------------------------------------------------------- */
-
+// [JS] painel>main>div>section>ul> Desenha a lista de prioridades: título, selos coloridos dos marcadores, situação e prazo
 function desenharPrioritarios(linhas) {
     if (linhas.length === 0) {
         tela.prioritarios.innerHTML =
@@ -90,8 +78,6 @@ function desenharPrioritarios(linhas) {
     }
 
     tela.prioritarios.innerHTML = linhas.map((p) => {
-        // A procedure devolve os nomes e as cores em duas listas
-        // separadas por virgula, na mesma ordem.
         const nomes = (p.marcadores || '').split(',').filter(Boolean);
         const cores = (p.marcadores_cores || '').split(',').filter(Boolean);
 
@@ -115,10 +101,7 @@ function desenharPrioritarios(linhas) {
     }).join('');
 }
 
-/* ---------------------------------------------------------------------
-   Funcionalidade 12 - Mapeamento de Pendências
-   --------------------------------------------------------------------- */
-
+// [JS] painel>main>div>section>ul> Desenha a lista de pendências: título, situação, quantos documentos foram entregues e o que falta
 function desenharPendencias(linhas) {
     if (linhas.length === 0) {
         tela.pendencias.innerHTML =
@@ -140,10 +123,7 @@ function desenharPendencias(linhas) {
         </li>`).join('');
 }
 
-/* ---------------------------------------------------------------------
-   Carga
-   --------------------------------------------------------------------- */
-
+// [JS] painel>main>div>section>ul> Busca na API os processos prioritários usando o filtro escolhido
 async function carregarPrioritarios() {
     tela.prioritarios.innerHTML = '<li class="dica">Carregando...</li>';
     try {
@@ -155,13 +135,13 @@ async function carregarPrioritarios() {
     }
 }
 
+// [JS] painel>main> Carrega o painel inteiro: resumo, pendências e prioridades; se falhar, mostra o erro
 async function carregar() {
     limparAviso(tela.aviso);
     tela.resumo.innerHTML = '<div class="cartao">Carregando...</div>';
     tela.pendencias.innerHTML = '<li class="dica">Carregando...</li>';
 
     try {
-        // As três procedures são chamadas em paralelo.
         const [resumo, pendencias] = await Promise.all([
             api.painel.resumo(),
             api.painel.pendencias()
@@ -182,6 +162,8 @@ async function carregar() {
     }
 }
 
+// [JS] painel>main>div>section>div>select> Ao trocar o filtro, recarrega só a lista de prioridades
 tela.filtroPeso.addEventListener('change', carregarPrioritarios);
 
+// [JS] painel> Começa a carregar o painel assim que a página abre
 carregar();

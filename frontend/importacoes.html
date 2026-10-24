@@ -1,73 +1,164 @@
 <!DOCTYPE html>
+<!-- importacoes>html> Raiz da página, com idioma português do Brasil -->
 <html lang="pt-BR">
+<!-- importacoes>head> Parte invisível da página: configurações, título da aba e arquivos ligados -->
 <head>
+    <!-- importacoes>head>meta> Usa a codificação UTF-8 para os acentos aparecerem certo -->
     <meta charset="UTF-8">
+    <!-- importacoes>head>meta> Ajusta a página à largura da tela (celular) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- importacoes>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- importacoes>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- importacoes>head>link> Carrega as fontes Archivo (títulos), Roboto Mono (números) e Source Sans 3 (texto) -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <!-- importacoes>head>link> Liga o arquivo de estilo do site (css/estilo.css) -->
+    <!-- [CSS] css/estilo.css -->
     <link rel="stylesheet" href="css/estilo.css">
+    <!-- importacoes>head>title> Texto da aba do navegador: "Importação - TabFlower" -->
     <title>Importação - TabFlower</title>
 </head>
+<!-- importacoes>body> Corpo da página: tudo que aparece na tela -->
+<!-- [CSS] body -->
 <body>
+    <!-- importacoes>header> Faixa do topo com o logo, o menu de abas e o usuário logado -->
+    <!-- [CSS] .cabecalho -->
     <header class="cabecalho">
+        <!-- importacoes>header>div> Organiza o topo: logo, abas e usuário lado a lado -->
+        <!-- [CSS] .cabecalho-conteudo | .cabecalho-conteudo @media (max-width: 700px) -->
+        <!-- [JS] api.js: montarBarraUsuario() -->
         <div class="cabecalho-conteudo">
+            <!-- importacoes>header>div>div> Logo TabFlower -->
+            <!-- [CSS] .marca -->
+            <!-- importacoes>header>div>div>span> Palavra "Flower" do logo -->
+            <!-- [CSS] .marca span -->
             <div class="marca">Tab<span>Flower</span></div>
+            <!-- importacoes>header>div>nav> Menu de navegação entre as telas -->
             <nav>
+                <!-- importacoes>header>div>nav>ul> Lista das abas do menu -->
+                <!-- [CSS] .abas | .abas @media (max-width: 700px) -->
                 <ul class="abas">
+                    <!-- importacoes>header>div>nav>ul>li> Item do menu: aba "Painel" -->
+                    <!-- importacoes>header>div>nav>ul>li>a> Link para a tela "Painel" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="painel.html">Painel</a></li>
+                    <!-- importacoes>header>div>nav>ul>li> Item do menu: aba "Clientes" -->
+                    <!-- importacoes>header>div>nav>ul>li>a> Link para a tela "Clientes" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="clientes.html">Clientes</a></li>
+                    <!-- importacoes>header>div>nav>ul>li> Item do menu: aba "Processos" -->
+                    <!-- importacoes>header>div>nav>ul>li>a> Link para a tela "Processos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="processos.html">Processos</a></li>
+                    <!-- importacoes>header>div>nav>ul>li> Item do menu: aba "Documentos" -->
+                    <!-- importacoes>header>div>nav>ul>li>a> Link para a tela "Documentos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="documentos.html">Documentos</a></li>
+                    <!-- importacoes>header>div>nav>ul>li> Item do menu: aba "Avisos" -->
+                    <!-- importacoes>header>div>nav>ul>li>a> Link para a tela "Avisos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="notificacoes.html">Avisos</a></li>
+                    <!-- importacoes>header>div>nav>ul>li> Item do menu: aba "Usuários" -->
+                    <!-- importacoes>header>div>nav>ul>li>a> Link para a tela "Usuários" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="usuarios.html">Usuários</a></li>
+                    <!-- importacoes>header>div>nav>ul>li> Item do menu: aba "Checklists" -->
+                    <!-- importacoes>header>div>nav>ul>li>a> Link para a tela "Checklists" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="checklists.html">Checklists</a></li>
+                    <!-- importacoes>header>div>nav>ul>li> Item do menu: aba "Importação" -->
+                    <!-- importacoes>header>div>nav>ul>li>a> Link para a tela "Importação" (aba da página atual, fica destacada) -->
+                    <!-- [CSS] .abas a | .abas a:hover | .abas a.ativa -->
                     <li><a href="importacoes.html" class="ativa">Importação</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- importacoes>main> Área principal da importação de clientes -->
+    <!-- [CSS] .pagina -->
     <main class="pagina">
+        <!-- importacoes>main>h1> Título da página: "Importação de clientes" -->
+        <!-- [CSS] .titulo-pagina -->
         <h1 class="titulo-pagina">Importação de clientes</h1>
+        <!-- importacoes>main>p> Texto explicativo abaixo do título -->
+        <!-- [CSS] .subtitulo-pagina -->
         <p class="subtitulo-pagina">
             Traz para o sistema os cadastros que hoje vivem em planilhas
             paralelas. Cada linha passa pelas mesmas regras do cadastro
             manual: CPF conferido, duplicidade bloqueada e pasta criada.
         </p>
 
+        <!-- importacoes>main>div> Caixa de mensagens de erro ou sucesso (começa escondida) -->
+        <!-- [CSS] .escondido -->
+        <!-- [JS] importacoes.js: tela.aviso -->
         <div id="aviso" class="escondido"></div>
 
+        <!-- importacoes>main>section> Bloco de envio da planilha -->
+        <!-- [CSS] .painel -->
         <section class="painel">
+            <!-- importacoes>main>section>h2> Título do bloco: "Enviar planilha" -->
+            <!-- [CSS] .titulo-secao -->
             <h2 class="titulo-secao">Enviar planilha</h2>
+            <!-- importacoes>main>section>p> Explica os formatos aceitos (.csv e .xlsx) e as colunas reconhecidas -->
+            <!-- [CSS] .dica -->
             <p class="dica">
                 Aceita .csv e .xlsx. A primeira linha precisa ser o cabeçalho.
                 Colunas reconhecidas: nome, documento, tipo_pessoa, email,
                 telefone, endereco, cidade, estado e observacao.
             </p>
 
+            <!-- importacoes>main>section>form> Formulário de envio da planilha -->
+            <!-- [CSS] .linha-status -->
+            <!-- [JS] importacoes.js: tela.form -->
             <form class="linha-status" id="form-importacao" enctype="multipart/form-data">
+                <!-- importacoes>main>section>form>input> Campo de escolher a planilha (.csv ou .xlsx) -->
+                <!-- [CSS] .linha-status input -->
+                <!-- [JS] importacoes.js: tela.arquivo -->
                 <input type="file" id="arquivo" accept=".csv,.xlsx" required>
+                <!-- importacoes>main>section>form>button> Botão "Importar" -->
+                <!-- [CSS] .botao | .botao:hover | .botao-principal | .botao-principal:hover -->
+                <!-- [JS] importacoes.js: tela.botaoEnviar -->
                 <button type="submit" class="botao botao-principal" id="botao-enviar">
                     Importar
                 </button>
+                <!-- importacoes>main>section>form>a> Botão "Baixar modelo": baixa o CSV de exemplo -->
+                <!-- [CSS] .botao | .botao:hover -->
+                <!-- [JS] importacoes.js: tela.linkModelo -->
                 <a href="#" class="botao" id="link-modelo" download>Baixar modelo</a>
             </form>
 
+            <!-- importacoes>main>section>div> Caixa do resultado da importação (começa escondida) -->
+            <!-- [CSS] .escondido -->
+            <!-- [JS] importacoes.js: tela.resultado -->
             <div id="resultado" class="escondido"></div>
         </section>
 
+        <!-- importacoes>main>section> Bloco do histórico de importações -->
+        <!-- [CSS] .painel -->
         <section class="painel">
+            <!-- importacoes>main>section>h2> Título do bloco: "Importações realizadas" -->
+            <!-- [CSS] .titulo-secao -->
             <h2 class="titulo-secao">Importações realizadas</h2>
+            <!-- importacoes>main>section>p> Explica que cada carga fica registrada e pode ser desfeita -->
+            <!-- [CSS] .dica -->
             <p class="dica">
                 Cada carga fica registrada. Se uma planilha veio errada, dá
                 para desfazer só ela, sem tocar nos cadastros feitos à mão.
             </p>
+            <!-- importacoes>main>section>div> Lista das importações feitas (preenchida pelo JS) -->
+            <!-- [CSS] .lista | style inline -->
+            <!-- [JS] importacoes.js: tela.lista -->
             <div id="lista" class="lista" style="margin-top:14px"></div>
         </section>
     </main>
 
+    <!-- importacoes>script> Carrega o api.js: chamadas à API, sessão de login e funções de apoio -->
+    <!-- [JS] js/api.js -->
     <script charset="UTF-8" src="js/api.js"></script>
+    <!-- importacoes>script> Carrega o importacoes.js, que faz esta página funcionar -->
+    <!-- [JS] js/importacoes.js -->
     <script charset="UTF-8" src="js/importacoes.js"></script>
 </body>
 </html>

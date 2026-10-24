@@ -1,108 +1,253 @@
 <!DOCTYPE html>
+<!-- processo-detalhe>html> Raiz da página, com idioma português do Brasil -->
 <html lang="pt-BR">
+<!-- processo-detalhe>head> Parte invisível da página: configurações, título da aba e arquivos ligados -->
 <head>
+    <!-- processo-detalhe>head>meta> Usa a codificação UTF-8 para os acentos aparecerem certo -->
     <meta charset="UTF-8">
+    <!-- processo-detalhe>head>meta> Ajusta a página à largura da tela (celular) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- processo-detalhe>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- processo-detalhe>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- processo-detalhe>head>link> Carrega as fontes Archivo (títulos), Roboto Mono (números) e Source Sans 3 (texto) -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <!-- processo-detalhe>head>link> Liga o arquivo de estilo do site (css/estilo.css) -->
+    <!-- [CSS] css/estilo.css -->
     <link rel="stylesheet" href="css/estilo.css">
+    <!-- processo-detalhe>head>title> Texto da aba do navegador: "Detalhe do processo - TabFlower" -->
     <title>Detalhe do processo - TabFlower</title>
 </head>
+<!-- processo-detalhe>body> Corpo da página: tudo que aparece na tela -->
+<!-- [CSS] body -->
 <body>
 
+    <!-- processo-detalhe>header> Faixa do topo com o logo, o menu de abas e o usuário logado -->
+    <!-- [CSS] .cabecalho -->
     <header class="cabecalho">
+        <!-- processo-detalhe>header>div> Organiza o topo: logo, abas e usuário lado a lado -->
+        <!-- [CSS] .cabecalho-conteudo | .cabecalho-conteudo @media (max-width: 700px) -->
+        <!-- [JS] api.js: montarBarraUsuario() -->
         <div class="cabecalho-conteudo">
+            <!-- processo-detalhe>header>div>div> Logo TabFlower -->
+            <!-- [CSS] .marca -->
+            <!-- processo-detalhe>header>div>div>span> Palavra "Flower" do logo -->
+            <!-- [CSS] .marca span -->
             <div class="marca">Tab<span>Flower</span></div>
+            <!-- processo-detalhe>header>div>nav> Menu de navegação entre as telas -->
             <nav>
+                <!-- processo-detalhe>header>div>nav>ul> Lista das abas do menu -->
+                <!-- [CSS] .abas | .abas @media (max-width: 700px) -->
                 <ul class="abas">
+                    <!-- processo-detalhe>header>div>nav>ul>li> Item do menu: aba "Painel" -->
+                    <!-- processo-detalhe>header>div>nav>ul>li>a> Link para a tela "Painel" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="painel.html">Painel</a></li>
+                    <!-- processo-detalhe>header>div>nav>ul>li> Item do menu: aba "Clientes" -->
+                    <!-- processo-detalhe>header>div>nav>ul>li>a> Link para a tela "Clientes" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="clientes.html">Clientes</a></li>
+                    <!-- processo-detalhe>header>div>nav>ul>li> Item do menu: aba "Processos" -->
+                    <!-- processo-detalhe>header>div>nav>ul>li>a> Link para a tela "Processos" (aba da página atual, fica destacada) -->
+                    <!-- [CSS] .abas a | .abas a:hover | .abas a.ativa -->
                     <li><a href="processos.html" class="ativa">Processos</a></li>
+                    <!-- processo-detalhe>header>div>nav>ul>li> Item do menu: aba "Documentos" -->
+                    <!-- processo-detalhe>header>div>nav>ul>li>a> Link para a tela "Documentos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="documentos.html">Documentos</a></li>
+                    <!-- processo-detalhe>header>div>nav>ul>li> Item do menu: aba "Avisos" -->
+                    <!-- processo-detalhe>header>div>nav>ul>li>a> Link para a tela "Avisos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="notificacoes.html">Avisos</a></li>
+                    <!-- processo-detalhe>header>div>nav>ul>li> Item do menu: aba "Usuários" -->
+                    <!-- processo-detalhe>header>div>nav>ul>li>a> Link para a tela "Usuários" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="usuarios.html">Usuários</a></li>
+                    <!-- processo-detalhe>header>div>nav>ul>li> Item do menu: aba "Checklists" -->
+                    <!-- processo-detalhe>header>div>nav>ul>li>a> Link para a tela "Checklists" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="checklists.html">Checklists</a></li>
+                    <!-- processo-detalhe>header>div>nav>ul>li> Item do menu: aba "Importação" -->
+                    <!-- processo-detalhe>header>div>nav>ul>li>a> Link para a tela "Importação" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="importacoes.html">Importação</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- processo-detalhe>main> Área principal do detalhe do processo -->
+    <!-- [CSS] .pagina -->
     <main class="pagina">
 
+        <!-- processo-detalhe>main>div> Caixa de mensagens de erro ou sucesso (começa escondida) -->
+        <!-- [CSS] .escondido -->
+        <!-- [JS] processo-detalhe.js: tela.aviso -->
         <div id="aviso" class="escondido"></div>
 
+        <!-- processo-detalhe>main>h1> Título da página com o nome do processo (começa como "Carregando...") -->
+        <!-- [CSS] .titulo-pagina -->
+        <!-- [JS] processo-detalhe.js: tela.titulo -->
         <h1 class="titulo-pagina" id="titulo">Carregando...</h1>
+        <!-- processo-detalhe>main>p> Número do processo abaixo do título, em fonte de máquina -->
+        <!-- [CSS] .mono | .subtitulo-pagina -->
+        <!-- [JS] processo-detalhe.js: tela.numero -->
         <p class="subtitulo-pagina mono" id="numero"></p>
 
+        <!-- processo-detalhe>main>div> Barra com os botões Voltar e Editar -->
+        <!-- [CSS] .barra-acoes -->
         <div class="barra-acoes">
+            <!-- processo-detalhe>main>div>a> Botão "Voltar": retorna para a lista de processos -->
+            <!-- [CSS] .botao | .botao:hover -->
             <a href="processos.html" class="botao">Voltar</a>
+            <!-- processo-detalhe>main>div>div> Espaço vazio que empurra o botão Editar para a direita -->
+            <!-- [CSS] .espacador -->
             <div class="espacador"></div>
+            <!-- processo-detalhe>main>div>a> Botão "Editar processo" -->
+            <!-- [CSS] .botao | .botao:hover -->
+            <!-- [JS] processo-detalhe.js: tela.linkEditar -->
             <a href="#" class="botao" id="link-editar">Editar processo</a>
         </div>
 
+        <!-- processo-detalhe>main>section> Bloco "Dados do processo" (preenchido pelo JS) -->
+        <!-- [CSS] .painel -->
+        <!-- [JS] processo-detalhe.js: tela.dados -->
         <section class="painel" id="dados"></section>
 
+        <!-- processo-detalhe>main>section> Bloco dos marcadores de prioridade -->
+        <!-- [CSS] .painel -->
         <section class="painel">
+            <!-- processo-detalhe>main>section>h2> Título do bloco: "Marcadores de prioridade" -->
+            <!-- [CSS] .titulo-secao -->
             <h2 class="titulo-secao">Marcadores de prioridade</h2>
+            <!-- processo-detalhe>main>section>p> Explica que os marcadores definem a ordem do painel de prioridades -->
+            <!-- [CSS] .dica -->
             <p class="dica">
                 Definem a ordem do painel de prioridades. Urgente pesa mais
                 que Prioridade, que pesa mais que Prazo curto.
             </p>
+            <!-- processo-detalhe>main>section>div> Linha com a lista de marcadores e o botão de aplicar -->
+            <!-- [CSS] .linha-status -->
             <div class="linha-status">
+                <!-- processo-detalhe>main>section>div>select> Lista dos marcadores disponíveis (preenchida pelo JS) -->
+                <!-- [CSS] .linha-status select -->
+                <!-- [JS] processo-detalhe.js: tela.selectMarcador -->
                 <select id="novo-marcador"></select>
+                <!-- processo-detalhe>main>section>div>button> Botão "Aplicar marcador" -->
+                <!-- [CSS] .botao | .botao:hover -->
+                <!-- [JS] processo-detalhe.js: tela.botaoMarcador -->
                 <button type="button" class="botao" id="botao-marcador">
                     Aplicar marcador
                 </button>
             </div>
+            <!-- processo-detalhe>main>section>div> Área dos selos dos marcadores já aplicados -->
+            <!-- [CSS] .item-linha | style inline -->
+            <!-- [JS] processo-detalhe.js: tela.marcadores -->
             <div class="item-linha" id="marcadores" style="margin-top:12px"></div>
         </section>
 
+        <!-- processo-detalhe>main>section> Bloco para mudar a situação (fase) do processo -->
+        <!-- [CSS] .painel -->
         <section class="painel">
+            <!-- processo-detalhe>main>section>h2> Título do bloco: "Situação do processo" -->
+            <!-- [CSS] .titulo-secao -->
             <h2 class="titulo-secao">Situação do processo</h2>
+            <!-- processo-detalhe>main>section>p> Explica que a mudança de fase fica registrada no histórico -->
+            <!-- [CSS] .dica -->
             <p class="dica">
                 Mudar a fase registra automaticamente quem mudou e quando.
             </p>
+            <!-- processo-detalhe>main>section>div> Linha com a lista de situações, a observação e o botão -->
+            <!-- [CSS] .linha-status -->
             <div class="linha-status">
+                <!-- processo-detalhe>main>section>div>select> Lista das situações (preenchida pelo JS, já marcando a atual) -->
+                <!-- [CSS] .linha-status select -->
+                <!-- [JS] processo-detalhe.js: tela.selectStatus -->
                 <select id="novo-status"></select>
+                <!-- processo-detalhe>main>section>div>input> Campo opcional de observação da mudança -->
+                <!-- [CSS] .linha-status input -->
+                <!-- [JS] processo-detalhe.js: tela.observacao -->
                 <input type="text" id="observacao-status"
                        placeholder="Observação (opcional)">
+                <!-- processo-detalhe>main>section>div>button> Botão "Atualizar situação" -->
+                <!-- [CSS] .botao | .botao:hover | .botao-principal | .botao-principal:hover -->
+                <!-- [JS] processo-detalhe.js: tela.botaoStatus -->
                 <button type="button" class="botao botao-principal" id="botao-status">
                     Atualizar situação
                 </button>
             </div>
         </section>
 
+        <!-- processo-detalhe>main>section> Bloco dos documentos anexados -->
+        <!-- [CSS] .painel -->
         <section class="painel">
+            <!-- processo-detalhe>main>section>h2> Título do bloco: "Documentos anexados" -->
+            <!-- [CSS] .titulo-secao -->
             <h2 class="titulo-secao">Documentos anexados</h2>
+            <!-- processo-detalhe>main>section>p> Explica o que acontece ao anexar: renomeia, guarda na pasta, risca o checklist e avisa o advogado -->
+            <!-- [CSS] .dica -->
             <p class="dica">
                 O sistema renomeia o arquivo, guarda na pasta certa do cliente,
                 risca o item do checklist e avisa o advogado responsável.
             </p>
 
+            <!-- processo-detalhe>main>section>form> Formulário de envio de documento -->
+            <!-- [CSS] .linha-status -->
+            <!-- [JS] processo-detalhe.js: tela.formUpload -->
             <form class="linha-status" id="form-upload" enctype="multipart/form-data">
+                <!-- processo-detalhe>main>section>form>select> Lista das categorias de documento (preenchida pelo JS) -->
+                <!-- [CSS] .linha-status select -->
+                <!-- [JS] processo-detalhe.js: tela.categoriaDocumento -->
                 <select id="categoria-documento" required></select>
+                <!-- processo-detalhe>main>section>form>input> Campo de escolher o arquivo (pdf, png, jpg, docx, doc) -->
+                <!-- [CSS] .linha-status input | #form-upload input[type="file"] -->
+                <!-- [JS] processo-detalhe.js: tela.arquivo -->
                 <input type="file" id="arquivo"
                        accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" required>
+                <!-- processo-detalhe>main>section>form>button> Botão "Anexar" -->
+                <!-- [CSS] .botao | .botao:hover | .botao-principal | .botao-principal:hover -->
+                <!-- [JS] processo-detalhe.js: tela.botaoEnviar -->
                 <button type="submit" class="botao botao-principal" id="botao-enviar">
                     Anexar
                 </button>
             </form>
 
+            <!-- processo-detalhe>main>section>ul> Lista dos documentos já anexados (preenchida pelo JS) -->
+            <!-- [CSS] .checklist -->
+            <!-- [JS] processo-detalhe.js: tela.documentos -->
             <ul class="checklist" id="documentos"></ul>
         </section>
 
+        <!-- processo-detalhe>main>div> Divide Checklist e Histórico em duas colunas -->
+        <!-- [CSS] .colunas | .colunas @media (max-width: 800px) -->
         <div class="colunas">
 
+            <!-- processo-detalhe>main>div>section> Bloco do checklist de documentos -->
+            <!-- [CSS] .painel -->
             <section class="painel">
+                <!-- processo-detalhe>main>div>section>h2> Título do bloco: "Checklist de documentos" -->
+                <!-- [CSS] .titulo-secao -->
                 <h2 class="titulo-secao">Checklist de documentos</h2>
+                <!-- processo-detalhe>main>div>section>p> Resumo do checklist (ex.: "3 de 5 documentos ainda pendentes") -->
+                <!-- [CSS] .dica -->
+                <!-- [JS] processo-detalhe.js: tela.resumoChecklist -->
                 <p class="dica" id="resumo-checklist"></p>
+                <!-- processo-detalhe>main>div>section>ul> Lista do checklist (preenchida pelo JS) -->
+                <!-- [CSS] .checklist -->
+                <!-- [JS] processo-detalhe.js: tela.checklist -->
                 <ul class="checklist" id="checklist"></ul>
             </section>
 
+            <!-- processo-detalhe>main>div>section> Bloco do histórico de situações -->
+            <!-- [CSS] .painel -->
             <section class="painel">
+                <!-- processo-detalhe>main>div>section>h2> Título do bloco: "Histórico de situações" -->
+                <!-- [CSS] .titulo-secao -->
                 <h2 class="titulo-secao">Histórico de situações</h2>
+                <!-- processo-detalhe>main>div>section>ol> Linha do tempo das mudanças de situação (preenchida pelo JS) -->
+                <!-- [CSS] .historico -->
+                <!-- [JS] processo-detalhe.js: tela.historico -->
                 <ol class="historico" id="historico"></ol>
             </section>
 
@@ -110,7 +255,11 @@
 
     </main>
 
+    <!-- processo-detalhe>script> Carrega o api.js: chamadas à API, sessão de login e funções de apoio -->
+    <!-- [JS] js/api.js -->
     <script charset="UTF-8" src="js/api.js"></script>
+    <!-- processo-detalhe>script> Carrega o processo-detalhe.js, que faz esta página funcionar -->
+    <!-- [JS] js/processo-detalhe.js -->
     <script charset="UTF-8" src="js/processo-detalhe.js"></script>
 </body>
 </html>

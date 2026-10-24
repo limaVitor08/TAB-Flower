@@ -1,23 +1,15 @@
 """
-Cria o primeiro usuário do sistema (ou redefine a senha de um existente).
+Cria o primeiro usuário do sistema, ou troca a senha de um que já existe.
 
-Por que este script existe: agora que o TabFlower exige login, existe um
-problema de "ovo e galinha" - a tela de cadastro de usuários só abre
-para quem já está logado, mas ninguém consegue logar sem um usuário
-cadastrado com senha de verdade.
+Como o sistema exige login, a tela de cadastro de usuários só abre para
+quem já entrou. Mas ninguém entra sem ter um usuário.
 
-Além disso, os advogados inseridos manualmente por SQL durante os testes
-ficaram com senha_hash = 'TEMPORARIO', que não é um hash válido. Eles
-existem no banco, aparecem nas listas e recebem notificações, mas nunca
-conseguiriam entrar. Este script conserta isso também.
-
-Rode uma única vez, com o WAMP ligado, a partir da pasta backend:
+Rode uma vez, com o WAMP ligado, de dentro da pasta backend:
 
     python criar_primeiro_usuario.py
 
-Ele pergunta nome, e-mail, perfil e senha, e usa o CriarUsuarioService -
-o mesmo caso de uso da tela - para que a senha seja gravada com hash,
-nunca em texto puro.
+A senha passa pelo mesmo CriarUsuarioService da tela, então é gravada
+com hash.
 """
 
 from getpass import getpass
@@ -48,10 +40,6 @@ def escolher_perfil():
 
 def pedir_senha():
     """Pede a senha duas vezes para evitar erro de digitação.
-
-    getpass não mostra o que está sendo digitado, igual ao terminal do
-    Linux. Se o seu terminal não suportar, os caracteres simplesmente
-    não aparecem - continue digitando normalmente.
     """
     while True:
         senha = getpass("Senha (mínimo 6 caracteres): ")
@@ -92,7 +80,7 @@ def main():
 
             senha = pedir_senha()
             # definir_senha() e não executar(): executar() exige saber quem
-            # esta pedindo a troca, e aqui não ha usuário logado - este
+            # esta pedindo a troca, e aqui não ha usuário logado. Este
             # script roda no terminal, antes de existir qualquer sessão.
             AlterarSenhaService.definir_senha(existente.id, senha)
 
@@ -111,7 +99,7 @@ def main():
 
         try:
             # criar() e não executar(): pela mesma razão do definir_senha
-            # acima - executar() exige um usuário logado para conferir a
+            # acima. executar() exige um usuário logado para conferir a
             # permissão, e no terminal não existe sessão nenhuma. E este
             # script que cria o primeiro Administrador, entao não haveria
             # como ele já estar logado.

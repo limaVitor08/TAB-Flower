@@ -1,37 +1,30 @@
-/* =====================================================================
-   TabFlower - Tela de login
-   =====================================================================
-   Porta de entrada do sistema. Todas as outras telas exigem sessão
-   ativa: quem chega nelas sem estar logado é mandado para cá pelo
-   próprio api.js.
-
-   Aqui a senha é digitada e enviada ao backend uma única vez. A senha
-   nunca é guardada em lugar nenhum do navegador - o que fica guardado é
-   o token que o backend devolve, e ele vence sozinho em 8 horas.
-   ===================================================================== */
-
+// [JS] login> Página para onde a pessoa vai depois de entrar
 const PAGINA_INICIAL = 'painel.html';
 
+// [JS] login> Atalhos para os elementos da tela de login
 const tela = {
+    // [JS] login>main>form> Ao enviar, chama a API de login e vai para o painel
     form: document.getElementById('form-login'),
+    // [JS] login>main>form>div>input> Lê o e-mail digitado ao enviar
     email: document.getElementById('email'),
+    // [JS] login>main>form>div>input> Lê a senha e apaga o campo se der erro
     senha: document.getElementById('senha'),
+    // [JS] login>main>form>div>button> Trava o botão e mostra "Entrando..." enquanto espera a API
     botao: document.getElementById('botao-entrar'),
+    // [JS] login>main>div> Mostra aqui o erro (ex.: senha errada)
     aviso: document.getElementById('aviso')
 };
 
-/* Quem já está logado não precisa ver esta tela de novo. */
+// [JS] login> Quem já está logado pula direto para o painel
 if (sessao.ativa()) {
     window.location.replace(PAGINA_INICIAL);
 }
 
-
+// [JS] login>main>form> Ao enviar: trava o botão, tenta entrar e vai para o painel; se der erro, mostra a mensagem e limpa a senha
 tela.form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparAviso(tela.aviso);
 
-    // Trava o botão para a pessoa não enviar duas vezes enquanto o
-    // servidor responde.
     tela.botao.disabled = true;
     tela.botao.textContent = 'Entrando...';
 
@@ -41,8 +34,6 @@ tela.form.addEventListener('submit', async (evento) => {
     } catch (erro) {
         mostrarAviso(tela.aviso, erro.message);
 
-        // Limpa só a senha: o e-mail continua preenchido para a pessoa
-        // não ter que digitar tudo de novo.
         tela.senha.value = '';
         tela.senha.focus();
 

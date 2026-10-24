@@ -1,6 +1,4 @@
-"""
-Caso de uso: buscar um usuário específico.
-"""
+"""Busca um usuário pelo id."""
 
 from models.usuario import Usuario
 
@@ -12,3 +10,4 @@ class BuscarUsuarioService:
         if not usuario:
             raise LookupError("Usuário não encontrado.")
         return usuario
+

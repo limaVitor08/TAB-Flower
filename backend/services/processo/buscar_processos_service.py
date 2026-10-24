@@ -1,10 +1,8 @@
 """
-Caso de uso: busca combinada de processos.
+Busca combinada de processos (funcionalidade 3).
 
-Funcionalidade 03 - Busca por Processo.
-
-Usa o Repository porque a consulta junta cinco tabelas e aceita filtros
-opcionais. A busca por id continua na Model, que resolve sozinha.
+Usa o Repository porque a consulta junta cinco tabelas e tem filtros
+opcionais. A busca por id fica na Model, que resolve sozinha.
 """
 
 from repositories.processo_repository import ProcessoRepository
@@ -34,3 +32,5 @@ def _inteiro(valor):
         return int(valor)
     except (TypeError, ValueError):
         return None
+
+

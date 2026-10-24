@@ -1,40 +1,21 @@
 """
-Caso de uso: importar clientes de uma planilha.
-
-Funcionalidade 18 (Importação em Lote).
-Funcionalidade 19 (Organização de Legado).
-
-A decisão central deste Service é reaproveitar o CriarClienteService.
-Cada linha da planilha passa exatamente pelas mesmas regras do cadastro
-manual: validação de CPF/CNPJ, bloqueio de duplicidade e criação da
-estrutura de pastas. Se a importação tivesse regras próprias, o legado
-entraria com qualidade pior que o cadastro novo - que é justamente o
-problema que o sistema veio resolver.
-
-A importação é PARCIAL por natureza: uma linha ruim não derruba as
-outras. Cada erro é registrado com o número da linha para a secretária
-corrigir só o que falhou, em vez de refazer a planilha inteira.
-
-## Atomicidade, linha por linha
-
-Aqui a transação é por LINHA, e não pela planilha inteira - é isso que
-permite a importação parcial. Mas dentro de cada linha as duas escritas
-(o cliente e o vínculo com o lote) precisam entrar juntas.
-
-Antes elas eram dois commits separados. Se o segundo falhasse, o cliente
-já estava gravado e ficava sem saber de qual carga veio - e o "Desfazer
-importação", que procura os clientes pelo importacao_id, nunca mais o
-alcançava. O cadastro só sairia da lista sendo desativado à mão.
+Importa clientes de uma planilha (funcionalidades 18 e 19).
+Cada linha passa pelo mesmo CriarClienteService do cadastro manual, com
+validação de CPF/CNPJ, bloqueio de repetido e criação da pasta. Se a
+importação tivesse regras próprias, o cliente antigo entraria com
+qualidade pior que o novo, e era justamente isso que queríamos evitar.
+Uma linha com erro não derruba as outras. Cada linha tem o próprio
+commit, e o erro fica anotado com o número da linha para a secretária
+corrigir só o que falhou. Dentro de uma linha, o cliente e o vínculo com
+o lote entram juntos. Senão o cliente ficaria sem saber de qual planilha
+veio, e o "Desfazer importação" não ia encontrá-lo.
 """
-
 import logging
 from datetime import datetime
-
 from extensions import db
 from models.importacao import ImportacaoLote
 from services.cliente.criar_cliente_service import CriarClienteService
 from utils.leitor_planilha import ErroLeitura, ler
-
 # Nomes de coluna aceitos para cada campo. A planilha do escritório
 # raramente usa o mesmo cabeçalho do banco.
 COLUNAS = {
@@ -48,11 +29,8 @@ COLUNAS = {
     "estado": ("estado", "uf"),
     "observacao": ("observacao", "observacoes", "obs", "anotacoes"),
 }
-
 LIMITE_LINHAS = 2000
-
 logger = logging.getLogger("tabflower")
-
 # Planilhas de legado quase sempre trazem o estado por extenso. Sem esta
 # conversão, "Minas Gerais" viraria "Mi" ao ser cortado em dois caracteres.
 UF_POR_NOME = {
@@ -66,57 +44,41 @@ UF_POR_NOME = {
     "santa catarina": "SC", "sao paulo": "SP", "sergipe": "SE",
     "tocantins": "TO",
 }
-
-
 def normalizar_uf(texto):
     """Converte o estado para a sigla de duas letras.
-
     Aceita "MG", "mg", "Minas Gerais" e "minas gerais". Se não reconhecer,
-    devolve os dois primeiros caracteres em maiúscula - assim uma sigla
+    devolve os dois primeiros caracteres em maiúscula, assim uma sigla
     desconhecida ainda entra, em vez de travar a linha inteira.
     """
     import unicodedata
-
     bruto = (texto or "").strip()
     if not bruto:
         return ""
-
     if len(bruto) == 2:
         return bruto.upper()
-
     sem_acento = unicodedata.normalize("NFKD", bruto)
     sem_acento = sem_acento.encode("ASCII", "ignore").decode("ASCII").lower()
     sem_acento = " ".join(sem_acento.split())
-
     return UF_POR_NOME.get(sem_acento, bruto[:2].upper())
-
-
 class ImportarClientesService:
-
     @staticmethod
     def executar(arquivo, usuario_id=None):
         if arquivo is None or not arquivo.filename:
             raise ValueError("Nenhum arquivo foi enviado.")
-
         conteudo = arquivo.read()
-
         if not conteudo:
             raise ValueError("O arquivo enviado está vazio.")
-
         try:
             linhas = ler(arquivo.filename, conteudo)
         except ErroLeitura as erro:
             raise ValueError(str(erro))
-
         if not linhas:
             raise ValueError("A planilha não tem nenhuma linha de dados.")
-
         if len(linhas) > LIMITE_LINHAS:
             raise ValueError(
                 f"A planilha tem {len(linhas)} linhas. O limite por importação "
                 f"é {LIMITE_LINHAS}. Divida o arquivo em partes."
             )
-
         # O lote é registrado ANTES de processar, para que os clientes
         # criados já nasçam apontando para ele.
         lote = ImportacaoLote(
@@ -126,28 +88,23 @@ class ImportarClientesService:
             situacao="PROCESSANDO",
             criado_em=datetime.now(),
         ).salvar()
-
         sucessos = 0
         erros = []
-
         for indice, linha in enumerate(linhas, start=2):  # linha 1 = cabeçalho
             try:
                 dados = ImportarClientesService._mapear(linha)
-
                 # confirmar=False: o cliente fica preparado, mas ainda não
                 # gravado. Só depois de marcar a origem e que o commit
                 # fecha as duas escritas de uma vez.
                 cliente = CriarClienteService.executar(
                     dados, criado_por=usuario_id, confirmar=False
                 )
-
-                # Funcionalidade 19: marca a origem para permitir desfazer.
+                # Funcionalidade 19 marca a origem para permitir desfazer.
                 cliente.importacao_id = lote.id
-
                 db.session.commit()
                 sucessos += 1
             except ValueError as erro:
-                # Erro de validação (CPF inválido, cliente repetido): e
+                # Erro de validação (CPF inválido, cliente repetido) é
                 # esperado numa planilha de legado, não vai para o log.
                 db.session.rollback()
                 nome = linha.get("nome") or linha.get("cliente") or "(sem nome)"
@@ -161,14 +118,10 @@ class ImportarClientesService:
                     "Erro inesperado na linha %s da importação %s", indice, lote.id
                 )
                 erros.append(f"Linha {indice}: erro inesperado - {erro}")
-
         situacao = "CONCLUIDA" if sucessos > 0 else "FALHOU"
         lote.finalizar(situacao, sucessos, len(erros), "\n".join(erros) or None)
-
         return lote
-
     # -----------------------------------------------------------------
-
     @staticmethod
     def _valor(linha, campo):
         """Procura a coluna por qualquer um dos nomes aceitos."""
@@ -176,13 +129,11 @@ class ImportarClientesService:
             if linha.get(nome):
                 return linha[nome].strip()
         return ""
-
     @staticmethod
     def _mapear(linha):
         """Converte uma linha da planilha no formato do CriarClienteService."""
         documento = ImportarClientesService._valor(linha, "documento")
         tipo = ImportarClientesService._valor(linha, "tipo_pessoa").upper()
-
         # Se a planilha não informa o tipo, deduz pela quantidade de
         # dígitos: 11 é CPF, 14 é CNPJ. É o caso mais comum no legado.
         if tipo not in ("F", "J"):
@@ -195,7 +146,6 @@ class ImportarClientesService:
                 tipo = "J"
             else:
                 tipo = "F"
-
         return {
             "nome": ImportarClientesService._valor(linha, "nome"),
             "tipo_pessoa": tipo,

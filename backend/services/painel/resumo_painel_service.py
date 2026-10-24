@@ -1,10 +1,8 @@
 """
-Caso de uso: montar o painel central de gestao.
+Monta o resumo do painel (funcionalidade 6).
 
-Funcionalidade 06 - Painel Central de Gestao.
-
-Este Service usa o Repository, e não a Model, porque a consulta e uma
-agregação com LEFT JOIN - relatório, não CRUD.
+Usa o Repository porque a consulta conta os processos de cada fase com
+LEFT JOIN.
 """
 
 from repositories.processo_repository import ProcessoRepository

@@ -1,8 +1,8 @@
 """
-Controller da importação em lote.
+Controller da importação em lote (funcionalidades 18 e 19).
 
-Funcionalidades 18 e 19. Recebe a planilha em multipart/form-data,
-chama o Service e devolve o resultado da carga.
+Recebe a planilha como multipart/form-data, chama o Service e devolve o
+resultado da importação.
 """
 
 import csv
@@ -93,7 +93,6 @@ class ImportacaoController:
              "(31) 3333-4444", "Av. Afonso Pena, 500", "Belo Horizonte", "MG", ""]
         )
 
-        # BOM para o Excel abrir com acento correto.
         conteudo = "\ufeff" + saida.getvalue()
 
         return Response(

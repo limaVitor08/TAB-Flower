@@ -1,15 +1,11 @@
 """
-Model Documento.
+Model do Documento.
 
-Camada de Domínio / Persistência Simples.
+O arquivo em si fica no disco do servidor. O banco guarda o caminho, a
+categoria e o nome padronizado que o sistema gerou.
 
-Representa o arquivo digitalizado. O PDF fica no disco do servidor; o
-banco guarda o caminho, a categoria e o nome padronizado gerado pelo
-sistema.
-
-Funcionalidade 20 (Restricao de Exclusão): documento NUNCA e apagado da
-tabela. O campo "excluido" e marcado e ficam registrados quem excluiu e
-quando, para o acervo continuar rastreavel.
+Documento nunca é apagado da tabela (funcionalidade 20). Ao excluir, o
+campo "excluido" é marcado e fica registrado quem excluiu e quando.
 """
 
 from datetime import datetime
@@ -40,34 +36,18 @@ class Documento(db.Model):
     categoria = db.relationship("CategoriaDocumento", lazy="joined")
     cliente = db.relationship("Cliente", lazy="joined")
 
-    # -----------------------------------------------------------------
-    # CRUD básico
-    #
-    # O parâmetro "confirmar" existe porque anexar e excluir documento não
-    # são operações de uma tabela só: elas mexem também no checklist, na
-    # notificação e no status do processo.
-    #
-    # confirmar=True  (padrão) - a Model grava sozinha, como Active Record.
-    # confirmar=False          - a Model só prepara a escrita, e quem manda
-    #                            no commit e o Service que comanda a
-    #                            operação inteira. Assim, ou todas as
-    #                            tabelas mudam, ou nenhuma muda.
-    # -----------------------------------------------------------------
-
     def salvar(self, confirmar=True):
         db.session.add(self)
         if confirmar:
             db.session.commit()
         else:
-            # flush envia o INSERT ao banco e devolve o id gerado, mas sem
-            # fechar a transação - o documento ainda pode ser desfeito.
             db.session.flush()
         return self
 
     def atualizar(self, dados):
         """Só a categoria pode ser corrigida depois do envio.
 
-        Nome e caminho do arquivo não mudam: eles apontam para um arquivo
+        Nome e caminho do arquivo não mudam, eles apontam para um arquivo
         que já existe no disco.
         """
         if "categoria_id" in dados:

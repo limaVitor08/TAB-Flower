@@ -1,72 +1,157 @@
 <!DOCTYPE html>
+<!-- clientes>html> Raiz da página, com idioma português do Brasil -->
 <html lang="pt-BR">
+<!-- clientes>head> Parte invisível da página: configurações, título da aba e arquivos ligados -->
 <head>
+    <!-- clientes>head>meta> Usa a codificação UTF-8 para os acentos aparecerem certo -->
     <meta charset="UTF-8">
+    <!-- clientes>head>meta> Ajusta a página à largura da tela (celular) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- clientes>head>title> Texto da aba do navegador: "Clientes - TabFlower" -->
     <title>Clientes - TabFlower</title>
 
+    <!-- clientes>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- clientes>head>link> Adianta a conexão com o servidor de fontes do Google -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- clientes>head>link> Carrega as fontes Archivo (títulos), Roboto Mono (números) e Source Sans 3 (texto) -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Roboto+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 
+    <!-- clientes>head>link> Liga o arquivo de estilo do site (css/estilo.css) -->
+    <!-- [CSS] css/estilo.css -->
     <link rel="stylesheet" href="css/estilo.css">
 </head>
+<!-- clientes>body> Corpo da página: tudo que aparece na tela -->
+<!-- [CSS] body -->
 <body>
 
+    <!-- clientes>header> Faixa do topo com o logo, o menu de abas e o usuário logado -->
+    <!-- [CSS] .cabecalho -->
     <header class="cabecalho">
+        <!-- clientes>header>div> Organiza o topo: logo, abas e usuário lado a lado -->
+        <!-- [CSS] .cabecalho-conteudo | .cabecalho-conteudo @media (max-width: 700px) -->
+        <!-- [JS] api.js: montarBarraUsuario() -->
         <div class="cabecalho-conteudo">
+            <!-- clientes>header>div>div> Logo TabFlower -->
+            <!-- [CSS] .marca -->
+            <!-- clientes>header>div>div>span> Palavra "Flower" do logo -->
+            <!-- [CSS] .marca span -->
             <div class="marca">Tab<span>Flower</span></div>
+            <!-- clientes>header>div>nav> Menu de navegação entre as telas -->
             <nav>
+                <!-- clientes>header>div>nav>ul> Lista das abas do menu -->
+                <!-- [CSS] .abas | .abas @media (max-width: 700px) -->
                 <ul class="abas">
+                    <!-- clientes>header>div>nav>ul>li> Item do menu: aba "Painel" -->
+                    <!-- clientes>header>div>nav>ul>li>a> Link para a tela "Painel" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="painel.html">Painel</a></li>
+                    <!-- clientes>header>div>nav>ul>li> Item do menu: aba "Clientes" -->
+                    <!-- clientes>header>div>nav>ul>li>a> Link para a tela "Clientes" (aba da página atual, fica destacada) -->
+                    <!-- [CSS] .abas a | .abas a:hover | .abas a.ativa -->
                     <li><a href="clientes.html" class="ativa">Clientes</a></li>
+                    <!-- clientes>header>div>nav>ul>li> Item do menu: aba "Processos" -->
+                    <!-- clientes>header>div>nav>ul>li>a> Link para a tela "Processos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="processos.html">Processos</a></li>
+                    <!-- clientes>header>div>nav>ul>li> Item do menu: aba "Documentos" -->
+                    <!-- clientes>header>div>nav>ul>li>a> Link para a tela "Documentos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="documentos.html">Documentos</a></li>
+                    <!-- clientes>header>div>nav>ul>li> Item do menu: aba "Avisos" -->
+                    <!-- clientes>header>div>nav>ul>li>a> Link para a tela "Avisos" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="notificacoes.html">Avisos</a></li>
+                    <!-- clientes>header>div>nav>ul>li> Item do menu: aba "Usuários" -->
+                    <!-- clientes>header>div>nav>ul>li>a> Link para a tela "Usuários" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="usuarios.html">Usuários</a></li>
+                    <!-- clientes>header>div>nav>ul>li> Item do menu: aba "Checklists" -->
+                    <!-- clientes>header>div>nav>ul>li>a> Link para a tela "Checklists" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="checklists.html">Checklists</a></li>
+                    <!-- clientes>header>div>nav>ul>li> Item do menu: aba "Importação" -->
+                    <!-- clientes>header>div>nav>ul>li>a> Link para a tela "Importação" -->
+                    <!-- [CSS] .abas a | .abas a:hover -->
                     <li><a href="importacoes.html">Importação</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- clientes>main> Área principal da lista de clientes -->
+    <!-- [CSS] .pagina -->
     <main class="pagina">
 
+        <!-- clientes>main>h1> Título da página: "Clientes" -->
+        <!-- [CSS] .titulo-pagina -->
         <h1 class="titulo-pagina">Clientes</h1>
+        <!-- clientes>main>p> Texto explicativo abaixo do título -->
+        <!-- [CSS] .subtitulo-pagina -->
         <p class="subtitulo-pagina">
             Busque pelo nome ou pelo CPF/CNPJ. Cada cliente cadastrado ganha
             uma pasta padronizada no servidor.
         </p>
 
+        <!-- clientes>main>div> Caixa de mensagens de erro ou sucesso (começa escondida) -->
+        <!-- [CSS] .escondido -->
+        <!-- [JS] clientes.js: tela.aviso -->
         <div id="aviso" class="escondido"></div>
 
+        <!-- clientes>main>div> Barra com busca, filtros e botão de novo cliente -->
+        <!-- [CSS] .barra-acoes -->
         <div class="barra-acoes">
+            <!-- clientes>main>div>form> Formulário de busca de clientes -->
+            <!-- [CSS] .busca -->
+            <!-- [JS] clientes.js: tela.formBusca -->
             <form class="busca" id="form-busca">
+                <!-- clientes>main>div>form>input> Campo onde se digita o nome ou o CPF/CNPJ para buscar -->
+                <!-- [CSS] .busca input | .busca input:focus -->
+                <!-- [JS] clientes.js: tela.campoBusca -->
                 <input type="text"
                        id="campo-busca"
                        placeholder="Nome ou CPF/CNPJ"
                        aria-label="Buscar cliente">
+                <!-- clientes>main>div>form>button> Botão que dispara a busca -->
+                <!-- [CSS] .botao | .botao:hover -->
                 <button type="submit" class="botao">Buscar</button>
             </form>
 
+            <!-- clientes>main>div>button> Botão "Ver todos": limpa a busca e mostra a lista completa -->
+            <!-- [CSS] .botao | .botao:hover -->
+            <!-- [JS] clientes.js: tela.botaoLimpar -->
             <button type="button" class="botao" id="botao-limpar">Ver todos</button>
 
+            <!-- clientes>main>div>div> Espaço vazio que empurra o botão "Novo cliente" para a direita -->
+            <!-- [CSS] .espacador -->
             <div class="espacador"></div>
 
+            <!-- clientes>main>div>label> Caixinha "Mostrar inativos" com o texto ao lado -->
+            <!-- [CSS] .dica | style inline -->
             <label class="dica" style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <!-- clientes>main>div>label>input> Caixinha de marcar para incluir os clientes desativados -->
+                <!-- [JS] clientes.js: tela.mostrarInativos -->
                 <input type="checkbox" id="mostrar-inativos">
                 Mostrar inativos
             </label>
 
+            <!-- clientes>main>div>a> Botão "Novo cliente": abre o formulário de cadastro -->
+            <!-- [CSS] .botao | .botao:hover | .botao-principal | .botao-principal:hover -->
             <a href="cliente-form.html" class="botao botao-principal">Novo cliente</a>
         </div>
 
+        <!-- clientes>main>div> Lista dos clientes (preenchida pelo JS) -->
+        <!-- [CSS] .lista -->
+        <!-- [JS] clientes.js: tela.lista -->
         <div id="lista" class="lista"></div>
 
     </main>
 
+    <!-- clientes>script> Carrega o api.js: chamadas à API, sessão de login e funções de apoio -->
+    <!-- [JS] js/api.js -->
     <script charset="UTF-8" src="js/api.js"></script>
+    <!-- clientes>script> Carrega o clientes.js, que faz esta página funcionar -->
+    <!-- [JS] js/clientes.js -->
     <script charset="UTF-8" src="js/clientes.js"></script>
 </body>
 </html>

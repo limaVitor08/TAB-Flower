@@ -1,26 +1,14 @@
-/* =====================================================================
-   TabFlower - Avisos internos
-   =====================================================================
-   Funcionalidade 16 (Disparo de Notificações)
-   Funcionalidade 17 (Direcionamento Automático)
-
-   Os avisos são criados pelo sistema, nunca pelo usuário: quando um
-   documento é anexado, o EnviarDocumentoService descobre quem é o
-   advogado do processo e cria o aviso para ele. Por isso esta tela só
-   lê e marca como lido.
-
-   Os dados vêm da procedure sp_notificacoes_advogado, que junta o aviso
-   ao processo, ao cliente e ao documento. Sem esse JOIN, a tela diria
-   apenas "novo documento", sem dizer em qual caso.
-   ===================================================================== */
-
+// [JS] notificacoes> Atalhos para os elementos da tela de avisos
 const tela = {
+    // [JS] notificacoes>main>div> Desenha cada aviso com processo, cliente, data e botões Abrir processo e Marcar lido
     lista: document.getElementById('lista'),
+    // [JS] notificacoes>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
+    // [JS] notificacoes>main>div>label>input> Ao marcar ou desmarcar, recarrega os avisos
     apenasNaoLidas: document.getElementById('apenas-nao-lidas')
 };
 
-/** Cor da tarja conforme o tipo de aviso. */
+// [JS] notificacoes>main>div>article> Escolhe a cor do selo pelo tipo do aviso (documento, prazo, situação)
 function corDoTipo(tipo) {
     if (tipo === 'DOCUMENTO') { return '#2f6f4e'; }
     if (tipo === 'PRAZO') { return '#c2410c'; }
@@ -28,6 +16,7 @@ function corDoTipo(tipo) {
     return '#5a6472';
 }
 
+// [JS] notificacoes>main>div>article> Monta a ficha do aviso: título, selo do tipo, processo, cliente, data, mensagem e botões (lido fica apagado)
 function montarFicha(n) {
     const classeLida = n.lida ? ' inativa' : '';
 
@@ -78,6 +67,7 @@ function montarFicha(n) {
         </article>`;
 }
 
+// [JS] notificacoes>main>div> Desenha a lista de avisos ou a caixa de "nenhum aviso"
 function desenhar(avisos) {
     if (avisos.length === 0) {
         tela.lista.innerHTML = `
@@ -91,10 +81,7 @@ function desenhar(avisos) {
     tela.lista.innerHTML = avisos.map(montarFicha).join('');
 }
 
-/* Antes existia aqui um seletor "avisos de quem", porque sem login o
-   sistema não sabia quem estava operando. Com a sessão, esse seletor
-   deixou de fazer sentido: cada pessoa vê apenas os próprios avisos, e
-   quem é essa pessoa o backend descobre pelo token. */
+// [JS] notificacoes>main>div> Busca os avisos de quem está logado (todos ou só os não lidos)
 async function carregar() {
     limparAviso(tela.aviso);
 
@@ -111,8 +98,10 @@ async function carregar() {
     }
 }
 
+// [JS] notificacoes>main>div>label>input> Marcar ou desmarcar Apenas não lidos recarrega a lista
 tela.apenasNaoLidas.addEventListener('change', carregar);
 
+// [JS] notificacoes>main>div> Clique em Marcar lido marca o aviso e recarrega
 tela.lista.addEventListener('click', async (evento) => {
     const botao = evento.target.closest('[data-lida]');
     if (!botao) {
@@ -127,4 +116,5 @@ tela.lista.addEventListener('click', async (evento) => {
     }
 });
 
+// [JS] notificacoes> Carrega os avisos assim que a página abre
 carregar();

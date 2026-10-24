@@ -1,8 +1,4 @@
-"""
-Caso de uso: arquivar (desativar) um processo.
-
-Funcionalidade 20 (Restricao de Exclusão).
-"""
+"""Arquiva um processo, sem apagar do banco. Só o Admin pode."""
 
 from models.processo import Processo
 from services.auditoria.registrar_auditoria_service import (
@@ -27,8 +23,8 @@ class ExcluirProcessoService:
         if not processo.ativo:
             raise ValueError("Este processo já está arquivado.")
 
-        # Registrada antes do remover(): o commit do remover() grava o
-        # arquivamento e o log na mesma transação.
+        #remover() grava o
+        #arquivamento e o log na mesma transação.
         RegistrarAuditoriaService.registrar(
             usuario_id=usuario.id,
             acao="EXCLUIR",
