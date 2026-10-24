@@ -43,9 +43,9 @@ TabFlower/
 └── docs/                 diagrama de classes e fluxogramas
 ```
 
-## Casos de uso implementados
+## Funcionalidades Implementadas
 
-São 20 casos de uso, todos funcionando de ponta a ponta, da tela até o banco. Embaixo de cada um está o caminho que ele faz pelas camadas. Entre parênteses está a funcionalidade correspondente da proposta do projeto, e as 20 funcionalidades da proposta aparecem na lista.
+São 20 funcionalidades, todas funcionando de ponta a ponta, da tela até o banco. Embaixo de cada uma está o caminho que ela faz pelas camadas. Entre parênteses está a funcionalidade correspondente da proposta do projeto, e as 20 funcionalidades da proposta aparecem na lista.
 
 ### Primeiro grupo
 
@@ -135,6 +135,8 @@ Todas as rotas respondem em JSON, menos o download de documento e o modelo de pl
 * **Importação** `GET /api/importacoes`, `GET /api/importacoes/modelo`, `GET /api/importacoes/<id>/clientes`, `POST /api/importacoes` e `DELETE /api/importacoes/<id>`
 
 ## Diagramas
+
+Os três diagramas ficam na pasta `docs` do repositório, nos arquivos `diagrama_classes.png`, `fluxograma_recuperacao.png` e `fluxograma_entrada.png`.
 
 O diagrama de classes mostra as 15 classes do domínio, com atributos, métodos e relacionamentos.
 
