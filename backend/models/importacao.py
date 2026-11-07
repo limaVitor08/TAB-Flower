@@ -1,10 +1,4 @@
-"""
-Model do lote de importação (funcionalidades 18 e 19).
-Cada planilha importada vira uma linha nesta tabela, com quantas linhas
-deram certo, quantas deram erro e o motivo de cada erro. É por ela que
-dá para ver quais clientes vieram de qual planilha e desfazer uma
-importação errada sem mexer nos cadastros feitos à mão.
-"""
+# Model do lote de importação, com quantas linhas entraram e quantas falharam
 from datetime import datetime
 from extensions import db
 class ImportacaoLote(db.Model):
@@ -40,7 +34,7 @@ class ImportacaoLote(db.Model):
     def buscar_por_id(id_importacao):
         return db.session.get(ImportacaoLote, id_importacao)
     @staticmethod
-    def listar_todas():
+    def listar_todos():
         return ImportacaoLote.query.order_by(ImportacaoLote.criado_em.desc()).all()
     def to_dict(self):
         return {

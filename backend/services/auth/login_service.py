@@ -1,10 +1,4 @@
-"""
-Faz o login por e-mail e senha.
-Se o e-mail não existe, se a senha está errada ou se o usuário está
-inativo, a mensagem é sempre a mesma: "E-mail ou senha inválidos". Assim
-ninguém usa a tela de login para descobrir quais e-mails estão
-cadastrados.
-"""
+# Confere email e senha e entrega o token de quem entrou
 from werkzeug.security import check_password_hash
 from extensions import db
 from models.usuario import Usuario
@@ -27,7 +21,7 @@ class LoginService:
         ):
             raise ValueError("E-mail ou senha inválidos.")
         token = gerar_token(usuario.id)
-        RegistrarAuditoriaService.registrar(
+        RegistrarAuditoriaService.executar(
             usuario_id=usuario.id,
             acao="LOGIN",
             entidade="usuario",
@@ -36,12 +30,6 @@ class LoginService:
         )
         db.session.commit()
         dados_usuario = usuario.to_dict()
-        # O pode_excluir vai junto para a interface conhecer o perfil de
-        # quem entrou e poder adaptar textos, se um dia precisar.
-        #
-        # Ele NÃO é usado para esconder botões.
-        # Os botões de exclusão continuam visíveis para todos, e
-        # quem nega é o backend, com uma mensagem explicando a regra.
         dados_usuario["pode_excluir"] = bool(
             usuario.perfil and usuario.perfil.pode_excluir
         )

@@ -1,11 +1,4 @@
-"""
-Atualiza os dados de um usuário.
-
-A senha não passa por aqui, ela tem um Service próprio. Só o Admin pode
-editar usuários por causa do perfil_id. Sem essa trava, qualquer pessoa
-mandaria um PUT no próprio cadastro com perfil_id = 1 e virava Admin.
-"""
-
+# Edita os dados de um usuário, só o Admin pode
 from extensions import db
 from models.usuario import Perfil, Usuario
 
@@ -24,6 +17,9 @@ class AtualizarUsuarioService:
         if not usuario:
             raise LookupError("Usuário não encontrado.")
 
+        if "ativo" in dados and not dados["ativo"]:
+            raise ValueError("Para desativar o usuário, use o botão Desativar.")
+
         if "nome" in dados and not (dados["nome"] or "").strip():
             raise ValueError("O nome do usuário é obrigatório.")
 
@@ -32,7 +28,6 @@ class AtualizarUsuarioService:
             if not email or "@" not in email:
                 raise ValueError("Informe um e-mail válido.")
 
-            # O e-mail identifica o usuário, entao não pode colidir.
             existente = Usuario.buscar_por_email(email)
             if existente and existente.id != usuario.id:
                 raise ValueError("Já existe um usuário com este e-mail.")
@@ -40,7 +35,13 @@ class AtualizarUsuarioService:
             dados["email"] = email
 
         if "perfil_id" in dados:
-            if not db.session.get(Perfil, dados["perfil_id"]):
+            perfil = db.session.get(Perfil, dados["perfil_id"])
+            if not perfil:
                 raise ValueError("Perfil inválido.")
+
+            if usuario.id == usuario_logado.id and not perfil.pode_excluir:
+                raise ValueError(
+                    "Você não pode tirar o perfil de Administrador da própria conta."
+                )
 
         return usuario.atualizar(dados)

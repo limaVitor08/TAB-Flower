@@ -1,11 +1,4 @@
-"""
-Desativa um usuário.
-
-Usuário nunca é apagado de verdade, porque os processos apontam para o
-advogado responsável e o log de auditoria aponta para quem fez cada
-ação. Apagar quebraria as duas coisas.
-"""
-
+# Desativa um usuário sem apagar do banco
 from models.processo import Processo
 from models.usuario import Usuario
 from services.auditoria.registrar_auditoria_service import (
@@ -23,10 +16,6 @@ class ExcluirUsuarioService:
                 "Somente o Administrador pode."
             )
 
-        # Ninguem se desativa. Se o unico Administrador se desativasse,
-        # ninguem mais administraria o sistema. Daria para recuperar pelo
-        # criar_primeiro_usuario.py, mas evitar o problema é melhor do que
-        # documentar a saida de emergencia.
         if usuario_logado.id == id_usuario:
             raise ValueError("Você não pode desativar a própria conta.")
 
@@ -37,8 +26,6 @@ class ExcluirUsuarioService:
         if not usuario.ativo:
             raise ValueError("Este usuário já está inativo.")
 
-        # Um advogado com processos ativos não pode sumir do sistema sem
-        # que alguem assuma os casos dele.
         pendentes = [
             p for p in Processo.query.filter_by(
                 advogado_id=usuario.id, ativo=True
@@ -51,7 +38,7 @@ class ExcluirUsuarioService:
                 "Transfira os processos para outro advogado antes de desativá-lo."
             )
 
-        RegistrarAuditoriaService.registrar(
+        RegistrarAuditoriaService.executar(
             usuario_id=usuario_logado.id,
             acao="EXCLUIR",
             entidade="usuario",
@@ -59,4 +46,4 @@ class ExcluirUsuarioService:
             descricao=f"Usuário {usuario.nome} desativado.",
         )
 
-        return usuario.remover()
+        return usuario.deletar()

@@ -1,12 +1,6 @@
-"""
-Models de Perfil e de Usuário.
-O usuário é quem entra no sistema: Admin, Advogado ou Secretária. Quem
-tem perfil de Advogado também é o responsável pelos processos e quem
-recebe as notificações.
-"""
+# Models do perfil de acesso e do usuário do sistema
 from extensions import db
 class Perfil(db.Model):
-    """Nível de permissão. Tabela de apoio, carregada junto com o banco."""
     __tablename__ = "perfil"
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(50), nullable=False)
@@ -34,31 +28,20 @@ class Usuario(db.Model):
     criado_em = db.Column(db.DateTime)
     atualizado_em = db.Column(db.DateTime)
     perfil = db.relationship("Perfil", lazy="joined")
-    # -----------------------------------------------------------------
-    # CRUD básico
-    # -----------------------------------------------------------------
     def salvar(self):
         db.session.add(self)
         db.session.commit()
         return self
     def atualizar(self, dados):
-        """Altera os campos permitidos. A senha tem caminho próprio."""
         for campo in ("nome", "email", "perfil_id", "ativo"):
             if campo in dados:
                 setattr(self, campo, dados[campo])
         db.session.commit()
         return self
-    def remover(self):
-        """Desativa o usuário.
-        Não apagamos de verdade porque processos apontam para o advogado
-        responsavel e o log de auditoria aponta para quem fez cada ação.
-        """
+    def deletar(self):
         self.ativo = False
         db.session.commit()
         return self
-    # -----------------------------------------------------------------
-    # Consultas simples
-    # -----------------------------------------------------------------
     @staticmethod
     def buscar_por_id(id_usuario):
         return db.session.get(Usuario, id_usuario)
@@ -73,7 +56,6 @@ class Usuario(db.Model):
         return consulta.order_by(Usuario.nome).all()
     @staticmethod
     def listar_advogados():
-        """Usuários que podem ser responsaveis por um processo."""
         return (
             Usuario.query.join(Perfil)
             .filter(Perfil.nome == "Advogado", Usuario.ativo.is_(True))

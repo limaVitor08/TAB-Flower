@@ -1,10 +1,4 @@
-"""
-Corrige a categoria de um documento (funcionalidade 9).
-
-Serve para quando a secretária escolheu a categoria errada no envio. O
-arquivo que já está no disco não é mexido.
-"""
-
+# Corrige a categoria de um documento
 from extensions import db
 from models.documento import Documento
 from models.tabelas_apoio import CategoriaDocumento

@@ -1,13 +1,4 @@
-"""
-Model do Documento.
-
-O arquivo em si fica no disco do servidor. O banco guarda o caminho, a
-categoria e o nome padronizado que o sistema gerou.
-
-Documento nunca é apagado da tabela (funcionalidade 20). Ao excluir, o
-campo "excluido" é marcado e fica registrado quem excluiu e quando.
-"""
-
+# Model do documento, que guarda o caminho do arquivo e a categoria
 from datetime import datetime
 
 from extensions import db
@@ -45,19 +36,13 @@ class Documento(db.Model):
         return self
 
     def atualizar(self, dados):
-        """Só a categoria pode ser corrigida depois do envio.
-
-        Nome e caminho do arquivo não mudam, eles apontam para um arquivo
-        que já existe no disco.
-        """
         if "categoria_id" in dados:
             self.categoria_id = dados["categoria_id"]
 
         db.session.commit()
         return self
 
-    def remover(self, usuario_id=None, confirmar=True):
-        """Exclusão lógica. O arquivo continua no disco."""
+    def deletar(self, usuario_id=None, confirmar=True):
         self.excluido = True
         self.excluido_em = datetime.now()
         self.excluido_por = usuario_id
@@ -73,9 +58,6 @@ class Documento(db.Model):
             db.session.commit()
         return self
 
-    # -----------------------------------------------------------------
-    # Consultas simples
-    # -----------------------------------------------------------------
 
     @staticmethod
     def buscar_por_id(id_documento):
@@ -91,13 +73,6 @@ class Documento(db.Model):
     @staticmethod
     def listar_do_processo(processo_id, incluir_excluidos=False):
         consulta = Documento.query.filter_by(processo_id=processo_id)
-        if not incluir_excluidos:
-            consulta = consulta.filter_by(excluido=False)
-        return consulta.order_by(Documento.criado_em.desc()).all()
-
-    @staticmethod
-    def listar_do_cliente(cliente_id, incluir_excluidos=False):
-        consulta = Documento.query.filter_by(cliente_id=cliente_id)
         if not incluir_excluidos:
             consulta = consulta.filter_by(excluido=False)
         return consulta.order_by(Documento.criado_em.desc()).all()

@@ -1,19 +1,21 @@
-"""Atualiza os dados de um cliente."""
-
+# Edita os dados de um cliente, sem permitir desativar por aqui
 from models.cliente import Cliente
 
 
 class AtualizarClienteService:
-    """Válida os dados enviados e grava a alteração."""
-
     @staticmethod
-    def executar(id_cliente, dados):
+    def executar(id_cliente, dados, usuario_logado):
         cliente = Cliente.buscar_por_id(id_cliente)
         if not cliente:
             raise LookupError("Cliente não encontrado.")
 
-        # O documento não pode ser alterado: mudar o CPF/CNPJ depois do
-        # cadastro contornaria o bloqueio de duplicidade.
+        if "ativo" in dados:
+            if not usuario_logado.perfil or not usuario_logado.perfil.pode_excluir:
+                raise PermissionError(
+                    "Só o Administrador desativa clientes, e pelo botão Desativar."
+                )
+            raise ValueError("Para desativar o cliente, use o botão Desativar.")
+
         if "documento" in dados:
             documento_novo = str(dados["documento"]).strip()
             if documento_novo and documento_novo != cliente.documento:

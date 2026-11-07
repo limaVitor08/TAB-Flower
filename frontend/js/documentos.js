@@ -1,24 +1,42 @@
-// [JS] documentos> Atalhos para os elementos do acervo
+/*
+==============================================================================
+SEÇÃO COMENTÁRIOS — documentos.js: Lógica da página documentos.html: Acervo de documentos
+Formato: caminho do elemento no HTML> nome no código: o que faz
+==============================================================================
+documentos> tela: Atalhos para os elementos do acervo
+documentos>main>div> tela.lista: Desenha cada documento com categoria editável e botões Baixar, Excluir ou Restaurar
+documentos>main>div> tela.aviso: Mostra aqui as mensagens de erro ou de sucesso
+documentos>main>div>form> tela.formBusca: Filtra a lista já carregada, sem chamar a API de novo
+documentos>main>div>form>input> tela.campoBusca: Lê o texto do filtro
+documentos>main>div>button> tela.botaoLimpar: Limpa o campo e mostra a lista completa
+documentos>main>div>label>input> tela.mostrarExcluidos: Ao marcar ou desmarcar, recarrega a lista
+documentos> categorias: Guarda as categorias e os documentos carregados, para filtrar sem chamar a API de novo
+documentos>main>div>article>div>div>select> selectCategoria(): Monta a listinha para trocar a categoria do documento na própria ficha
+documentos>main>div>article> montarFicha(): Monta a ficha do documento: nome padronizado, categoria, cliente, tamanho, link do processo e botões
+documentos>main>div> desenhar(): Desenha a lista de fichas, ou avisa que o filtro não achou nada ou que o acervo está vazio
+documentos>main>div>form> filtrar(): Filtra os documentos pelo nome, cliente ou categoria
+documentos>main>div> carregar(): Busca categorias e documentos na API e desenha a lista (aplicando o filtro, se houver)
+documentos>main>div>form> tela.formBusca (submit): Ao enviar o filtro, redesenha só os documentos que batem
+documentos>main>div>button> tela.botaoLimpar (click): Ver todos: limpa o filtro e mostra tudo
+documentos>main>div>label>input> tela.mostrarExcluidos (change): Marcar ou desmarcar Mostrar excluídos recarrega a lista
+documentos>main>div> tela.lista (change): Trocar a categoria numa ficha salva a correção na API
+documentos>main>div> tela.lista (click): Cliques nas fichas: Baixar faz o download, Excluir pede confirmação, Restaurar desfaz a exclusão e avisa se o processo avançou de fase
+documentos> carregar(): Carrega o acervo assim que a página abre
+==============================================================================
+*/
+
 const tela = {
-    // [JS] documentos>main>div> Desenha cada documento com categoria editável e botões Baixar, Excluir ou Restaurar
     lista: document.getElementById('lista'),
-    // [JS] documentos>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
-    // [JS] documentos>main>div>form> Filtra a lista já carregada, sem chamar a API de novo
     formBusca: document.getElementById('form-busca'),
-    // [JS] documentos>main>div>form>input> Lê o texto do filtro
     campoBusca: document.getElementById('campo-busca'),
-    // [JS] documentos>main>div>button> Limpa o campo e mostra a lista completa
     botaoLimpar: document.getElementById('botao-limpar'),
-    // [JS] documentos>main>div>label>input> Ao marcar ou desmarcar, recarrega a lista
     mostrarExcluidos: document.getElementById('mostrar-excluidos')
 };
 
-// [JS] documentos> Guarda as categorias e os documentos carregados, para filtrar sem chamar a API de novo
 let categorias = [];
 let documentos = [];
 
-// [JS] documentos>main>div>article>div>div>select> Monta a listinha para trocar a categoria do documento na própria ficha
 function selectCategoria(documento) {
     const opcoes = categorias
         .map((c) => `<option value="${c.id}"${c.id === documento.categoria_id ? ' selected' : ''}>${escaparHtml(c.nome)}</option>`)
@@ -27,7 +45,6 @@ function selectCategoria(documento) {
     return `<select class="select-categoria" data-doc="${documento.id}">${opcoes}</select>`;
 }
 
-// [JS] documentos>main>div>article> Monta a ficha do documento: nome padronizado, categoria, cliente, tamanho, link do processo e botões
 function montarFicha(d) {
     const classeInativa = d.excluido ? ' inativa' : '';
 
@@ -50,7 +67,7 @@ function montarFicha(d) {
                      style="font-size:0.95rem">${escaparHtml(d.nome_padronizado)}</div>
                 <div class="ficha-info">
                     ${d.excluido
-                        ? '<span class="etiqueta etiqueta-cinza">Excluido</span>'
+                        ? '<span class="etiqueta etiqueta-cinza">Excluído</span>'
                         : selectCategoria(d)}
                     <span>${escaparHtml(d.cliente_nome)}</span>
                     <span>${formatarTamanho(d.tamanho_kb)}</span>
@@ -62,8 +79,15 @@ function montarFicha(d) {
     `;
 }
 
-// [JS] documentos>main>div> Desenha a lista de fichas ou a caixa de "nenhum documento"
 function desenhar(lista) {
+    if (lista.length === 0 && documentos.length > 0) {
+        tela.lista.innerHTML = `
+            <div class="vazio">
+                <strong>Nenhum documento encontrado</strong>
+                Tente outro termo ou clique em Ver todos.
+            </div>`;
+        return;
+    }
     if (lista.length === 0) {
         tela.lista.innerHTML = `
             <div class="vazio">
@@ -75,7 +99,6 @@ function desenhar(lista) {
     tela.lista.innerHTML = lista.map(montarFicha).join('');
 }
 
-// [JS] documentos>main>div>form> Filtra os documentos pelo nome, cliente ou categoria
 function filtrar(termo) {
     const t = termo.toLowerCase();
     return documentos.filter((d) =>
@@ -85,7 +108,6 @@ function filtrar(termo) {
     );
 }
 
-// [JS] documentos>main>div> Busca categorias e documentos na API e desenha a lista (aplicando o filtro, se houver)
 async function carregar() {
     limparAviso(tela.aviso);
     tela.lista.innerHTML = '<div class="vazio">Carregando...</div>';
@@ -107,23 +129,19 @@ async function carregar() {
     }
 }
 
-// [JS] documentos>main>div>form> Ao enviar o filtro, redesenha só os documentos que batem
 tela.formBusca.addEventListener('submit', (evento) => {
     evento.preventDefault();
     const termo = tela.campoBusca.value.trim();
     desenhar(termo ? filtrar(termo) : documentos);
 });
 
-// [JS] documentos>main>div>button> Ver todos: limpa o filtro e mostra tudo
 tela.botaoLimpar.addEventListener('click', () => {
     tela.campoBusca.value = '';
     desenhar(documentos);
 });
 
-// [JS] documentos>main>div>label>input> Marcar ou desmarcar Mostrar excluídos recarrega a lista
 tela.mostrarExcluidos.addEventListener('change', carregar);
 
-// [JS] documentos>main>div> Trocar a categoria numa ficha salva a correção na API
 tela.lista.addEventListener('change', async (evento) => {
     const select = evento.target.closest('.select-categoria');
     if (!select) {
@@ -134,15 +152,14 @@ tela.lista.addEventListener('change', async (evento) => {
         await api.documentos.atualizar(select.dataset.doc, {
             categoria_id: Number(select.value)
         });
+        await carregar();
         mostrarAviso(tela.aviso, 'Categoria atualizada.', 'sucesso');
-        carregar();
     } catch (erro) {
         mostrarAviso(tela.aviso, erro.message);
         carregar();
     }
 });
 
-// [JS] documentos>main>div> Cliques nas fichas: Baixar faz o download, Excluir pede confirmação, Restaurar desfaz a exclusão
 tela.lista.addEventListener('click', async (evento) => {
     const excluir = evento.target.closest('[data-excluir]');
     const restaurar = evento.target.closest('[data-restaurar]');
@@ -179,8 +196,8 @@ tela.lista.addEventListener('click', async (evento) => {
                     `voltou para "${r.retorno_status}".`;
             }
 
+            await carregar();
             mostrarAviso(tela.aviso, mensagem, 'sucesso');
-            carregar();
         } catch (erro) {
             mostrarAviso(tela.aviso, erro.message);
         }
@@ -190,13 +207,20 @@ tela.lista.addEventListener('click', async (evento) => {
     if (restaurar) {
         try {
             const r = await api.documentos.restaurar(restaurar.dataset.restaurar);
-            mostrarAviso(tela.aviso, r.mensagem, 'sucesso');
-            carregar();
+
+            let mensagem = r.mensagem;
+            if (r.avanco_status) {
+                mensagem +=
+                    ` A documentação obrigatória ficou completa de novo, então ` +
+                    `o processo avançou para "${r.avanco_status}".`;
+            }
+
+            await carregar();
+            mostrarAviso(tela.aviso, mensagem, 'sucesso');
         } catch (erro) {
             mostrarAviso(tela.aviso, erro.message);
         }
     }
 });
 
-// [JS] documentos> Carrega o acervo assim que a página abre
 carregar();

@@ -1,9 +1,4 @@
-"""
-Models das tabelas de apoio.
-São tabelas pequenas que já vêm preenchidas no banco, tipos de processo,
-fases, marcadores e categorias de documento. Elas servem para preencher
-os campos de seleção das telas e não têm cadastro próprio.
-"""
+# Models das tabelas pequenas que já vêm preenchidas, como fases e categorias
 from extensions import db
 class TipoProcesso(db.Model):
     __tablename__ = "tipo_processo"

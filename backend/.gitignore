@@ -1,12 +1,9 @@
-# Ambiente
+# Arquivos que ficam fora do repositório, como o .env e a venv
 .env
 venv/
 __pycache__/
 *.pyc
-# Registro de erros gerado pela aplicacao
 *.log
-# Arquivos enviados pelos usuarios
 arquivos/
-# Editores e ferramentas
 .vscode/
 .idea/

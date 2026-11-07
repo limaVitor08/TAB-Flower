@@ -1,3 +1,61 @@
+/*
+==============================================================================
+SEÇÃO COMENTÁRIOS — api.js: Funções usadas por todas as páginas: chamadas à API, sessão de login, máscaras e formatação
+Formato: caminho do elemento no HTML> nome no código: o que faz
+==============================================================================
+global> URL_BASE: Endereço da API Flask que todas as telas chamam
+global> PAGINA_LOGIN: Página para onde a pessoa vai quando não está logada
+global> ERRO_CONEXAO: Mensagem mostrada quando o servidor não responde
+global> SESSAO_EXPIRADA: Mensagem mostrada quando o token vence ou é recusado (401)
+global> CHAVE_TOKEN: Nomes usados para guardar no navegador o token, o usuário e o aviso que o login deve mostrar
+global> sessao: Cuida do login guardado no navegador (localStorage)
+global> sessao.salvar(): Guarda o token e os dados de quem entrou
+global> sessao.token(): Devolve o token guardado
+global> sessao.usuario(): Devolve os dados do usuário guardado (ou nada, se não houver)
+global> sessao.ativa(): Diz se existe alguém logado
+global> sessao.limpar(): Apaga o token e o usuário do navegador
+global> sessao.encerrar(): Faz logout e volta para a tela de login; se receber um motivo, guarda para o login mostrar
+global> cabecalhosAutenticados(): Monta os cabeçalhos da requisição já com o token (Authorization: Bearer)
+global> requisitar(): Função central que chama a API com JSON: trata erro de conexão, sessão vencida (401) e mensagens de erro
+global> enviarArquivo(): Envia arquivo para a API (upload de documento e de planilha)
+global> baixarArquivo(): Baixa um arquivo da API levando o token e dispara o download no navegador
+global> api: Todas as chamadas à API, separadas por módulo
+global> api.auth: Login: entrar
+global> api.clientes: Chamadas de clientes: listar, buscarPorNome, buscarPorDocumento, buscarPorId, criar, atualizar, excluir
+global> api.processos: Chamadas de processos: listar, buscar, marcadores, aplicarMarcador, removerMarcador, buscarPorId, opcoes, historico, checklist, criar, atualizar, atualizarStatus, excluir
+global> api.usuarios: Chamadas de usuários: listar, perfis, buscarPorId, criar, atualizar, alterarSenha, excluir
+global> api.documentos: Chamadas de documentos: listar, categorias, enviar, atualizar, excluir, restaurar, baixar
+global> api.notificacoes: Chamadas de avisos: listar, marcarLida
+global> api.painel: Chamadas do painel: resumo, pendencias, prioritarios, marcadores
+global> api.checklists: Chamadas da configuração de checklist: opcoes, listar, adicionar, alternarObrigatorio, remover
+global> api.importacoes: Chamadas da importação: listar, clientes, enviar, desfazer, baixarModelo
+global> somenteNumeros(): Deixa só os números de um texto
+global> formatarDocumento(): Formata CPF (000.000.000-00) ou CNPJ (00.000.000/0000-00) enquanto digita
+    HTML: cliente-form>main>form>div>div>input> (campo CPF / CNPJ)
+global> escaparHtml(): Protege o texto antes de colocar no HTML (evita código malicioso)
+global> mostrarAviso(): Mostra uma mensagem na caixa de aviso (erro ou sucesso)
+    HTML: caixa de aviso de cada página, ex.: login>main>div>, clientes>main>div>
+global> limparAviso(): Limpa e esconde a caixa de aviso
+    HTML: caixa de aviso de cada página, ex.: login>main>div>, clientes>main>div>
+global> formatarData(): Mostra data no formato dd/mm/aaaa
+global> formatarDinheiro(): Mostra valor em reais (R$)
+global> formatarTelefone(): Formata telefone (31) 99999-9999 enquanto digita
+    HTML: cliente-form>main>form>div>div>input> (campo Telefone)
+global> formatarNumeroProcesso(): Formata o número do processo no padrão do CNJ enquanto digita
+    HTML: processo-form>main>form>div>div>input> (campo Número do processo)
+global> formatarUF(): Deixa o estado com 2 letras maiúsculas
+    HTML: cliente-form>main>form>div>div>input> (campo Estado)
+global> aplicarMascara(): Liga uma máscara a um campo: formata a cada tecla
+global> formatarTamanho(): Mostra o tamanho do arquivo em KB ou MB
+global> paginaAtual(): Descobre o nome do arquivo da página aberta
+global>header>div> montarBarraUsuario(): Coloca no topo o nome, o perfil e o botão Sair de quem está logado
+    HTML: painel>header>div>, clientes>header>div>, cliente-form>header>div>, processos>header>div>, processo-form>header>div>, processo-detalhe>header>div>, documentos>header>div>, notificacoes>header>div>, checklists>header>div>, importacoes>header>div>, usuarios>header>div>, usuario-form>header>div>
+global>header>div>div>button> #botao-sair (click): Clicar em Sair encerra a sessão
+    HTML: <página>>header>div>div>button> (botão Sair, criado pelo JS em todas as páginas com menu)
+global> ao abrir qualquer página: Em toda página (menos o login): sem sessão volta para o login; com sessão monta a barra do usuário
+==============================================================================
+*/
+
 const URL_BASE = 'http://localhost:5000/api';
 
 const PAGINA_LOGIN = 'login.html';
@@ -6,8 +64,11 @@ const ERRO_CONEXAO =
     'Não foi possível falar com o servidor. ' +
     'Confira se o WAMP está ligado e se o run.py está rodando.';
 
+const SESSAO_EXPIRADA = 'Sua sessão expirou. Faça login novamente.';
+
 const CHAVE_TOKEN = 'tabflower_token';
 const CHAVE_USUARIO = 'tabflower_usuario';
+const CHAVE_AVISO = 'tabflower_aviso';
 
 const sessao = {
 
@@ -41,8 +102,11 @@ const sessao = {
         localStorage.removeItem(CHAVE_USUARIO);
     },
 
-    encerrar() {
+    encerrar(motivo) {
         this.limpar();
+        if (motivo) {
+            sessionStorage.setItem(CHAVE_AVISO, motivo);
+        }
         window.location.replace(PAGINA_LOGIN);
     }
 };
@@ -76,8 +140,8 @@ async function requisitar(caminho, opcoes = {}) {
     }
 
     if (resposta.status === 401) {
-        sessao.encerrar();
-        throw new Error('Sua sessão expirou. Faça login novamente.');
+        sessao.encerrar(SESSAO_EXPIRADA);
+        throw new Error(SESSAO_EXPIRADA);
     }
 
     if (resposta.status === 204) {
@@ -107,8 +171,8 @@ async function enviarArquivo(caminho, formData, mensagemErro) {
     }
 
     if (resposta.status === 401) {
-        sessao.encerrar();
-        throw new Error('Sua sessão expirou. Faça login novamente.');
+        sessao.encerrar(SESSAO_EXPIRADA);
+        throw new Error(SESSAO_EXPIRADA);
     }
 
     const dados = await resposta.json();
@@ -132,8 +196,8 @@ async function baixarArquivo(caminho, nomeSugerido) {
     }
 
     if (resposta.status === 401) {
-        sessao.encerrar();
-        throw new Error('Sua sessão expirou. Faça login novamente.');
+        sessao.encerrar(SESSAO_EXPIRADA);
+        throw new Error(SESSAO_EXPIRADA);
     }
 
     if (!resposta.ok) {
@@ -178,10 +242,6 @@ const api = {
 
             sessao.salvar(dados.token, dados.usuario);
             return dados.usuario;
-        },
-
-        eu() {
-            return requisitar('/usuarios/eu');
         }
     },
 
@@ -192,8 +252,9 @@ const api = {
             return requisitar('/clientes' + filtro);
         },
 
-        buscarPorNome(termo) {
-            return requisitar('/clientes/busca?nome=' + encodeURIComponent(termo));
+        buscarPorNome(termo, incluirInativos = false) {
+            const filtro = incluirInativos ? '&incluir_inativos=true' : '';
+            return requisitar('/clientes/busca?nome=' + encodeURIComponent(termo) + filtro);
         },
 
         buscarPorDocumento(documento) {
@@ -226,16 +287,9 @@ const api = {
 
     processos: {
 
-        listar(incluirInativos = false, clienteId = null) {
-            if (clienteId) {
-                return requisitar('/processos?cliente_id=' + clienteId);
-            }
+        listar(incluirInativos = false) {
             const filtro = incluirInativos ? '?incluir_inativos=true' : '';
             return requisitar('/processos' + filtro);
-        },
-
-        buscarPorNumero(numero) {
-            return requisitar('/processos/numero?valor=' + encodeURIComponent(numero));
         },
 
         buscar(filtros = {}) {
@@ -244,6 +298,7 @@ const api = {
             if (filtros.statusId)   { p.set('status_id', filtros.statusId); }
             if (filtros.advogadoId) { p.set('advogado_id', filtros.advogadoId); }
             if (filtros.tipoId)     { p.set('tipo_id', filtros.tipoId); }
+            if (filtros.incluirInativos) { p.set('incluir_inativos', 'true'); }
             const query = p.toString();
             return requisitar('/processos/busca' + (query ? '?' + query : ''));
         },
@@ -353,7 +408,6 @@ const api = {
         listar(filtros = {}) {
             const p = new URLSearchParams();
             if (filtros.processoId) { p.set('processo_id', filtros.processoId); }
-            if (filtros.clienteId)  { p.set('cliente_id', filtros.clienteId); }
             if (filtros.incluirExcluidos) { p.set('incluir_excluidos', 'true'); }
             const query = p.toString();
             return requisitar('/documentos' + (query ? '?' + query : ''));

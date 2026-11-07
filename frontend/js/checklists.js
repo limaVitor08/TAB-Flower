@@ -1,23 +1,38 @@
-// [JS] checklists> Atalhos para os elementos da configuração de checklists
+/*
+==============================================================================
+SEÇÃO COMENTÁRIOS — checklists.js: Lógica da página checklists.html: Configuração dos documentos exigidos por tipo de processo
+Formato: caminho do elemento no HTML> nome no código: o que faz
+==============================================================================
+checklists> tela: Atalhos para os elementos da configuração de checklists
+checklists>main>div> tela.aviso: Mostra aqui as mensagens de erro ou de sucesso
+checklists>main>div>select> tela.tipoProcesso: Recebe os tipos da API; ao trocar, mostra as exigências daquele tipo
+checklists>main>section>ul> tela.itens: Desenha cada exigência com os botões Tornar opcional/obrigatório e Remover
+checklists>main>section>div>select> tela.novaCategoria: Mostra só as categorias livres; avisa quando todas já foram usadas
+checklists>main>section>div>label>input> tela.novoObrigatorio: Lê se está marcada ao acrescentar
+checklists>main>section>div>button> tela.botaoAdicionar: Adiciona a exigência e redesenha a lista; fica travado se não houver categoria livre
+checklists> categorias: Guarda todas as categorias de documento vindas da API
+checklists>main>section>ul> desenharItens(): Desenha as exigências: bolinha vermelha (obrigatória) ou cinza (opcional), sigla e botões
+checklists>main>section>div>select> atualizarCategoriasDisponiveis(): Mostra só as categorias que este tipo ainda não exige; trava o botão se não sobrar nenhuma
+checklists>main>section>ul> carregarItens(): Busca as exigências do tipo escolhido e redesenha a lista
+checklists>main>div>select> prepararTela(): Prepara a tela: busca tipos e categorias, preenche a lista de tipos e carrega o primeiro
+checklists>main>div>select> tela.tipoProcesso (change): Trocar o tipo de processo carrega as exigências dele
+checklists>main>section>div>button> tela.botaoAdicionar (click): Acrescentar: envia a categoria e se é obrigatória, depois redesenha
+checklists>main>section>ul> tela.itens (click): Cliques na lista: apagam o aviso anterior; Tornar opcional/obrigatório alterna; Remover pede confirmação e tira a exigência
+checklists> prepararTela(): Prepara a tela assim que a página abre
+==============================================================================
+*/
+
 const tela = {
-    // [JS] checklists>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
-    // [JS] checklists>main>div>select> Recebe os tipos da API; ao trocar, mostra as exigências daquele tipo
     tipoProcesso: document.getElementById('tipo-processo'),
-    // [JS] checklists>main>section>ul> Desenha cada exigência com os botões Tornar opcional/obrigatório e Remover
     itens: document.getElementById('itens'),
-    // [JS] checklists>main>section>div>select> Mostra só as categorias livres; avisa quando todas já foram usadas
     novaCategoria: document.getElementById('nova-categoria'),
-    // [JS] checklists>main>section>div>label>input> Lê se está marcada ao acrescentar
     novoObrigatorio: document.getElementById('nova-obrigatorio'),
-    // [JS] checklists>main>section>div>button> Adiciona a exigência e redesenha a lista; fica travado se não houver categoria livre
     botaoAdicionar: document.getElementById('botao-adicionar')
 };
 
-// [JS] checklists> Guarda todas as categorias de documento vindas da API
 let categorias = [];
 
-// [JS] checklists>main>section>ul> Desenha as exigências: bolinha vermelha (obrigatória) ou cinza (opcional), sigla e botões
 function desenharItens(lista) {
     if (lista.length === 0) {
         tela.itens.innerHTML = `
@@ -54,7 +69,6 @@ function desenharItens(lista) {
         </li>`).join('');
 }
 
-// [JS] checklists>main>section>div>select> Mostra só as categorias que este tipo ainda não exige; trava o botão se não sobrar nenhuma
 function atualizarCategoriasDisponiveis(jaUsadas) {
     const usados = new Set(jaUsadas.map((i) => i.categoria_id));
     const livres = categorias.filter((c) => !usados.has(c.id));
@@ -72,7 +86,6 @@ function atualizarCategoriasDisponiveis(jaUsadas) {
     tela.botaoAdicionar.disabled = false;
 }
 
-// [JS] checklists>main>section>ul> Busca as exigências do tipo escolhido e redesenha a lista
 async function carregarItens() {
     limparAviso(tela.aviso);
 
@@ -92,7 +105,6 @@ async function carregarItens() {
     }
 }
 
-// [JS] checklists>main>div>select> Prepara a tela: busca tipos e categorias, preenche a lista de tipos e carrega o primeiro
 async function prepararTela() {
     try {
         const opcoes = await api.checklists.opcoes();
@@ -108,10 +120,8 @@ async function prepararTela() {
     }
 }
 
-// [JS] checklists>main>div>select> Trocar o tipo de processo carrega as exigências dele
 tela.tipoProcesso.addEventListener('change', carregarItens);
 
-// [JS] checklists>main>section>div>button> Acrescentar: envia a categoria e se é obrigatória, depois redesenha
 tela.botaoAdicionar.addEventListener('click', async () => {
     limparAviso(tela.aviso);
     tela.botaoAdicionar.disabled = true;
@@ -137,10 +147,13 @@ tela.botaoAdicionar.addEventListener('click', async () => {
     }
 });
 
-// [JS] checklists>main>section>ul> Cliques na lista: Tornar opcional/obrigatório alterna; Remover pede confirmação e tira a exigência
 tela.itens.addEventListener('click', async (evento) => {
     const alternar = evento.target.closest('[data-alternar]');
     const remover = evento.target.closest('[data-remover]');
+
+    if (alternar || remover) {
+        limparAviso(tela.aviso);
+    }
 
     try {
         if (alternar) {
@@ -170,5 +183,4 @@ tela.itens.addEventListener('click', async (evento) => {
     }
 });
 
-// [JS] checklists> Prepara a tela assim que a página abre
 prepararTela();

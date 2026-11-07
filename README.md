@@ -12,40 +12,40 @@ O resultado é demora para achar arquivo, cadastro duplicado, documento perdido 
 
 ## O que o sistema faz
 
-O TabFlower junta cliente, processo e documento num lugar só e tira das mãos do encarregado o trabalho repetitivo. Ele cria a pasta do cliente sozinho, renomeia os arquivos num padrão único, troca o checklist de papel por um digital, avisa o advogado quando chega documento novo e guarda quem fez cada ação importante.
+O TabFlower junta cliente, processo e documento num lugar só e tira das mãos do encarregado o trabalho repetitivo. Ele cria a pasta do cliente sozinho, renomeia os arquivos num padrão único, troca o checklist de papel por um digital, avisa o advogado quando chega documento novo e guarda quem fez logins, exclusões, restaurações e desfez importações.
 
 Quem usa no dia a dia é o encarregado da parte administrativa, que no sistema tem o perfil Secretária. Os advogados são os responsáveis pelos processos e recebem os avisos. O administrador cadastra a equipe e é o único que pode excluir clientes, processos, documentos e usuários.
 
 ## Como o projeto é organizado
 
-O frontend e a API são dois servidores separados. O frontend, feito em HTML, CSS e JavaScript puro, roda na porta 3000. A API, em Python com Flask, roda na porta 5000. Os dois só conversam por requisições HTTP com JSON, e toda chamada do frontend passa pelo arquivo `api.js`.
+O frontend e a API são dois servidores separados. O frontend, feito em HTML, CSS e JavaScript puro, roda na porta 3000. A API, em Python com Flask, roda na porta 5000. Os dois só conversam por requisições HTTP, com JSON para os dados, multipart nos uploads e arquivo nos downloads, e toda chamada do frontend passa pelo arquivo `api.js`.
 
 Dentro da API o código segue camadas, e cada uma tem a sua pasta.
 
 1. A rota leva a requisição até o **Controller**, que lê o pedido, aciona a camada de baixo e devolve a resposta.
-2. Em geral, o Controller chama o **Service** do caso de uso, que é onde ficam as regras. São 35 Services, separados por caso de uso.
+2. O Controller sempre chama o **Service** do caso de uso, que é onde ficam as regras. São 59 Services, e cada um faz uma única ação.
 3. Para salvar, atualizar ou buscar um registro simples, o Service usa a **Model**, que faz o CRUD pelo SQLAlchemy.
-4. Para as consultas mais complexas, com várias junções, contagens e filtros combinados, o Service usa o **Repository**, que chama uma stored procedure no MySQL.
+4. Para as consultas mais complexas, com várias junções, contagens e filtros combinados, o Service usa o **Repository**, que chama uma stored procedure no MySQL. O Repository também cuida da tabela que liga processos e marcadores, que não tem Model.
 
-A conexão com o banco é um objeto único, criado no `extensions.py` e usado pelo projeto inteiro.
+A instância do SQLAlchemy é única, criada no `extensions.py` e usada pelo projeto inteiro.
 
 ```
 TabFlower/
 ├── backend/
 │   ├── app.py, routes.py, run.py, config.py, extensions.py
-│   ├── controllers/      9 Controllers
-│   ├── services/         35 Services, separados por assunto
-│   ├── repositories/     3 Repositories
+│   ├── controllers/      10 Controllers
+│   ├── services/         59 Services, separados por assunto
+│   ├── repositories/     5 Repositories
 │   ├── models/           15 Models
 │   ├── utils/            login, validação de CPF e CNPJ, pastas e planilhas
 │   └── database/         create_database.sql e procedures.sql
-├── frontend/             14 páginas com os seus scripts, o api.js e o CSS
+├── frontend/             14 páginas, 13 scripts de tela, o api.js e o CSS
 └── docs/                 diagrama de classes e fluxogramas
 ```
 
 ## Funcionalidades Implementadas
 
-São 20 funcionalidades, todas funcionando de ponta a ponta, da tela até o banco. Embaixo de cada uma está o caminho que ela faz pelas camadas. Entre parênteses está a funcionalidade correspondente da proposta do projeto, e as 20 funcionalidades da proposta aparecem na lista.
+São 20 funcionalidades, todas implementadas da tela até o banco. Embaixo de cada uma está o caminho que ela faz pelas camadas. Entre parênteses está a funcionalidade correspondente da proposta do projeto, e as 20 funcionalidades da proposta aparecem na lista.
 
 ### Primeiro grupo
 
@@ -59,22 +59,22 @@ São 20 funcionalidades, todas funcionando de ponta a ponta, da tela até o banc
    `ClienteController → AtualizarClienteService → Cliente`
 5. **Excluir cliente.** Só o administrador exclui, e o cliente fica inativo em vez de sumir do banco.\
    `ClienteController → ExcluirClienteService → Cliente`
-6. **Buscar cliente por nome ou documento.** O mesmo campo busca por parte do nome, numa stored procedure que também conta os processos de cada cliente, ou pelo CPF ou CNPJ completo (funcionalidades 1 e 2).\
+6. **Buscar cliente por nome ou documento.** O mesmo campo busca por parte do nome, numa stored procedure que também conta os processos ativos de cada cliente, ou pelo CPF ou CNPJ completo. Com a opção de mostrar inativos marcada, a busca por nome também traz os inativos (funcionalidades 1 e 2).\
    `ClienteController → BuscarClientesPorNomeService → ClienteRepository → sp_buscar_clientes_por_nome`\
-   `ClienteController → BuscarClienteService → Cliente`
+   `ClienteController → BuscarClientePorDocumentoService → Cliente`
 7. **Cadastrar usuário.** Só o administrador cadastra, e a senha é guardada como hash com sal.\
-   `UsuarioController → CriarUsuarioService → Usuario`
+   `UsuarioController → CriarUsuarioService → GravarUsuarioService → Usuario`
 8. **Cadastrar processo.** Abre a ação para um cliente e um advogado e já monta o checklist de documentos do tipo escolhido.\
    `ProcessoController → CriarProcessoService → Processo`
-9. **Listar processos.** Os processos ativos, do mais novo para o mais antigo, com a opção de mostrar os arquivados.\
+9. **Listar processos.** Os processos ativos, por data de abertura, da mais recente para a mais antiga, com a opção de mostrar os arquivados.\
    `ProcessoController → ListarProcessosService → Processo`
 10. **Painel de gestão.** Quantos processos há em cada fase, com os vencidos e os que vencem nos próximos 7 dias (funcionalidade 6).\
     `PainelController → ResumoPainelService → ProcessoRepository → sp_painel_resumo`
 
 ### Segundo grupo
 
-11. **Configurar checklists.** Cada tipo de processo tem o seu molde de documentos exigidos, copiado para o processo quando ele é aberto (funcionalidade 13).\
-    `ChecklistController → GerenciarModeloService → ChecklistModelo`
+11. **Configurar checklists.** Cada tipo de processo tem o seu molde de documentos exigidos, copiado para o processo quando ele é aberto. Cada ação da tela tem o seu Service, para listar, adicionar, trocar entre obrigatório e opcional e remover uma exigência (funcionalidade 13).\
+    `ChecklistController → AdicionarItemModeloService → ChecklistModelo`
 12. **Gerar a pasta do cliente.** No cadastro, o sistema cria a pasta do cliente no servidor com 6 subpastas (funcionalidade 8).\
     `CriarClienteService → gerenciador_arquivos.py`
 13. **Checklist obrigatório e atualização de situação.** O processo nasce com o checklist do seu tipo. Se ele ainda está aguardando documentos e chega o último obrigatório, passa sozinho para “Pronto para protocolo”, com registro no histórico. A situação também pode ser mudada à mão (funcionalidades 7 e 11).\
@@ -82,14 +82,15 @@ São 20 funcionalidades, todas funcionando de ponta a ponta, da tela até o banc
     `ProcessoController → AtualizarStatusService → Processo e HistoricoStatus`
 14. **Anexar documento com categoria e renomeação.** O arquivo ganha um nome no padrão SIGLA_NOME_DATA e vai para a subpasta da categoria (funcionalidades 9 e 10).\
     `DocumentoController → EnviarDocumentoService → Documento`
-15. **Avisar o advogado responsável.** Cada documento anexado gera um aviso para o advogado do processo, e cada pessoa vê só os próprios avisos (funcionalidades 16 e 17).\
+15. **Avisar o advogado responsável.** Cada documento anexado a um processo gera um aviso para o advogado responsável, e cada pessoa vê só os próprios avisos (funcionalidades 16 e 17).\
     `EnviarDocumentoService → Notificacao`\
-    `NotificacaoController → NotificacaoRepository → sp_notificacoes_advogado`
+    `NotificacaoController → ListarNotificacoesService → NotificacaoRepository → sp_notificacoes_advogado`
 16. **Mapear pendências.** O painel mostra o que ainda falta entregar em cada processo (funcionalidade 12).\
     `PainelController → PendenciasService → ProcessoRepository → sp_pendencias_checklist`
 17. **Marcadores e filtro de prioridade.** Urgente, Prioridade e Prazo curto têm pesos diferentes, e o painel filtra os processos por eles (funcionalidades 14 e 15).\
-    `PainelController → ProcessosPrioritariosService → ProcessoRepository → sp_processos_prioritarios`
-18. **Busca avançada de processos.** Um termo procura ao mesmo tempo no número, no título e no nome do cliente, junto com filtros de situação, advogado e tipo (funcionalidade 3).\
+    `PainelController → ProcessosPrioritariosService → ProcessoRepository → sp_processos_prioritarios`\
+    `ProcessoController → AplicarMarcadorService → MarcadorRepository`
+18. **Busca avançada de processos.** Um termo procura ao mesmo tempo no número, no título e no nome do cliente, junto com filtros de situação, advogado e tipo. Com a opção de mostrar arquivados marcada, a busca também traz os arquivados (funcionalidade 3).\
     `ProcessoController → BuscarProcessosService → ProcessoRepository → sp_buscar_processos`
 19. **Importar clientes de planilha.** Aceita CSV ou XLSX e aplica as mesmas regras do cadastro manual. O administrador pode desfazer um lote, e os clientes desse lote que já têm processo são preservados (funcionalidades 18 e 19).\
     `ImportacaoController → ImportarClientesService → CriarClienteService`
@@ -111,24 +112,26 @@ São 15 Models, todas na pasta `models` e herdando de `db.Model`.
 
 O banco `tabflower` tem 16 tabelas. A única sem Model é `processo_marcador`, que só liga processos e marcadores numa relação de muitos para muitos.
 
-Nada importante é apagado de verdade. Cliente, processo e usuário ficam inativos, e o documento fica marcado como excluído, com quem excluiu e quando. Assim o histórico do escritório continua inteiro.
+Nada importante é apagado de verdade. Cliente, processo e usuário ficam inativos, e o documento fica marcado como excluído, com quem excluiu e quando. Assim o histórico do escritório continua inteiro. Só são apagados de verdade o vínculo de um marcador com um processo e um item do molde do checklist, que são configuração e não histórico.
 
-As consultas mais complexas ficam em 6 stored procedures, e só os 3 Repositories chamam essas procedures.
+As consultas mais complexas ficam em 6 stored procedures, e só os Repositories chamam essas procedures. São 5 Repositories.
 
-* `ClienteRepository` chama `sp_buscar_clientes_por_nome`, que busca por parte do nome e conta os processos de cada cliente.
-* `ProcessoRepository` chama quatro procedures. A `sp_buscar_processos` junta 5 tabelas e combina o termo com os filtros. A `sp_painel_resumo` conta os processos de cada fase, com prazos vencidos e próximos. A `sp_pendencias_checklist` lista os documentos que faltam em cada processo. A `sp_processos_prioritarios` ordena os processos pelo peso dos marcadores e pelo prazo.
+* `ClienteRepository` chama `sp_buscar_clientes_por_nome`, que busca por parte do nome e conta os processos ativos de cada cliente.
+* `ProcessoRepository` chama quatro procedures. A `sp_buscar_processos` junta 5 tabelas, combina o termo com os filtros e só traz os arquivados quando a tela pede. A `sp_painel_resumo` conta os processos de cada fase, com prazos vencidos e próximos. A `sp_pendencias_checklist` lista os documentos que faltam em cada processo. A `sp_processos_prioritarios` ordena os processos pelo peso dos marcadores e pelo prazo.
 * `NotificacaoRepository` chama `sp_notificacoes_advogado`, que traz os avisos de quem está logado, com o processo, o cliente e o documento de cada um.
+* `MarcadorRepository` não chama procedure. Ele cuida da `processo_marcador`, que não tem Model, e é por ele que um marcador é aplicado, listado ou tirado de um processo.
+* `SistemaRepository` só confere se o banco está respondendo, para a rota de status.
 
 ## Rotas da API
 
 Todas as rotas respondem em JSON, menos o download de documento e o modelo de planilha, que devolvem arquivo. Só `/api/status` e `/api/auth/login` funcionam sem login.
 
-* **Acesso** `GET /api/status`, `POST /api/auth/login` e `GET /api/usuarios/eu`
+* **Acesso** `GET /api/status` e `POST /api/auth/login`
 * **Clientes** `GET /api/clientes`, `GET /api/clientes/busca`, `GET /api/clientes/documento/<documento>`, `GET /api/clientes/<id>`, `POST /api/clientes`, `PUT /api/clientes/<id>` e `DELETE /api/clientes/<id>`
-* **Processos** `GET /api/processos`, `GET /api/processos/opcoes`, `GET /api/processos/busca`, `GET /api/processos/numero`, `GET /api/processos/<id>`, `GET /api/processos/<id>/historico`, `GET /api/processos/<id>/checklist`, `POST /api/processos`, `PUT /api/processos/<id>`, `PATCH /api/processos/<id>/status` e `DELETE /api/processos/<id>`
+* **Processos** `GET /api/processos`, `GET /api/processos/opcoes`, `GET /api/processos/busca`, `GET /api/processos/<id>`, `GET /api/processos/<id>/historico`, `GET /api/processos/<id>/checklist`, `POST /api/processos`, `PUT /api/processos/<id>`, `PATCH /api/processos/<id>/status` e `DELETE /api/processos/<id>`
 * **Marcadores** `GET /api/processos/<id>/marcadores`, `POST /api/processos/<id>/marcadores` e `DELETE /api/processos/<id>/marcadores/<id_marcador>`
 * **Documentos** `GET /api/documentos`, `GET /api/documentos/categorias`, `GET /api/documentos/<id>`, `GET /api/documentos/<id>/arquivo`, `POST /api/documentos`, `PUT /api/documentos/<id>`, `PATCH /api/documentos/<id>/restaurar` e `DELETE /api/documentos/<id>`
-* **Usuários** `GET /api/usuarios`, `GET /api/usuarios/perfis`, `GET /api/usuarios/advogados`, `GET /api/usuarios/<id>`, `POST /api/usuarios`, `PUT /api/usuarios/<id>`, `PATCH /api/usuarios/<id>/senha` e `DELETE /api/usuarios/<id>`
+* **Usuários** `GET /api/usuarios`, `GET /api/usuarios/perfis`, `GET /api/usuarios/<id>`, `POST /api/usuarios`, `PUT /api/usuarios/<id>`, `PATCH /api/usuarios/<id>/senha` e `DELETE /api/usuarios/<id>`
 * **Avisos** `GET /api/notificacoes` e `PATCH /api/notificacoes/<id>/lida`
 * **Painel** `GET /api/painel/resumo`, `GET /api/painel/pendencias`, `GET /api/painel/prioritarios` e `GET /api/painel/marcadores`
 * **Checklists** `GET /api/checklists/opcoes`, `GET /api/checklists`, `POST /api/checklists`, `PATCH /api/checklists/<id>/obrigatorio` e `DELETE /api/checklists/<id>`
@@ -138,7 +141,7 @@ Todas as rotas respondem em JSON, menos o download de documento e o modelo de pl
 
 Os três diagramas ficam na pasta `docs` do repositório, nos arquivos `diagrama_classes.png`, `fluxograma_recuperacao.png` e `fluxograma_entrada.png`.
 
-O diagrama de classes mostra as 15 classes do domínio, com atributos, métodos e relacionamentos.
+O diagrama de classes mostra as 15 classes do domínio, com atributos, métodos e relacionamentos. Ele também marca a herança de `db.Model`, a composição e a agregação.
 
 ![Diagrama de classes](docs/diagrama_classes.png)
 
@@ -146,7 +149,7 @@ O fluxograma de recuperação de dados acompanha uma busca de processos da tela 
 
 ![Fluxograma de recuperação de dados](docs/fluxograma_recuperacao.png)
 
-O fluxograma de entrada de dados acompanha o cadastro de um cliente da tela até o banco.
+O fluxograma de entrada de dados acompanha a aplicação de um marcador de prioridade num processo, da tela até o banco, passando pelo `MarcadorRepository`.
 
 ![Fluxograma de entrada de dados](docs/fluxograma_entrada.png)
 
@@ -196,14 +199,4 @@ http://localhost:5000/api/status
 
 No login, a API devolve um token assinado com a chave secreta. O navegador guarda esse token e manda em todas as requisições seguintes. Nas rotas protegidas, antes de chegar ao Controller, a API confere o token e descobre quem está logado. Sem token válido, a resposta é 401. Ninguém consegue se passar por outra pessoa trocando um número no navegador, porque a API identifica o usuário pelo token, e não por um id enviado pela tela.
 
-Cadastrar e editar clientes, processos e documentos é liberado para qualquer usuário logado, porque é o trabalho do dia a dia do encarregado. Excluir clientes, processos e documentos, restaurar documento, desfazer importação e cadastrar, editar ou desativar usuários fica só com o administrador. Os botões aparecem para todos, e quem não tem permissão recebe uma resposta 403 com uma frase explicando a regra.
-
-## Limitações conhecidas
-
-O login atende o escopo do projeto, mas não tem tudo o que um sistema em produção teria. Sair apaga o token só no navegador, e não existe bloqueio depois de várias senhas erradas.
-
-A validação de CPF e CNPJ confere os dígitos verificadores, mas não consulta a Receita Federal.
-
-O envio de arquivos é validado pela extensão e pelo tamanho, não pelo conteúdo.
-
-O log de auditoria registra logins, exclusões e restaurações. Cadastros e edições ainda não entram nele.
+Cadastrar e editar clientes, processos e documentos é liberado para qualquer usuário logado, porque é o trabalho do dia a dia do encarregado. Excluir clientes, processos e documentos, restaurar documento, desfazer importação e cadastrar, editar ou desativar usuários fica só com o administrador. Os botões aparecem para todos, e quem não tem permissão recebe uma resposta 403 com uma frase explicando a regra. Desativar e arquivar só acontecem por esses caminhos próprios. Se a edição de um cliente, processo ou usuário pedir para desativar, a API recusa antes de gravar qualquer coisa, com 403 para quem não é administrador e 400 com a orientação de usar o botão para o administrador. O administrador também não consegue tirar o perfil de administrador da própria conta.

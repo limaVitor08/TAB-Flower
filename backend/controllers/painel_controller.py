@@ -1,13 +1,7 @@
-"""
-Controller do Painel.
-
-As rotas de resumo, pendências e prioritários passam por um Service, que
-usa o Repository, que chama uma stored procedure do MySQL.
-"""
-
+# Recebe os pedidos do painel de gestão
 from flask import jsonify, request
 
-from models.tabelas_apoio import Marcador
+from services.painel.listar_marcadores_service import ListarMarcadoresService
 from services.painel.pendencias_service import PendenciasService
 from services.painel.processos_prioritarios_service import (
     ProcessosPrioritariosService,
@@ -19,18 +13,15 @@ class PainelController:
 
     @staticmethod
     def resumo():
-        """GET /api/painel/resumo: sp_painel_resumo"""
         return jsonify(ResumoPainelService.executar()), 200
 
     @staticmethod
     def pendencias():
-        """GET /api/painel/pendências?advogado_id=: sp_pendencias_checklist"""
         advogado_id = request.args.get("advogado_id") or None
         return jsonify(PendenciasService.executar(advogado_id)), 200
 
     @staticmethod
     def prioritarios():
-        """GET /api/painel/prioritarios?peso_minimo=1: sp_processos_prioritarios"""
         try:
             linhas = ProcessosPrioritariosService.executar(
                 request.args.get("advogado_id") or None,
@@ -43,5 +34,5 @@ class PainelController:
 
     @staticmethod
     def marcadores():
-        """GET /api/painel/marcadores: marcadores fixos do sistema."""
-        return jsonify([m.to_dict() for m in Marcador.listar_todos()]), 200
+        marcadores = ListarMarcadoresService.executar()
+        return jsonify([m.to_dict() for m in marcadores]), 200

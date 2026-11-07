@@ -1,24 +1,4 @@
--- =====================================================================
--- PROJETO TAB-FLOWER
--- Sistema de Gestao Documental e Processual para Escritório de Advocacia
---
--- Arquivo.....: backend/database/create_database.sql
--- SGBD........: MySQL 8.0 (WAMP Server / MySQL Workbench)
--- Equipe......: Gabriel Mazzega, Gabriel Almeida, Gabriel Fernandes,
---               Vitor Papini, Nnamdi Delfino
--- Disciplina..: Projeto de Software - Prof. Gleison Brito
---
--- COMO EXECUTAR:
---   1. Abra o MySQL Workbench e conecte no servidor local (WAMP).
---   2. Abra este arquivo (File > Open SQL Script).
---   3. Execute o script inteiro (raio amarelo / Ctrl+Shift+Enter).
---   4. Atualize a lista de schemas para visualizar o banco "tabflower".
--- =====================================================================
-
-
--- =====================================================================
--- 1. Criação DO BANCO
--- =====================================================================
+/* Cria o banco do TabFlower do zero, com as tabelas e os dados iniciais */
 
 DROP DATABASE IF EXISTS tabflower;
 
@@ -28,17 +8,6 @@ CREATE DATABASE tabflower
 
 USE tabflower;
 
-
--- =====================================================================
--- 2. MODULO DE Usuários E Permissões
--- =====================================================================
-
--- ---------------------------------------------------------------------
--- perfil
--- Define o nível de permissão do usuário dentro do sistema.
--- Usado pela Funcionalidade 20 (Restricao de Exclusão): apenas o perfil
--- Admin pode excluir documentos em definitivo.
--- ---------------------------------------------------------------------
 CREATE TABLE perfil (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     nome            VARCHAR(50)  NOT NULL,
@@ -50,13 +19,6 @@ CREATE TABLE perfil (
     CONSTRAINT uq_perfil_nome UNIQUE (nome)
 ) ENGINE = InnoDB;
 
-
--- ---------------------------------------------------------------------
--- usuário
--- Funcionarios do escritório que acessam o sistema.
--- Os usuários de perfil "Advogado" também são os responsaveis pelos
--- processos e os destinatarios das notificações (Funcionalidade 17).
--- ---------------------------------------------------------------------
 CREATE TABLE usuario (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     nome            VARCHAR(120) NOT NULL,
@@ -77,23 +39,6 @@ CREATE TABLE usuario (
 CREATE INDEX ix_usuario_nome  ON usuario (nome);
 CREATE INDEX ix_usuario_ativo ON usuario (ativo);
 
-
--- =====================================================================
--- 3. MODULO DE CLIENTES
--- =====================================================================
-
--- ---------------------------------------------------------------------
--- cliente
--- Pessoa física ou jurídica atendida pelo escritório.
---
--- Funcionalidade 04 (Validação de Documento): o formato do CPF/CNPJ e
---   validado na aplicação antes da inserção.
--- Funcionalidade 05 (Bloqueio de Duplicidade): a restricao UNIQUE em
---   "documento" garante no banco que o mesmo cliente não seja cadastrado
---   duas vezes, mesmo que a validação da aplicação falhe.
--- Funcionalidade 08 (Geração de Diretórios): "caminho_pasta" guarda a
---   estrutura de pastas criada automaticamente no cadastro.
--- ---------------------------------------------------------------------
 CREATE TABLE cliente (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     tipo_pessoa     ENUM('F', 'J') NOT NULL,
@@ -119,21 +64,9 @@ CREATE TABLE cliente (
         ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
--- Funcionalidade 01 (Busca por Nome) e 02 (Busca por Documento)
 CREATE INDEX ix_cliente_nome  ON cliente (nome);
 CREATE INDEX ix_cliente_ativo ON cliente (ativo);
 
-
--- =====================================================================
--- 4. MODULO DE PROCESSOS
--- =====================================================================
-
--- ---------------------------------------------------------------------
--- tipo_processo
--- Natureza da ação judicial (Trabalhista, Civel, Familia...).
--- E a chave da Funcionalidade 13 (Configuração de Checklist): cada tipo
--- possui sua própria lista de documentos obrigatórios.
--- ---------------------------------------------------------------------
 CREATE TABLE tipo_processo (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     nome            VARCHAR(80)  NOT NULL,
@@ -144,12 +77,6 @@ CREATE TABLE tipo_processo (
     CONSTRAINT uq_tipo_processo_nome UNIQUE (nome)
 ) ENGINE = InnoDB;
 
-
--- ---------------------------------------------------------------------
--- status_processo
--- Fases do andamento processual, configuraveis pelo escritório.
--- Funcionalidade 07 (Atualizacao de Status).
--- ---------------------------------------------------------------------
 CREATE TABLE status_processo (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     nome            VARCHAR(60) NOT NULL,
@@ -162,12 +89,6 @@ CREATE TABLE status_processo (
     CONSTRAINT uq_status_processo_nome UNIQUE (nome)
 ) ENGINE = InnoDB;
 
-
--- ---------------------------------------------------------------------
--- marcador
--- Etiquetas visuais fixas do sistema (Urgente, Prioridade...).
--- Funcionalidades 14 (Marcadores Visuais) e 15 (Filtros de Prioridade).
--- ---------------------------------------------------------------------
 CREATE TABLE marcador (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     nome            VARCHAR(40) NOT NULL,
@@ -177,16 +98,6 @@ CREATE TABLE marcador (
     CONSTRAINT uq_marcador_nome UNIQUE (nome)
 ) ENGINE = InnoDB;
 
-
--- ---------------------------------------------------------------------
--- processo
--- Ação judicial vinculada a um cliente e a um advogado responsavel.
---
--- Funcionalidade 03 (Busca por Processo): índice em numero_processo.
--- Funcionalidade 06 (Painel Central de Gestao): tabela principal do painel.
--- Funcionalidade 17 (Direcionamento Automático): "advogado_id" define
---   quem recebe a notificação quando um documento e anexado.
--- ---------------------------------------------------------------------
 CREATE TABLE processo (
     id                  INT AUTO_INCREMENT PRIMARY KEY,
     numero_processo     VARCHAR(30)  NOT NULL COMMENT 'Numero unico da acao judicial',
@@ -233,12 +144,6 @@ CREATE INDEX ix_processo_advogado ON processo (advogado_id);
 CREATE INDEX ix_processo_status   ON processo (status_id);
 CREATE INDEX ix_processo_prazo    ON processo (prazo_final);
 
-
--- ---------------------------------------------------------------------
--- processo_marcador
--- Relacionamento N:N entre processo e marcador.
--- Um processo pode estar marcado como Urgente e Prioridade ao mesmo tempo.
--- ---------------------------------------------------------------------
 CREATE TABLE processo_marcador (
     processo_id     INT      NOT NULL,
     marcador_id     INT      NOT NULL,
@@ -263,13 +168,6 @@ CREATE TABLE processo_marcador (
         ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
-
--- ---------------------------------------------------------------------
--- historico_status
--- Registra cada mudanca de fase do processo.
--- Permite responder "ha quanto tempo o processo esta nesta fase" e gerar
--- os relatórios de produtividade citados nas entrevistas (Etapa 3).
--- ---------------------------------------------------------------------
 CREATE TABLE historico_status (
     id                  INT AUTO_INCREMENT PRIMARY KEY,
     processo_id         INT      NOT NULL,
@@ -302,20 +200,6 @@ CREATE TABLE historico_status (
 
 CREATE INDEX ix_hist_processo ON historico_status (processo_id);
 
-
--- =====================================================================
--- 5. MODULO DE DOCUMENTOS E AUTOMACAO DE ARQUIVOS
--- =====================================================================
-
--- ---------------------------------------------------------------------
--- categoria_documento
--- Classificação jurídica do arquivo (Procuracao, RG, Contrato...).
---
--- Funcionalidade 09 (Identificação de Categoria).
--- Funcionalidade 10 (Renomeação Automática): a coluna "sigla" e usada
---   para montar o nome padronizado do arquivo.
---   Ex.: PROC_JOAO-DA-SILVA_2026-08-06.pdf
--- ---------------------------------------------------------------------
 CREATE TABLE categoria_documento (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     nome            VARCHAR(80)  NOT NULL,
@@ -327,18 +211,6 @@ CREATE TABLE categoria_documento (
     CONSTRAINT uq_categoria_sigla UNIQUE (sigla)
 ) ENGINE = InnoDB;
 
-
--- ---------------------------------------------------------------------
--- documento
--- Arquivo digitalizado vinculado a um cliente e, opcionalmente, a um
--- processo. O PDF fica no servidor de arquivos; o banco guarda o caminho.
---
--- Funcionalidade 10 (Renomeação Automática): "nome_original" preserva o
---   nome enviado e "nome_padronizado" guarda o nome gerado pelo sistema.
--- Funcionalidade 20 (Restricao de Exclusão): a exclusão e Lógica. O
---   registro nunca sai da tabela; apenas "excluido" vira TRUE e o
---   responsavel fica gravado em "excluido_por".
--- ---------------------------------------------------------------------
 CREATE TABLE documento (
     id                  INT AUTO_INCREMENT PRIMARY KEY,
     cliente_id          INT          NOT NULL,
@@ -388,16 +260,6 @@ CREATE INDEX ix_documento_cliente  ON documento (cliente_id);
 CREATE INDEX ix_documento_processo ON documento (processo_id);
 CREATE INDEX ix_documento_excluido ON documento (excluido);
 
-
--- =====================================================================
--- 6. MODULO DE CHECKLIST E Pendências
--- =====================================================================
-
--- ---------------------------------------------------------------------
--- checklist_modelo
--- Lista de documentos exigidos para cada tipo de processo.
--- E o "molde" configuravel pela Funcionalidade 13.
--- ---------------------------------------------------------------------
 CREATE TABLE checklist_modelo (
     id                  INT AUTO_INCREMENT PRIMARY KEY,
     tipo_processo_id    INT     NOT NULL,
@@ -418,16 +280,6 @@ CREATE TABLE checklist_modelo (
         ON DELETE RESTRICT
 ) ENGINE = InnoDB;
 
-
--- ---------------------------------------------------------------------
--- checklist_processo
--- Copia do modelo aplicada a um processo específico no momento em que
--- ele e criado. Cada linha representa um item do checklist digital.
---
--- Funcionalidade 11 (Checklist Obrigatório).
--- Funcionalidade 12 (Mapeamento de Pendências): itens com entregue =
---   FALSE são exatamente as pendências exibidas na tela.
--- ---------------------------------------------------------------------
 CREATE TABLE checklist_processo (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     processo_id     INT      NOT NULL,
@@ -458,20 +310,6 @@ CREATE TABLE checklist_processo (
 
 CREATE INDEX ix_chkproc_entregue ON checklist_processo (processo_id, entregue);
 
-
--- =====================================================================
--- 7. MODULO DE Integração E Comunicação
--- =====================================================================
-
--- ---------------------------------------------------------------------
--- notificação
--- Alertas internos entregues ao advogado responsavel.
---
--- Funcionalidade 16 (Disparo de Notificações).
--- Funcionalidade 17 (Direcionamento Automático): ao anexar um documento,
---   o sistema cruza o documento com o advogado_id do processo e gera
---   automaticamente uma linha nesta tabela.
--- ---------------------------------------------------------------------
 CREATE TABLE notificacao (
     id                  INT AUTO_INCREMENT PRIMARY KEY,
     usuario_destino_id  INT          NOT NULL,
@@ -503,15 +341,6 @@ CREATE TABLE notificacao (
 
 CREATE INDEX ix_notif_destino ON notificacao (usuario_destino_id, lida);
 
-
--- ---------------------------------------------------------------------
--- importacao_lote
--- Controle das cargas de dados legados vindos das planilhas antigas.
---
--- Funcionalidade 18 (Importação em Lote).
--- Funcionalidade 19 (Organização de Legado): guarda o resultado de cada
---   importação para que o usuário saiba o que entrou e o que falhou.
--- ---------------------------------------------------------------------
 CREATE TABLE importacao_lote (
     id                  INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id          INT          NULL,
@@ -531,16 +360,6 @@ CREATE TABLE importacao_lote (
         ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
-
--- ---------------------------------------------------------------------
--- Vinculo dos registros legados com a importação que os originou.
--- Feito por ALTER TABLE porque cliente e processo são criados antes de
--- importacao_lote, e a FK exige que a tabela referenciada já exista.
---
--- Funcionalidade 19 (Organização de Legado): permite responder "quais
--- clientes entraram na planilha importada em tal dia" e desfazer uma
--- carga que veio errada, sem tocar nos cadastros feitos manualmente.
--- ---------------------------------------------------------------------
 ALTER TABLE cliente
     ADD CONSTRAINT fk_cliente_importacao FOREIGN KEY (importacao_id)
         REFERENCES importacao_lote (id)
@@ -553,18 +372,6 @@ ALTER TABLE processo
         ON UPDATE CASCADE
         ON DELETE SET NULL;
 
-
--- =====================================================================
--- 8. MODULO DE SEGURANCA E AUDITORIA
--- =====================================================================
-
--- ---------------------------------------------------------------------
--- log_auditoria
--- Rastreabilidade de todas as ações sensiveis do sistema.
--- Responde a dor levantada na entrevista: "o log de alterações e
--- inexistente, entao quando algo some, não sabemos quem moveu ou apagou".
--- Complementa a Funcionalidade 20.
--- ---------------------------------------------------------------------
 CREATE TABLE log_auditoria (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id      INT          NULL,
@@ -584,18 +391,11 @@ CREATE TABLE log_auditoria (
 CREATE INDEX ix_log_entidade ON log_auditoria (entidade, entidade_id);
 CREATE INDEX ix_log_data     ON log_auditoria (criado_em);
 
-
--- =====================================================================
--- 9. CARGA INICIAL (DADOS FIXOS DO SISTEMA)
--- =====================================================================
-
--- Perfis: apenas o Admin pode excluir documentos (Funcionalidade 20)
 INSERT INTO perfil (nome, descricao, pode_excluir) VALUES
     ('Admin',      'Acesso total ao sistema, incluindo exclusão de documentos', TRUE),
     ('Advogado',   'Responsável pelos processos e destinatário das notificações', FALSE),
     ('Secretária', 'Cadastro de clientes, processos e anexo de documentos',       FALSE);
 
--- Status configuraveis do processo
 INSERT INTO status_processo (nome, descricao, cor_hex, ordem, is_final) VALUES
     ('Aguardando documentos', 'Checklist ainda possui pendências',       '#F59E0B', 1, FALSE),
     ('Pronto para protocolo',  'Documentação completa e conferida',      '#3B82F6', 2, FALSE),
@@ -604,13 +404,11 @@ INSERT INTO status_processo (nome, descricao, cor_hex, ordem, is_final) VALUES
     ('Suspenso',               'Tramitação temporariamente interrompida', '#6B7280', 5, FALSE),
     ('Arquivado',              'Processo encerrado e arquivado',          '#374151', 6, TRUE);
 
--- Marcadores visuais fixos do sistema
 INSERT INTO marcador (nome, cor_hex, peso) VALUES
     ('Urgente',     '#DC2626', 3),
     ('Prioridade',  '#F97316', 2),
     ('Prazo curto', '#EAB308', 1);
 
--- Tipos de processo iniciais
 INSERT INTO tipo_processo (nome, descricao) VALUES
     ('Trabalhista',    'Ações relativas a relações de trabalho'),
     ('Cível',          'Ações de indenização, cobrança e contratos'),
@@ -618,7 +416,6 @@ INSERT INTO tipo_processo (nome, descricao) VALUES
     ('Previdenciário', 'Benefícios e aposentadorias junto ao INSS'),
     ('Consumidor',     'Relações de consumo');
 
--- Categorias de documento (a sigla alimenta a renomeação automática)
 INSERT INTO categoria_documento (nome, sigla, descricao) VALUES
     ('Procuração',              'PROC', 'Instrumento de mandato assinado pelo cliente'),
     ('Documento de identidade', 'RG',   'RG, CNH ou documento equivalente'),
@@ -631,47 +428,33 @@ INSERT INTO categoria_documento (nome, sigla, descricao) VALUES
     ('Laudo médico',            'LAUD', 'Laudos e relatórios médicos'),
     ('Comprovante de pagamento','COMP', 'Recibos e comprovantes financeiros');
 
--- Modelos de checklist por tipo de processo (Funcionalidade 13)
--- Trabalhista
 INSERT INTO checklist_modelo (tipo_processo_id, categoria_id, obrigatorio, ordem) VALUES
     (1, 1, TRUE, 1),
     (1, 2, TRUE, 2),
     (1, 4, TRUE, 3),
     (1, 6, TRUE, 4);
--- Civel
 INSERT INTO checklist_modelo (tipo_processo_id, categoria_id, obrigatorio, ordem) VALUES
     (2, 1, TRUE,  1),
     (2, 2, TRUE,  2),
     (2, 4, TRUE,  3),
     (2, 5, TRUE,  4),
     (2, 10, FALSE, 5);
--- Familia
 INSERT INTO checklist_modelo (tipo_processo_id, categoria_id, obrigatorio, ordem) VALUES
     (3, 1, TRUE, 1),
     (3, 2, TRUE, 2),
     (3, 4, TRUE, 3),
     (3, 8, TRUE, 4);
--- Previdenciario
 INSERT INTO checklist_modelo (tipo_processo_id, categoria_id, obrigatorio, ordem) VALUES
     (4, 1, TRUE,  1),
     (4, 2, TRUE,  2),
     (4, 3, TRUE,  3),
     (4, 9, TRUE,  4),
     (4, 6, FALSE, 5);
--- Consumidor
 INSERT INTO checklist_modelo (tipo_processo_id, categoria_id, obrigatorio, ordem) VALUES
     (5, 1, TRUE,  1),
     (5, 2, TRUE,  2),
     (5, 5, TRUE,  3),
     (5, 10, TRUE, 4);
 
--- Usuário administrador inicial
--- Atenção: a senha abaixo e um hash de exemplo. Ela será regerada pela
--- aplicação Flask no primeiro cadastro real de usuário.
 INSERT INTO usuario (nome, email, senha_hash, perfil_id) VALUES
     ('Administrador', 'admin@tabflower.com', 'ALTERAR_NO_PRIMEIRO_ACESSO', 1);
-
-
--- =====================================================================
--- FIM DO SCRIPT
--- =====================================================================

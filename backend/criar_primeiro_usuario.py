@@ -1,28 +1,14 @@
-"""
-Cria o primeiro usuário do sistema, ou troca a senha de um que já existe.
-
-Como o sistema exige login, a tela de cadastro de usuários só abre para
-quem já entrou. Mas ninguém entra sem ter um usuário.
-
-Rode uma vez, com o WAMP ligado, de dentro da pasta backend:
-
-    python criar_primeiro_usuario.py
-
-A senha passa pelo mesmo CriarUsuarioService da tela, então é gravada
-com hash.
-"""
-
+# Cria o primeiro usuário pelo terminal ou troca a senha de um que já existe
 from getpass import getpass
 
 from app import create_app
 from extensions import db
 from models.usuario import Perfil, Usuario
-from services.usuario.alterar_senha_service import AlterarSenhaService
-from services.usuario.criar_usuario_service import CriarUsuarioService
+from services.usuario.gravar_usuario_service import GravarUsuarioService
+from services.usuario.redefinir_senha_service import RedefinirSenhaService
 
 
 def escolher_perfil():
-    """Mostra os perfis do banco e devolve o id escolhido."""
     perfis = Perfil.listar_todos()
 
     print("\nPerfis disponíveis:")
@@ -39,8 +25,6 @@ def escolher_perfil():
 
 
 def pedir_senha():
-    """Pede a senha duas vezes para evitar erro de digitação.
-    """
     while True:
         senha = getpass("Senha (mínimo 6 caracteres): ")
         confirmacao = getpass("Digite a senha de novo: ")
@@ -67,9 +51,6 @@ def main():
         email = input("\nE-mail: ").strip().lower()
         existente = Usuario.buscar_por_email(email)
 
-        # Caso o e-mail já exista (por exemplo, os advogados criados por
-        # SQL com senha 'TEMPORARIO'), oferecemos redefinir a senha em
-        # vez de falhar com "e-mail já cadastrado".
         if existente:
             print(f"\nJá existe um usuário com este e-mail: {existente.nome}")
             resposta = input("Deseja redefinir a senha dele? (s/n) ").strip().lower()
@@ -79,12 +60,8 @@ def main():
                 return
 
             senha = pedir_senha()
-            # definir_senha() e não executar(): executar() exige saber quem
-            # esta pedindo a troca, e aqui não ha usuário logado. Este
-            # script roda no terminal, antes de existir qualquer sessão.
-            AlterarSenhaService.definir_senha(existente.id, senha)
+            RedefinirSenhaService.executar(existente.id, senha)
 
-            # Um usuário desativado não consegue logar, então reativamos.
             if not existente.ativo:
                 existente.ativo = True
                 db.session.commit()
@@ -98,12 +75,7 @@ def main():
         senha = pedir_senha()
 
         try:
-            # criar() e não executar(): pela mesma razão do definir_senha
-            # acima. executar() exige um usuário logado para conferir a
-            # permissão, e no terminal não existe sessão nenhuma. E este
-            # script que cria o primeiro Administrador, entao não haveria
-            # como ele já estar logado.
-            usuario = CriarUsuarioService.criar(
+            usuario = GravarUsuarioService.executar(
                 {
                     "nome": nome,
                     "email": email,

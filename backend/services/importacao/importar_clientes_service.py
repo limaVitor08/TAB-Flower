@@ -1,23 +1,10 @@
-"""
-Importa clientes de uma planilha (funcionalidades 18 e 19).
-Cada linha passa pelo mesmo CriarClienteService do cadastro manual, com
-validação de CPF/CNPJ, bloqueio de repetido e criação da pasta. Se a
-importação tivesse regras próprias, o cliente antigo entraria com
-qualidade pior que o novo, e era justamente isso que queríamos evitar.
-Uma linha com erro não derruba as outras. Cada linha tem o próprio
-commit, e o erro fica anotado com o número da linha para a secretária
-corrigir só o que falhou. Dentro de uma linha, o cliente e o vínculo com
-o lote entram juntos. Senão o cliente ficaria sem saber de qual planilha
-veio, e o "Desfazer importação" não ia encontrá-lo.
-"""
+# Importa clientes de uma planilha com as mesmas regras do cadastro
 import logging
 from datetime import datetime
 from extensions import db
 from models.importacao import ImportacaoLote
 from services.cliente.criar_cliente_service import CriarClienteService
 from utils.leitor_planilha import ErroLeitura, ler
-# Nomes de coluna aceitos para cada campo. A planilha do escritório
-# raramente usa o mesmo cabeçalho do banco.
 COLUNAS = {
     "nome": ("nome", "cliente", "nome_do_cliente", "razao_social", "nome_completo"),
     "documento": ("documento", "cpf", "cnpj", "cpf_cnpj", "cpf_ou_cnpj"),
@@ -30,9 +17,9 @@ COLUNAS = {
     "observacao": ("observacao", "observacoes", "obs", "anotacoes"),
 }
 LIMITE_LINHAS = 2000
+
+LIMITE_RELATORIO = 60000
 logger = logging.getLogger("tabflower")
-# Planilhas de legado quase sempre trazem o estado por extenso. Sem esta
-# conversão, "Minas Gerais" viraria "Mi" ao ser cortado em dois caracteres.
 UF_POR_NOME = {
     "acre": "AC", "alagoas": "AL", "amapa": "AP", "amazonas": "AM",
     "bahia": "BA", "ceara": "CE", "distrito federal": "DF",
@@ -45,11 +32,6 @@ UF_POR_NOME = {
     "tocantins": "TO",
 }
 def normalizar_uf(texto):
-    """Converte o estado para a sigla de duas letras.
-    Aceita "MG", "mg", "Minas Gerais" e "minas gerais". Se não reconhecer,
-    devolve os dois primeiros caracteres em maiúscula, assim uma sigla
-    desconhecida ainda entra, em vez de travar a linha inteira.
-    """
     import unicodedata
     bruto = (texto or "").strip()
     if not bruto:
@@ -79,8 +61,6 @@ class ImportarClientesService:
                 f"A planilha tem {len(linhas)} linhas. O limite por importação "
                 f"é {LIMITE_LINHAS}. Divida o arquivo em partes."
             )
-        # O lote é registrado ANTES de processar, para que os clientes
-        # criados já nasçam apontando para ele.
         lote = ImportacaoLote(
             usuario_id=usuario_id,
             nome_arquivo=arquivo.filename[:200],
@@ -90,52 +70,59 @@ class ImportarClientesService:
         ).salvar()
         sucessos = 0
         erros = []
-        for indice, linha in enumerate(linhas, start=2):  # linha 1 = cabeçalho
+        for linha in linhas:
+            indice = linha["_linha"]
             try:
                 dados = ImportarClientesService._mapear(linha)
-                # confirmar=False: o cliente fica preparado, mas ainda não
-                # gravado. Só depois de marcar a origem e que o commit
-                # fecha as duas escritas de uma vez.
                 cliente = CriarClienteService.executar(
                     dados, criado_por=usuario_id, confirmar=False
                 )
-                # Funcionalidade 19 marca a origem para permitir desfazer.
                 cliente.importacao_id = lote.id
                 db.session.commit()
                 sucessos += 1
             except ValueError as erro:
-                # Erro de validação (CPF inválido, cliente repetido) é
-                # esperado numa planilha de legado, não vai para o log.
                 db.session.rollback()
                 nome = linha.get("nome") or linha.get("cliente") or "(sem nome)"
                 erros.append(f"Linha {indice} ({nome}): {erro}")
-            except Exception as erro:  # noqa: BLE001
-                # Aqui e o inesperado. A secretaria ve so o numero da linha;
-                # o motivo tecnico completo fica no tabflower.log, para
-                # alguem conseguir investigar depois.
+            except Exception as erro:
                 db.session.rollback()
                 logger.exception(
                     "Erro inesperado na linha %s da importação %s", indice, lote.id
                 )
-                erros.append(f"Linha {indice}: erro inesperado - {erro}")
+                erros.append(
+                    f"Linha {indice}: erro inesperado ao gravar. "
+                    "O motivo ficou registrado no log do sistema."
+                )
         situacao = "CONCLUIDA" if sucessos > 0 else "FALHOU"
-        lote.finalizar(situacao, sucessos, len(erros), "\n".join(erros) or None)
+        lote.finalizar(
+            situacao, sucessos, len(erros), ImportarClientesService._relatorio(erros)
+        )
         return lote
-    # -----------------------------------------------------------------
+    @staticmethod
+    def _relatorio(erros):
+        linhas = []
+        tamanho = 0
+        for indice, erro in enumerate(erros):
+            tamanho += len(erro.encode("utf-8")) + 1
+            if tamanho > LIMITE_RELATORIO:
+                restantes = len(erros) - indice
+                linhas.append(
+                    f"... e mais {restantes} linha(s) com problema, "
+                    "que não couberam neste relatório."
+                )
+                break
+            linhas.append(erro)
+        return "\n".join(linhas) or None
     @staticmethod
     def _valor(linha, campo):
-        """Procura a coluna por qualquer um dos nomes aceitos."""
         for nome in COLUNAS[campo]:
             if linha.get(nome):
                 return linha[nome].strip()
         return ""
     @staticmethod
     def _mapear(linha):
-        """Converte uma linha da planilha no formato do CriarClienteService."""
         documento = ImportarClientesService._valor(linha, "documento")
         tipo = ImportarClientesService._valor(linha, "tipo_pessoa").upper()
-        # Se a planilha não informa o tipo, deduz pela quantidade de
-        # dígitos: 11 é CPF, 14 é CNPJ. É o caso mais comum no legado.
         if tipo not in ("F", "J"):
             somente_numeros = "".join(c for c in documento if c.isdigit())
             if len(somente_numeros) == 14:

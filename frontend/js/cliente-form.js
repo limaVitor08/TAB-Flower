@@ -1,46 +1,59 @@
-// [JS] cliente-form> Atalhos para os campos do formulário de cliente
+/*
+==============================================================================
+SEÇÃO COMENTÁRIOS — cliente-form.js: Lógica da página cliente-form.html: Cadastro e edição de cliente
+Formato: caminho do elemento no HTML> nome no código: o que faz
+==============================================================================
+cliente-form> campos: Atalhos para os campos do formulário de cliente
+cliente-form>main>form>div>div>select> campos.tipoPessoa: Troca o exemplo do campo de documento; fica bloqueada na edição
+cliente-form>main>form>div>div>input> campos.documento: Formata com pontos e traço enquanto digita; fica bloqueado na edição
+cliente-form>main>form>div>div>input> campos.nome: Preenchido na edição e enviado ao salvar
+cliente-form>main>form>div>div>input> campos.email: Preenchido na edição e enviado ao salvar
+cliente-form>main>form>div>div>input> campos.telefone: Formata como (31) 99999-9999 enquanto digita
+cliente-form>main>form>div>div>input> campos.endereco: Preenchido na edição e enviado ao salvar
+cliente-form>main>form>div>div>input> campos.cidade: Preenchido na edição e enviado ao salvar
+cliente-form>main>form>div>div>input> campos.estado: Deixa só 2 letras maiúsculas enquanto digita
+cliente-form>main>form>div>div>textarea> campos.observacao: Preenchida na edição e enviada ao salvar
+cliente-form> tela: Atalhos para título, formulário, avisos e botão
+cliente-form>main>form> tela.form: Ao enviar, cadastra ou atualiza o cliente e volta para a lista
+cliente-form>main>div> tela.aviso: Mostra aqui as mensagens de erro ou de sucesso
+cliente-form>main>h1> tela.titulo: Troca para "Editar cliente" quando a página abre com ?id=
+cliente-form>main>p> tela.subtitulo: Troca o texto no modo de edição
+cliente-form>main>form>div>button> tela.botaoSalvar: Troca para "Salvar alterações" na edição e mostra "Salvando..." enquanto espera
+cliente-form>main>form>div>div>span> tela.dicaDocumento: Muda o texto da dica no modo de edição
+cliente-form> idCliente: Lê o ?id= da URL: com id a tela edita, sem id cadastra
+cliente-form>main> prepararTela(): No modo edição: troca títulos, bloqueia tipo e documento e preenche os campos com os dados do cliente
+cliente-form>main>form>div>div>input> aplicarMascara(): Liga as máscaras de documento, telefone e estado
+cliente-form>main>form>div>div>select> campos.tipoPessoa (change): Ao trocar o tipo de pessoa, troca o exemplo do campo de documento
+cliente-form>main>form> coletarDados(): Junta os valores dos campos para enviar à API (documento só no cadastro)
+cliente-form>main>form> tela.form (submit): Ao salvar: cadastra ou atualiza; deu certo volta para a lista, deu erro mostra a mensagem no topo
+cliente-form> prepararTela(): Prepara a tela assim que a página abre
+==============================================================================
+*/
+
 const campos = {
-    // [JS] cliente-form>main>form>div>div>select> Troca o exemplo do campo de documento; fica bloqueada na edição
     tipoPessoa: document.getElementById('tipo_pessoa'),
-    // [JS] cliente-form>main>form>div>div>input> Formata com pontos e traço enquanto digita; fica bloqueado na edição
     documento: document.getElementById('documento'),
-    // [JS] cliente-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     nome: document.getElementById('nome'),
-    // [JS] cliente-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     email: document.getElementById('email'),
-    // [JS] cliente-form>main>form>div>div>input> Formata como (31) 99999-9999 enquanto digita
     telefone: document.getElementById('telefone'),
-    // [JS] cliente-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     endereco: document.getElementById('endereco'),
-    // [JS] cliente-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     cidade: document.getElementById('cidade'),
-    // [JS] cliente-form>main>form>div>div>input> Deixa só 2 letras maiúsculas enquanto digita
     estado: document.getElementById('estado'),
-    // [JS] cliente-form>main>form>div>div>textarea> Preenchida na edição e enviada ao salvar
     observacao: document.getElementById('observacao')
 };
 
-// [JS] cliente-form> Atalhos para título, formulário, avisos e botão
 const tela = {
-    // [JS] cliente-form>main>form> Ao enviar, cadastra ou atualiza o cliente e volta para a lista
     form: document.getElementById('form-cliente'),
-    // [JS] cliente-form>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
-    // [JS] cliente-form>main>h1> Troca para "Editar cliente" quando a página abre com ?id=
     titulo: document.getElementById('titulo'),
-    // [JS] cliente-form>main>p> Troca o texto no modo de edição
     subtitulo: document.getElementById('subtitulo'),
-    // [JS] cliente-form>main>form>div>button> Troca para "Salvar alterações" na edição e mostra "Salvando..." enquanto espera
     botaoSalvar: document.getElementById('botao-salvar'),
-    // [JS] cliente-form>main>form>div>div>span> Muda o texto da dica no modo de edição
     dicaDocumento: document.getElementById('dica-documento')
 };
 
-// [JS] cliente-form> Lê o ?id= da URL: com id a tela edita, sem id cadastra
 const idCliente = new URLSearchParams(window.location.search).get('id');
 const modoEdicao = Boolean(idCliente);
 
-// [JS] cliente-form>main> No modo edição: troca títulos, bloqueia tipo e documento e preenche os campos com os dados do cliente
 async function prepararTela() {
     if (!modoEdicao) {
         return;
@@ -73,19 +86,16 @@ async function prepararTela() {
     }
 }
 
-// [JS] cliente-form>main>form>div>div>input> Liga as máscaras de documento, telefone e estado
 aplicarMascara(campos.documento, formatarDocumento);
 aplicarMascara(campos.telefone, formatarTelefone);
 aplicarMascara(campos.estado, formatarUF);
 
-// [JS] cliente-form>main>form>div>div>select> Ao trocar o tipo de pessoa, troca o exemplo do campo de documento
 campos.tipoPessoa.addEventListener('change', () => {
     campos.documento.placeholder = campos.tipoPessoa.value === 'F'
         ? '000.000.000-00'
         : '00.000.000/0000-00';
 });
 
-// [JS] cliente-form>main>form> Junta os valores dos campos para enviar à API (documento só no cadastro)
 function coletarDados() {
     const dados = {
         nome: campos.nome.value.trim(),
@@ -105,7 +115,6 @@ function coletarDados() {
     return dados;
 }
 
-// [JS] cliente-form>main>form> Ao salvar: cadastra ou atualiza; deu certo volta para a lista, deu erro mostra a mensagem no topo
 tela.form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparAviso(tela.aviso);
@@ -135,5 +144,4 @@ tela.form.addEventListener('submit', async (evento) => {
     }
 });
 
-// [JS] cliente-form> Prepara a tela assim que a página abre
 prepararTela();

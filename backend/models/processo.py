@@ -1,18 +1,8 @@
-"""
-Models do Processo e do histórico de fases.
-
-O processo é a parte central do sistema. Liga o cliente ao advogado
-responsável, guarda a fase atual e junta os documentos, o checklist e os
-marcadores.
-"""
-
+# Models do processo e do histórico de mudanças de fase
 from extensions import db
 
 
 class HistoricoStatus(db.Model):
-    """Registro de cada mudanca de fase do processo.
-    """
-
     __tablename__ = "historico_status"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -31,12 +21,6 @@ class HistoricoStatus(db.Model):
     )
 
     def salvar(self, confirmar=True):
-        """Grava o registro de mudanca de fase.
-
-        confirmar=False quando a mudanca de status faz parte de uma
-        operação maior (anexar ou excluir documento): ai o commit e do
-        Service, para o status e o histórico entrarem juntos.
-        """
         db.session.add(self)
         if confirmar:
             db.session.commit()
@@ -84,41 +68,21 @@ class Processo(db.Model):
     criado_em = db.Column(db.DateTime)
     atualizado_em = db.Column(db.DateTime)
 
-    # Relacoes usadas apenas para exibir nomes na tela.
-    # Consultas com filtro e JOIN explicito ficam no Repository.
     cliente = db.relationship("Cliente", lazy="joined")
     advogado = db.relationship("Usuario", lazy="joined")
     tipo = db.relationship("TipoProcesso", lazy="joined")
     status = db.relationship("StatusProcesso", lazy="joined")
 
-    # -----------------------------------------------------------------
-    # CRUD básico
-    # -----------------------------------------------------------------
 
     def salvar(self, confirmar=True):
-        """Insere o processo no banco.
-
-        confirmar=False quando o processo faz parte de uma operação maior:
-        abrir um processo grava também o checklist e a primeira linha do
-        histórico, e as três coisas precisam entrar juntas.
-        """
         db.session.add(self)
         if confirmar:
             db.session.commit()
         else:
-            # flush gera o id, que o checklist e o histórico precisam,
-            # sem fechar a transação.
             db.session.flush()
         return self
 
     def atualizar(self, dados):
-        """Altera os campos permitidos.
-
-        O número do processo fica de fora. Ele identifica a ação no
-        tribunal e trocar geraria um registro paralelo do mesmo caso.
-        O status também fica de fora, porque tem caso de uso próprio
-        (AtualizarStatusService), que grava o histórico.
-        """
         campos_editaveis = [
             "titulo",
             "descricao",
@@ -126,7 +90,6 @@ class Processo(db.Model):
             "comarca",
             "valor_causa",
             "prazo_final",
-            "ativo",
         ]
 
         for campo in campos_editaveis:
@@ -136,18 +99,11 @@ class Processo(db.Model):
         db.session.commit()
         return self
 
-    def remover(self):
-        """Arquiva o processo (exclusão lógica).
-
-        Funcionalidade 20: documentos e histórico continuam vinculados.
-        """
+    def deletar(self):
         self.ativo = False
         db.session.commit()
         return self
 
-    # -----------------------------------------------------------------
-    # Consultas simples
-    # -----------------------------------------------------------------
 
     @staticmethod
     def buscar_por_id(id_processo):
@@ -164,17 +120,6 @@ class Processo(db.Model):
             consulta = consulta.filter_by(ativo=True)
         return consulta.order_by(Processo.data_abertura.desc()).all()
 
-    @staticmethod
-    def listar_do_cliente(cliente_id):
-        return (
-            Processo.query.filter_by(cliente_id=cliente_id)
-            .order_by(Processo.data_abertura.desc())
-            .all()
-        )
-
-    # -----------------------------------------------------------------
-    # Serialização
-    # -----------------------------------------------------------------
 
     def to_dict(self):
         return {
@@ -192,7 +137,7 @@ class Processo(db.Model):
             "status_nome": self.status.nome if self.status else None,
             "status_cor": self.status.cor_hex if self.status else None,
             "comarca": self.comarca,
-            "valor_causa": float(self.valor_causa) if self.valor_causa else None,
+            "valor_causa": float(self.valor_causa) if self.valor_causa is not None else None,
             "data_abertura": self.data_abertura.isoformat() if self.data_abertura else None,
             "prazo_final": self.prazo_final.isoformat() if self.prazo_final else None,
             "ativo": self.ativo,

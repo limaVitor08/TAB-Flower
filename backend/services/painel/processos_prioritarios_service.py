@@ -1,5 +1,4 @@
-"""Lista os processos por ordem de urgência (funcionalidades 14 e 15)."""
-
+# Lista os processos por ordem de urgência
 from repositories.processo_repository import ProcessoRepository
 
 

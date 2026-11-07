@@ -1,21 +1,35 @@
-// [JS] usuarios> Atalhos para os elementos da lista de usuários
+/*
+==============================================================================
+SEÇÃO COMENTÁRIOS — usuarios.js: Lógica da página usuarios.html: Lista de usuários
+Formato: caminho do elemento no HTML> nome no código: o que faz
+==============================================================================
+usuarios> tela: Atalhos para os elementos da lista de usuários
+usuarios>main>div> tela.lista: Desenha uma ficha por usuário com selo do perfil e botões Desativar e Editar
+usuarios>main>div> tela.aviso: Mostra aqui as mensagens de erro ou de sucesso
+usuarios>main>div>label>input> tela.mostrarInativos: Ao marcar ou desmarcar, recarrega a lista
+usuarios>main>div>article> corDoPerfil(): Escolhe a cor do selo pelo perfil (Admin, Advogado ou Secretária)
+usuarios>main>div>article> montarFicha(): Monta a ficha de um usuário: nome, selo do perfil, e-mail e botões (inativo fica apagado)
+usuarios>main>div> desenharLista(): Desenha a lista de fichas ou a caixa de "nenhum usuário"
+usuarios>main>div> carregar(): Busca os usuários na API e desenha a lista
+usuarios>main>div>article>div>button> desativar(): Pergunta se pode desativar e, se sim, desativa o usuário e recarrega
+usuarios>main>div>label>input> tela.mostrarInativos (change): Marcar ou desmarcar Mostrar inativos recarrega a lista
+usuarios>main>div> tela.lista (click): Clique no botão Desativar de qualquer ficha da lista
+usuarios> carregar(): Carrega a lista assim que a página abre
+==============================================================================
+*/
+
 const tela = {
-    // [JS] usuarios>main>div> Desenha uma ficha por usuário com selo do perfil e botões Desativar e Editar
     lista: document.getElementById('lista'),
-    // [JS] usuarios>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
-    // [JS] usuarios>main>div>label>input> Ao marcar ou desmarcar, recarrega a lista
     mostrarInativos: document.getElementById('mostrar-inativos')
 };
 
-// [JS] usuarios>main>div>article> Escolhe a cor do selo pelo perfil (Admin, Advogado ou Secretária)
 function corDoPerfil(perfil) {
     if (perfil === 'Admin') { return '#1b2a41'; }
     if (perfil === 'Advogado') { return '#2f6f4e'; }
     return '#5a6472';
 }
 
-// [JS] usuarios>main>div>article> Monta a ficha de um usuário: nome, selo do perfil, e-mail e botões (inativo fica apagado)
 function montarFicha(usuario) {
     const classeInativa = usuario.ativo ? '' : ' inativa';
 
@@ -48,7 +62,6 @@ function montarFicha(usuario) {
     `;
 }
 
-// [JS] usuarios>main>div> Desenha a lista de fichas ou a caixa de "nenhum usuário"
 function desenharLista(usuarios) {
     if (usuarios.length === 0) {
         tela.lista.innerHTML = `
@@ -62,7 +75,6 @@ function desenharLista(usuarios) {
     tela.lista.innerHTML = usuarios.map(montarFicha).join('');
 }
 
-// [JS] usuarios>main>div> Busca os usuários na API e desenha a lista
 async function carregar() {
     limparAviso(tela.aviso);
     tela.lista.innerHTML = '<div class="vazio">Carregando...</div>';
@@ -76,7 +88,6 @@ async function carregar() {
     }
 }
 
-// [JS] usuarios>main>div>article>div>button> Pergunta se pode desativar e, se sim, desativa o usuário e recarrega
 async function desativar(id, nome) {
     const confirmou = confirm(
         `Desativar o usuário "${nome}"?\n\n` +
@@ -90,17 +101,15 @@ async function desativar(id, nome) {
 
     try {
         const resposta = await api.usuarios.excluir(id);
+        await carregar();
         mostrarAviso(tela.aviso, resposta.mensagem, 'sucesso');
-        carregar();
     } catch (erro) {
         mostrarAviso(tela.aviso, erro.message);
     }
 }
 
-// [JS] usuarios>main>div>label>input> Marcar ou desmarcar Mostrar inativos recarrega a lista
 tela.mostrarInativos.addEventListener('change', carregar);
 
-// [JS] usuarios>main>div> Clique no botão Desativar de qualquer ficha da lista
 tela.lista.addEventListener('click', (evento) => {
     const botao = evento.target.closest('[data-desativar]');
     if (botao) {
@@ -108,5 +117,4 @@ tela.lista.addEventListener('click', (evento) => {
     }
 });
 
-// [JS] usuarios> Carrega a lista assim que a página abre
 carregar();

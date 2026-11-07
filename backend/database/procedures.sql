@@ -1,42 +1,8 @@
--- =====================================================================
--- PROJETO TAB-FLOWER
--- Stored Procedures - Terceira Etapa
---
--- Arquivo.....: backend/database/procedures.sql
--- SGBD........: MySQL 8.0 (WAMP Server / MySQL Workbench)
---
--- Estas procedures concentram as consultas que extrapolam o CRUD:
--- filtros combinados, JOINs entre várias tabelas, ordenacoes e
--- agregacoes. Elas são chamadas exclusivamente pela camada Repository
--- do backend, nunca por Models ou Services diretamente.
---
--- COMO EXECUTAR:
---   1. Rode ANTES o create_database.sql (ele cria o banco e as tabelas).
---   2. Abra este arquivo no MySQL Workbench.
---   3. Execute o script inteiro (raio amarelo / Ctrl+Shift+Enter).
---   4. Confira em SCHEMAS > tabflower > Stored Procedures.
---
--- Rodar este arquivo mais de uma vez e seguro: cada procedure e
--- apagada antes de ser recriada.
--- =====================================================================
+/* Stored procedures usadas pelos Repositories nas buscas e no painel */
 
 USE tabflower;
 
 DELIMITER $$
-
-
--- =====================================================================
--- 1. sp_buscar_clientes_por_nome
---
--- Funcionalidade 01 - Busca por Nome.
---
--- Busca parcial e sem diferenciar maiusculas. Traz junto a contagem de
--- processos ativos de cada cliente, o que a secretaria precisa ver na
--- lista sem ter que abrir cliente por cliente.
---
--- Este JOIN com contagem e exatamente o tipo de consulta que não cabe
--- na Model: não e CRUD, e relatório.
--- =====================================================================
 
 DROP PROCEDURE IF EXISTS sp_buscar_clientes_por_nome$$
 
@@ -69,27 +35,14 @@ BEGIN
     ORDER BY c.nome;
 END$$
 
-
--- =====================================================================
--- 2. sp_buscar_processos
---
--- Funcionalidade 03 - Busca por Processo.
---
--- Busca combinada: o termo procura ao mesmo tempo no número da ação, no
--- título e no nome do cliente. Os filtros de status e advogado são
--- opcionais - passando NULL, o filtro e ignorado.
---
--- Junta cinco tabelas para devolver a linha já pronta para a tela, sem
--- o backend precisar de consultas extras.
--- =====================================================================
-
 DROP PROCEDURE IF EXISTS sp_buscar_processos$$
 
 CREATE PROCEDURE sp_buscar_processos(
-    IN p_termo        VARCHAR(150),
-    IN p_status_id    INT,
-    IN p_advogado_id  INT,
-    IN p_tipo_id      INT
+    IN p_termo             VARCHAR(150),
+    IN p_status_id         INT,
+    IN p_advogado_id       INT,
+    IN p_tipo_id           INT,
+    IN p_incluir_arquivados BOOLEAN
 )
 BEGIN
     SELECT
@@ -116,7 +69,7 @@ BEGIN
     INNER JOIN usuario         u ON u.id = p.advogado_id
     INNER JOIN tipo_processo   t ON t.id = p.tipo_processo_id
     INNER JOIN status_processo s ON s.id = p.status_id
-    WHERE p.ativo = TRUE
+    WHERE (p_incluir_arquivados = TRUE OR p.ativo = TRUE)
       AND (
             p_termo IS NULL
          OR p_termo = ''
@@ -129,20 +82,6 @@ BEGIN
       AND (p_tipo_id     IS NULL OR p.tipo_processo_id = p_tipo_id)
     ORDER BY p.data_abertura DESC;
 END$$
-
-
--- =====================================================================
--- 3. sp_painel_resumo
---
--- Funcionalidade 06 - Painel Central de Gestao.
---
--- Agregação pura: conta quantos processos existem em cada fase e quantos
--- deles estao com o prazo vencido ou vencendo nos próximos 7 dias.
---
--- Sai da direita para a esquerda da tabela status_processo, para as
--- fases sem nenhum processo também aparecerem no painel com zero. Sem o
--- LEFT JOIN, uma fase vazia sumiria e o painel mentiria.
--- =====================================================================
 
 DROP PROCEDURE IF EXISTS sp_painel_resumo$$
 
@@ -173,22 +112,6 @@ BEGIN
     GROUP BY s.id, s.nome, s.cor_hex, s.ordem
     ORDER BY s.ordem;
 END$$
-
-
--- =====================================================================
--- 4. sp_pendencias_checklist
---
--- Funcionalidade 12 - Mapeamento de Pendências.
---
--- Esta e a consulta que substitui o checklist impresso. Para cada
--- processo ativo, informa quantos documentos são exigidos, quantos já
--- foram entregues e lista, em texto, quais ainda faltam.
---
--- O GROUP_CONCAT e o que monta a lista de nomes numa única coluna, algo
--- impossível de fazer no Active Record sem várias idas ao banco.
--- Processos com a documentação completa ficam de fora: o painel mostra
--- o que exige ação, não o que já esta resolvido.
--- =====================================================================
 
 DROP PROCEDURE IF EXISTS sp_pendencias_checklist$$
 
@@ -227,21 +150,6 @@ BEGIN
     HAVING total_pendentes > 0
     ORDER BY total_pendentes DESC, p.prazo_final IS NULL, p.prazo_final;
 END$$
-
-
--- =====================================================================
--- 5. sp_processos_prioritarios
---
--- Funcionalidade 14 - Marcadores Visuais.
--- Funcionalidade 15 - Filtros de Prioridade.
---
--- Ordena os processos por urgencia real, combinando duas coisas: o peso
--- do marcador aplicado (Urgente pesa 3, Prioridade 2, Prazo curto 1) e
--- quantos dias faltam para o prazo final.
---
--- A ordenação por peso máximo dos marcadores e o motivo desta consulta
--- existir: e um JOIN N:N com agregação, que não tem como sair da Model.
--- =====================================================================
 
 DROP PROCEDURE IF EXISTS sp_processos_prioritarios$$
 
@@ -285,18 +193,6 @@ BEGIN
         p.prazo_final ASC;
 END$$
 
-
--- =====================================================================
--- 6. sp_notificacoes_advogado
---
--- Funcionalidade 16 - Disparo de Notificações.
--- Funcionalidade 17 - Direcionamento Automático.
---
--- Devolve os avisos de um advogado já com o contexto: qual processo,
--- qual cliente e qual documento originou o aviso. Sem este JOIN, a tela
--- mostraria apenas "novo documento anexado", sem dizer em que caso.
--- =====================================================================
-
 DROP PROCEDURE IF EXISTS sp_notificacoes_advogado$$
 
 CREATE PROCEDURE sp_notificacoes_advogado(
@@ -328,14 +224,7 @@ BEGIN
     ORDER BY n.lida ASC, n.criado_em DESC;
 END$$
 
-
 DELIMITER ;
-
-
--- =====================================================================
--- CONFERENCIA
--- Depois de executar, esta consulta deve listar as 6 procedures.
--- =====================================================================
 
 SELECT ROUTINE_NAME, ROUTINE_TYPE
 FROM INFORMATION_SCHEMA.ROUTINES

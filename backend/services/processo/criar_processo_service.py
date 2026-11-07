@@ -1,11 +1,4 @@
-"""
-Abre um processo novo.
-
-Além de criar o processo, monta o checklist dele a partir do molde do
-tipo (funcionalidade 11) e grava a primeira fase no histórico
-(funcionalidade 7). A partir daí ele já aparece no painel.
-"""
-
+# Abre um processo novo com o checklist e a primeira fase
 import logging
 from datetime import date, datetime
 
@@ -20,16 +13,8 @@ logger = logging.getLogger("tabflower")
 
 
 class CriarProcessoService:
-    """Válida os vinculos, cria o processo e monta o checklist dele."""
-
     @staticmethod
     def executar(dados, criado_por=None):
-        """Abre o processo e monta o checklist dele.
-
-        criado_por vem de g.usuario_atual, num parâmetro separado de
-        "dados", que é o JSON que o navegador enviou. É esse id que fica
-        no primeiro registro do histórico.
-        """
         numero = (dados.get("numero_processo") or "").strip()
         titulo = (dados.get("titulo") or "").strip()
 
@@ -42,7 +27,6 @@ class CriarProcessoService:
         if Processo.buscar_por_numero(numero):
             raise ValueError("Já existe um processo com este número.")
 
-        # --- Confere se os vinculos existem de verdade ---
         cliente = Cliente.buscar_por_id(dados.get("cliente_id"))
         if not cliente:
             raise ValueError("Cliente não encontrado.")
@@ -51,7 +35,6 @@ class CriarProcessoService:
         if not advogado:
             raise ValueError("Advogado responsável não encontrado.")
 
-        # O banco não consegue exigir isso sozinho, entao validamos aqui.
         if not advogado.perfil or advogado.perfil.nome != "Advogado":
             raise ValueError(
                 "O responsável pelo processo precisa ter perfil de Advogado."
@@ -61,7 +44,6 @@ class CriarProcessoService:
         if not tipo:
             raise ValueError("Tipo de processo inválido.")
 
-        # Sem status informado, entra na primeira fase configurada.
         status_id = dados.get("status_id")
         if status_id:
             status = db.session.get(StatusProcesso, status_id)
@@ -79,7 +61,7 @@ class CriarProcessoService:
             tipo_processo_id=tipo.id,
             status_id=status.id,
             comarca=(dados.get("comarca") or "").strip() or None,
-            valor_causa=dados.get("valor_causa") or None,
+            valor_causa=None if dados.get("valor_causa") in (None, "") else dados["valor_causa"],
             data_abertura=dados.get("data_abertura") or date.today(),
             prazo_final=dados.get("prazo_final") or None,
             criado_em=datetime.now(),
@@ -109,11 +91,6 @@ class CriarProcessoService:
 
     @staticmethod
     def _montar_checklist(processo):
-        """Copia o molde do tipo de processo para o processo criado.
-
-        Funcionalidade 11: a secretaria não precisa mais consultar a lista
-        impressa de documentos obrigatórios - o sistema já monta.
-        """
         itens = ChecklistModelo.listar_do_tipo(processo.tipo_processo_id)
 
         for item in itens:

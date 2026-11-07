@@ -1,10 +1,4 @@
-"""
-Model da Notificação (funcionalidades 16 e 17).
-
-Quando um documento é anexado a um processo, o sistema descobre sozinho
-quem é o advogado responsável e cria o aviso para ele.
-"""
-
+# Model dos avisos que o advogado recebe quando chega documento
 from datetime import datetime
 
 from extensions import db
@@ -31,13 +25,6 @@ class Notificacao(db.Model):
     criado_em = db.Column(db.DateTime)
 
     def salvar(self, confirmar=False):
-        """Grava o aviso.
-
-        Ao contrario das outras Models, a notificação nunca nasce sozinha,
-        ela e sempre consequencia de outracoisa (um documento anexado, por exemplo).
-        Quem comanda o commit é o Service dono daquela operação,
-        senão o aviso poderia ser gravado para um documento que acabou não entrando.
-        """
         db.session.add(self)
         if confirmar:
             db.session.commit()
@@ -52,13 +39,6 @@ class Notificacao(db.Model):
     @staticmethod
     def buscar_por_id(id_notificacao):
         return db.session.get(Notificacao, id_notificacao)
-
-    @staticmethod
-    def listar_do_usuario(usuario_id, apenas_nao_lidas=False):
-        consulta = Notificacao.query.filter_by(usuario_destino_id=usuario_id)
-        if apenas_nao_lidas:
-            consulta = consulta.filter_by(lida=False)
-        return consulta.order_by(Notificacao.criado_em.desc()).all()
 
     def to_dict(self):
         return {

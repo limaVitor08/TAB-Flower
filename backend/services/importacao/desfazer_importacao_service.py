@@ -1,16 +1,12 @@
-"""
-Desfaz uma importação (funcionalidade 19).
-Quase nenhuma planilha antiga entra certa na primeira vez, e sem isso a
-secretária teria que desativar cliente por cliente.
-Só o Admin pode desfazer, porque isso desativa muitos clientes de uma
-vez. Os clientes não são apagados, só desativados. E quem já tem algum
-processo é mantido, porque já virou trabalho do escritório.
-"""
+# Desativa os clientes que entraram por um lote de importação
 from datetime import datetime
 from extensions import db
 from models.cliente import Cliente
 from models.importacao import ImportacaoLote
 from models.processo import Processo
+from services.auditoria.registrar_auditoria_service import (
+    RegistrarAuditoriaService,
+)
 class DesfazerImportacaoService:
     @staticmethod
     def executar(id_importacao, usuario_logado):
@@ -42,6 +38,17 @@ class DesfazerImportacaoService:
             cliente.ativo = False
             cliente.atualizado_em = datetime.now()
             desativados += 1
+        if desativados:
+            RegistrarAuditoriaService.executar(
+                usuario_id=usuario_logado.id,
+                acao="EXCLUIR",
+                entidade="importacao_lote",
+                entidade_id=lote.id,
+                descricao=(
+                    f"Importação {lote.nome_arquivo} desfeita: "
+                    f"{desativados} cliente(s) desativado(s)."
+                ),
+            )
         db.session.commit()
         return {
             "desativados": desativados,

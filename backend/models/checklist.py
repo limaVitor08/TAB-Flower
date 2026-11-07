@@ -1,12 +1,4 @@
-"""
-Models do checklist de documentos.
-
-O checklist_modelo é o molde. O que cada tipo de processo exige. O
-checklist_processo é a cópia que vai para cada processo aberto.
-Separamos os dois para que mudar o molde hoje não mexa no checklist de
-um processo aberto no mês passado.
-"""
-
+# Models do molde do checklist e da cópia que cada processo recebe
 from extensions import db
 
 
@@ -25,7 +17,6 @@ class ChecklistModelo(db.Model):
 
     @staticmethod
     def listar_do_tipo(tipo_processo_id):
-        """Itens exigidos por um tipo de processo. Funcionalidade 13."""
         return (
             ChecklistModelo.query.filter_by(tipo_processo_id=tipo_processo_id)
             .order_by(ChecklistModelo.ordem)
@@ -34,12 +25,6 @@ class ChecklistModelo(db.Model):
 
 
 class ChecklistProcesso(db.Model):
-    """Um item do checklist de um processo.
-
-    Funcionalidade 11 (Checklist Obrigatório) e 12 (Mapeamento de
-    Pendências). Itens com entregue = False são as pendências.
-    """
-
     __tablename__ = "checklist_processo"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -67,6 +52,16 @@ class ChecklistProcesso(db.Model):
             .order_by(ChecklistProcesso.id)
             .all()
         )
+
+    @staticmethod
+    def tem_pendencia_obrigatoria(processo_id):
+        pendente = ChecklistProcesso.query.filter_by(
+            processo_id=processo_id,
+            obrigatorio=True,
+            entregue=False,
+        ).first()
+
+        return pendente is not None
 
     def to_dict(self):
         return {

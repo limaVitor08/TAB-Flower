@@ -1,20 +1,37 @@
-// [JS] clientes> Atalhos para os elementos da lista de clientes
+/*
+==============================================================================
+SEÇÃO COMENTÁRIOS — clientes.js: Lógica da página clientes.html: Lista e busca de clientes
+Formato: caminho do elemento no HTML> nome no código: o que faz
+==============================================================================
+clientes> tela: Atalhos para os elementos da lista de clientes
+clientes>main>div> tela.lista: Desenha uma ficha por cliente com os botões Desativar e Editar
+clientes>main>div> tela.aviso: Mostra aqui as mensagens de erro ou de sucesso
+clientes>main>div>form> tela.formBusca: Ao enviar, busca por nome ou por CPF/CNPJ (se digitar só números)
+clientes>main>div>form>input> tela.campoBusca: Lê o termo digitado
+clientes>main>div>button> tela.botaoLimpar: Limpa o campo de busca e recarrega todos os clientes
+clientes>main>div>label>input> tela.mostrarInativos: Ao marcar ou desmarcar, recarrega a lista
+clientes>main>div>article> montarFicha(): Monta a ficha de um cliente: nome, tipo, documento, cidade e botões (inativo fica apagado)
+clientes>main>div> desenharLista(): Desenha a lista de fichas ou a caixa de "nenhum cliente"
+clientes>main>div> carregarClientes(): Busca todos os clientes na API e desenha a lista
+clientes>main>div>form> buscar(): Busca por CPF/CNPJ se o texto parecer documento; senão busca por nome, trazendo os inativos se Mostrar inativos estiver marcado
+clientes>main>div>article>div>button> desativarCliente(): Pergunta se pode desativar e, se sim, desativa o cliente e recarrega a lista
+clientes>main>div>form> tela.formBusca (submit): Ao enviar a busca: campo vazio mostra todos, senão busca o termo
+clientes>main>div>button> tela.botaoLimpar (click): Ver todos: limpa a busca e recarrega a lista
+clientes>main>div>label>input> tela.mostrarInativos (change): Marcar ou desmarcar Mostrar inativos recarrega a lista
+clientes>main>div> tela.lista (click): Clique no botão Desativar de qualquer ficha da lista
+clientes> carregarClientes(): Carrega a lista assim que a página abre
+==============================================================================
+*/
+
 const tela = {
-    // [JS] clientes>main>div> Desenha uma ficha por cliente com os botões Desativar e Editar
     lista: document.getElementById('lista'),
-    // [JS] clientes>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
-    // [JS] clientes>main>div>form> Ao enviar, busca por nome ou por CPF/CNPJ (se digitar só números)
     formBusca: document.getElementById('form-busca'),
-    // [JS] clientes>main>div>form>input> Lê o termo digitado
     campoBusca: document.getElementById('campo-busca'),
-    // [JS] clientes>main>div>button> Limpa o campo de busca e recarrega todos os clientes
     botaoLimpar: document.getElementById('botao-limpar'),
-    // [JS] clientes>main>div>label>input> Ao marcar ou desmarcar, recarrega a lista
     mostrarInativos: document.getElementById('mostrar-inativos')
 };
 
-// [JS] clientes>main>div>article> Monta a ficha de um cliente: nome, tipo, documento, cidade e botoes (inativo fica apagado)
 function montarFicha(cliente) {
     const classeInativa = cliente.ativo ? '' : ' inativa';
     const rotuloTipo = cliente.tipo_pessoa === 'F' ? 'Pessoa física' : 'Pessoa jurídica';
@@ -49,7 +66,6 @@ function montarFicha(cliente) {
     `;
 }
 
-// [JS] clientes>main>div> Desenha a lista de fichas ou a caixa de "nenhum cliente"
 function desenharLista(clientes, contexto = 'lista') {
     if (clientes.length === 0) {
         const mensagem = contexto === 'busca'
@@ -65,7 +81,6 @@ function desenharLista(clientes, contexto = 'lista') {
     tela.lista.innerHTML = clientes.map(montarFicha).join('');
 }
 
-// [JS] clientes>main>div> Busca todos os clientes na API e desenha a lista
 async function carregarClientes() {
     limparAviso(tela.aviso);
     tela.lista.innerHTML = '<div class="vazio">Carregando...</div>';
@@ -79,7 +94,6 @@ async function carregarClientes() {
     }
 }
 
-// [JS] clientes>main>div>form> Busca por CPF/CNPJ se o texto parecer documento; senão busca por nome
 async function buscar(termo) {
     limparAviso(tela.aviso);
     tela.lista.innerHTML = '<div class="vazio">Buscando...</div>';
@@ -93,7 +107,9 @@ async function buscar(termo) {
             const cliente = await api.clientes.buscarPorDocumento(apenasNumeros);
             desenharLista([cliente], 'busca');
         } else {
-            const clientes = await api.clientes.buscarPorNome(termo);
+            const clientes = await api.clientes.buscarPorNome(
+                termo, tela.mostrarInativos.checked
+            );
             desenharLista(clientes, 'busca');
         }
     } catch (erro) {
@@ -107,12 +123,11 @@ async function buscar(termo) {
     }
 }
 
-// [JS] clientes>main>div>article>div>button> Pergunta se pode desativar e, se sim, desativa o cliente e recarrega a lista
 async function desativarCliente(id, nome) {
     const confirmou = confirm(
         `Desativar o cliente "${nome}"?\n\n` +
         `O cadastro sai da lista, mas continua no banco junto com os ` +
-        `processos e documentos dele. Um administrador pode reativar depois.`
+        `processos e documentos dele, e aparece marcando Mostrar inativos.`
     );
 
     if (!confirmou) {
@@ -121,14 +136,13 @@ async function desativarCliente(id, nome) {
 
     try {
         const resposta = await api.clientes.excluir(id);
+        await carregarClientes();
         mostrarAviso(tela.aviso, resposta.mensagem, 'sucesso');
-        carregarClientes();
     } catch (erro) {
         mostrarAviso(tela.aviso, erro.message);
     }
 }
 
-// [JS] clientes>main>div>form> Ao enviar a busca: campo vazio mostra todos, senão busca o termo
 tela.formBusca.addEventListener('submit', (evento) => {
     evento.preventDefault();
     const termo = tela.campoBusca.value.trim();
@@ -141,16 +155,13 @@ tela.formBusca.addEventListener('submit', (evento) => {
     buscar(termo);
 });
 
-// [JS] clientes>main>div>button> Ver todos: limpa a busca e recarrega a lista
 tela.botaoLimpar.addEventListener('click', () => {
     tela.campoBusca.value = '';
     carregarClientes();
 });
 
-// [JS] clientes>main>div>label>input> Marcar ou desmarcar Mostrar inativos recarrega a lista
 tela.mostrarInativos.addEventListener('change', carregarClientes);
 
-// [JS] clientes>main>div> Clique no botão Desativar de qualquer ficha da lista
 tela.lista.addEventListener('click', (evento) => {
     const botao = evento.target.closest('[data-excluir]');
     if (botao) {
@@ -158,5 +169,4 @@ tela.lista.addEventListener('click', (evento) => {
     }
 });
 
-// [JS] clientes> Carrega a lista assim que a página abre
 carregarClientes();

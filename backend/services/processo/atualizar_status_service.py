@@ -1,11 +1,4 @@
-"""
-Muda a fase do processo (funcionalidade 7).
-
-Tem um Service só para isso porque não é uma edição comum. Além de
-trocar a fase, precisa registrar a mudança no histórico. É esse
-histórico que substitui a planilha que o escritório usava.
-"""
-
+# Muda a fase do processo e registra no histórico
 import logging
 from datetime import datetime
 
@@ -52,8 +45,6 @@ class AtualizarStatusService:
             try:
                 db.session.commit()
             except Exception:
-                # Sem o rollback, a sessão fica travada e a proxima
-                # requisição herdaria o erro desta.
                 db.session.rollback()
                 logger.exception(
                     "Falha ao mudar o status do processo %s", id_processo

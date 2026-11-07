@@ -1,5 +1,140 @@
-/* [CSS] :root> Guarda as cores, o arredondamento e a sombra usados no site todo, para trocar em um lugar só
-   [HTML] login>html>, painel>html>, clientes>html>, cliente-form>html>, processos>html>, processo-form>html>, processo-detalhe>html>, documentos>html>, notificacoes>html>, checklists>html>, importacoes>html>, usuarios>html>, usuario-form>html> */
+/*
+==============================================================================
+SEÇÃO COMENTÁRIOS — estilo.css: aparência de todas as páginas
+Formato: seletor> efeito na tela | HTML: caminho dos elementos onde aparece ((JS) = criado pelo JavaScript)
+==============================================================================
+:root> Guarda as cores, o arredondamento e a sombra usados no site todo, para trocar em um lugar só | HTML: todas as páginas
+*> Zera margens e espaçamentos padrão do navegador em todos os elementos | HTML: todas as páginas
+body> Define a fonte, o tamanho do texto, a cor da letra e o fundo bege do site | HTML: todas as páginas
+.mono> Fonte de máquina de escrever, usada em números de processo e nomes de arquivo | HTML: painel>main>div>section>p>span>, painel>main>div>section>ul>li>div>span> (JS), painel>main>section>p>span> e mais 10
+.cabecalho> Faixa azul-escura no topo da página | HTML: painel>header>, clientes>header>, cliente-form>header> e mais 9
+.cabecalho-conteudo> Centraliza o topo e coloca logo, abas e usuário lado a lado | HTML: painel>header>div>, clientes>header>div>, cliente-form>header>div> e mais 9
+.marca> Texto do logo TabFlower grande e em negrito | HTML: login>main>div>, painel>header>div>div>, clientes>header>div>div> e mais 10
+.marca span> Pinta a palavra Flower do logo de verde | HTML: login>main>div>span>, painel>header>div>div>span>, clientes>header>div>div>span> e mais 10
+.abas> Coloca as abas do menu em linha, sem marcadores de lista | HTML: painel>header>div>nav>ul>, clientes>header>div>nav>ul>, cliente-form>header>div>nav>ul> e mais 9
+.abas a> Cada aba do menu: texto claro com cantos de cima arredondados | HTML: painel>header>div>nav>ul>li>a>, clientes>header>div>nav>ul>li>a>, cliente-form>header>div>nav>ul>li>a> e mais 9
+.abas a:hover> Clareia a aba quando o mouse passa por cima
+.abas a.ativa> Aba da página atual fica com fundo claro, parecendo aberta | HTML: painel>header>div>nav>ul>li>a>, clientes>header>div>nav>ul>li>a>, cliente-form>header>div>nav>ul>li>a> e mais 7
+.pagina> Área central do conteúdo, com largura máxima e espaço nas bordas | HTML: painel>main>, clientes>main>, cliente-form>main> e mais 9
+.titulo-pagina> Título grande e em negrito no topo da página | HTML: painel>main>h1>, clientes>main>h1>, cliente-form>main>h1> e mais 9
+.subtitulo-pagina> Texto explicativo cinza logo abaixo do título | HTML: painel>main>p>, clientes>main>p>, cliente-form>main>p> e mais 9
+.barra-acoes> Linha que alinha busca, filtros e botões lado a lado | HTML: clientes>main>div>, processos>main>div>, processo-detalhe>main>div> e mais 2
+.espacador> Ocupa o espaço que sobra e empurra o que vem depois para a direita | HTML: clientes>main>div>div>, processos>main>div>div>, processo-detalhe>main>div>div> e mais 2
+.botao> Formato padrão de botão: borda, cantos arredondados e mãozinha no mouse | HTML: login>main>form>div>button>, painel>header>div>div>button> (JS), clientes>header>div>div>button> (JS) e mais 46
+.botao:hover> Escurece a borda do botão ao passar o mouse
+.botao-principal> Botão de ação principal: fundo verde e texto branco | HTML: login>main>form>div>button>, clientes>main>div>a>, cliente-form>main>form>div>button> e mais 8
+.botao-principal:hover> Verde fica mais escuro ao passar o mouse
+.botao-perigo> Botão de ação perigosa (excluir): texto laranja-avermelhado | HTML: clientes>main>div>article>div>button> (JS), processos>main>div>article>div>button> (JS), processo-detalhe>main>section>ul>li>button> (JS) e mais 4
+.botao-perigo:hover> Fundo fica rosado ao passar o mouse, avisando o perigo
+.botao-pequeno> Versão menor do botão, usada dentro de listas | HTML: painel>header>div>div>button> (JS), clientes>header>div>div>button> (JS), clientes>main>div>article>div>a> (JS) e mais 23
+.busca> Caixa de busca: campo e botão lado a lado com largura controlada | HTML: clientes>main>div>form>, processos>main>div>form>, documentos>main>div>form>
+.busca input> Campo de texto da busca com borda e cantos arredondados | HTML: clientes>main>div>form>input>, processos>main>div>form>input>, documentos>main>div>form>input>
+.busca input:focus> Contorno verde no campo de busca quando está selecionado
+.lista> Empilha os itens da lista um embaixo do outro com espaço entre eles | HTML: clientes>main>div>, processos>main>div>, documentos>main>div> e mais 3
+.ficha> Cartão branco de cada item da lista, com faixa verde à esquerda | HTML: clientes>main>div>article> (JS), processos>main>div>article> (JS), documentos>main>div>article> (JS) e mais 3
+.ficha.inativa> Item inativo fica apagado e com faixa cinza | HTML: clientes>main>div>article> (JS), processos>main>div>article> (JS), documentos>main>div>article> (JS)
+.ficha-dados> Parte da ficha com os dados, ocupa o espaço disponível | HTML: clientes>main>div>article>div> (JS), processos>main>div>article>div> (JS), documentos>main>div>article>div> (JS) e mais 3
+.ficha-nome> Nome do item em destaque, em negrito | HTML: clientes>main>div>article>div>div> (JS), processos>main>div>article>div>div> (JS), documentos>main>div>article>div>div> (JS) e mais 3
+.ficha-info> Linha de informações menores e cinzas da ficha | HTML: clientes>main>div>article>div>div> (JS), processos>main>div>article>div>div> (JS), documentos>main>div>article>div>div> (JS) e mais 3
+.ficha-acoes> Área dos botões da ficha, alinhados lado a lado | HTML: clientes>main>div>article>div> (JS), processos>main>div>article>div> (JS), documentos>main>div>article>div> (JS) e mais 3
+.etiqueta> Selinho pequeno em letras maiúsculas com fundo verde-claro | HTML: clientes>main>div>article>div>div>span> (JS), clientes>main>div>article>div>span> (JS), processos>main>div>article>div>span> (JS) e mais 2
+.etiqueta-cinza> Variação cinza do selinho | HTML: clientes>main>div>article>div>span> (JS), processos>main>div>article>div>span> (JS), processo-detalhe>main>div>section>ul>li>span> (JS), documentos>main>div>article>div>div>span> (JS)
+.formulario> Caixa branca com borda e sombra que envolve o formulário | HTML: login>main>form>, cliente-form>main>form>, processo-form>main>form>, usuario-form>main>form>
+.grupo-campos> Organiza os campos em duas colunas | HTML: cliente-form>main>form>div>, processo-form>main>form>div>, usuario-form>main>form>div>
+.campo> Empilha o rótulo em cima do campo | HTML: login>main>form>div>, cliente-form>main>form>div>div>, processo-form>main>form>div>div>, usuario-form>main>form>div>div>
+.campo-largo> Faz o campo ocupar a linha inteira | HTML: login>main>form>div>, cliente-form>main>form>div>div>, processo-form>main>form>div>div>, usuario-form>main>form>div>div>
+.campo label> Rótulo do campo pequeno, em negrito e cinza | HTML: login>main>form>div>label>, cliente-form>main>form>div>div>label>, processo-form>main>form>div>div>label>, usuario-form>main>form>div>div>label>
+.campo label .obrigatorio> Asterisco de campo obrigatório em vermelho | HTML: cliente-form>main>form>div>div>label>span>, processo-form>main>form>div>div>label>span>, usuario-form>main>form>div>div>label>span>
+.campo input, .campo select, .campo textarea> Caixa de texto com borda e cantos arredondados / Lista de opções com borda e cantos arredondados / Caixa de texto grande com borda e cantos arredondados | HTML: login>main>form>div>input>, cliente-form>main>form>div>div>input>, processo-form>main>form>div>div>input>, usuario-form>main>form>div>div>input>, cliente-form>main>form>div>div>select>, processo-form>main>form>div>div>select>, usuario-form>main>form>div>div>select>, cliente-form>main>form>div>div>textarea>, processo-form>main>form>div>div>textarea>
+.campo input:focus, .campo select:focus, .campo textarea:focus> Contorno verde quando o campo está selecionado / Contorno verde quando a lista está selecionada / Contorno verde quando a caixa está selecionada
+.campo input:disabled> Campo bloqueado fica cinza e com cursor de proibido
+.campo textarea> A caixa de texto grande só estica para baixo e tem altura mínima | HTML: cliente-form>main>form>div>div>textarea>, processo-form>main>form>div>div>textarea>
+.dica> Texto de ajuda pequeno e cinza | HTML: painel>main>div>section>p>, painel>main>section>p>, clientes>main>div>label> e mais 21
+.rodape-formulario> Linha dos botões no fim do formulário, separada por um traço | HTML: cliente-form>main>form>div>, processo-form>main>form>div>, usuario-form>main>form>div>
+.aviso> Caixa de mensagem com faixa colorida à esquerda | HTML: login>main>div>, painel>main>div>, clientes>main>div> e mais 10
+.aviso-erro> Mensagem de erro em tons de laranja-avermelhado | HTML: login>main>div>, painel>main>div>, clientes>main>div> e mais 10
+.aviso-sucesso> Mensagem de sucesso em tons de verde | HTML: clientes>main>div>, processos>main>div>, processo-detalhe>main>div> e mais 5
+.escondido> Esconde o elemento da tela | HTML: login>main>div>, painel>main>div>, clientes>main>div> e mais 13
+.vazio> Caixa tracejada que aparece quando a lista está vazia | HTML: clientes>main>div>div>, notificacoes>main>div>div> (JS)
+.vazio strong> Frase principal da caixa vazia em destaque | HTML: clientes>main>div>div>strong> (JS), notificacoes>main>div>div>strong> (JS)
+@media (max-width: 700px)> Ajustes para telas pequenas (celular)
+    .cabecalho-conteudo> No celular, empilha logo, abas e usuário
+    .abas> No celular, as abas rolam para o lado
+    .grupo-campos> No celular, os campos ficam em uma coluna só
+    .ficha> No celular, empilha os dados e os botões da ficha
+    .ficha-acoes> No celular, os botões da ficha ocupam a largura toda
+@media (prefers-reduced-motion: reduce)> Para quem pediu menos animação no sistema
+    *> Desliga as transições animadas
+.painel> Bloco branco com borda e sombra que separa as seções da página | HTML: painel>main>div>section>, painel>main>section>, processo-detalhe>main>div>section> e mais 5
+.titulo-secao> Título de cada bloco, em negrito | HTML: painel>main>div>section>h2>, painel>main>section>h2>, processo-detalhe>main>div>section>h2> e mais 5
+.colunas> Divide o conteúdo em duas colunas lado a lado | HTML: painel>main>div>, processo-detalhe>main>div>
+.grade-dados> Organiza os dados em três colunas | HTML: processo-detalhe>main>section>div>
+.dado-rotulo> Nome do dado, pequeno, cinza e em maiúsculas | HTML: processo-detalhe>main>section>div>div>span> (JS)
+.dado-valor> Valor do dado em tamanho normal | HTML: processo-detalhe>main>section>div>div>span> (JS)
+.linha-status> Linha que coloca a lista de fases, a observação e o botão lado a lado | HTML: painel>main>div>section>div>, processo-detalhe>main>section>div>, processo-detalhe>main>section>form> e mais 3
+.linha-status select, .linha-status input> Lista de opções com borda e cantos arredondados / Campo de texto com borda e cantos arredondados | HTML: painel>main>div>section>div>select>, processo-detalhe>main>section>div>select>, processo-detalhe>main>section>form>select>, checklists>main>section>div>select>, processo-detalhe>main>section>div>input>, processo-detalhe>main>section>form>input>, checklists>main>section>div>label>input> e mais 2
+.linha-status input> O campo de observação estica para ocupar o espaço livre | HTML: processo-detalhe>main>section>div>input>, processo-detalhe>main>section>form>input>, checklists>main>section>div>label>input> e mais 2
+.checklist> Lista do checklist sem marcadores | HTML: painel>main>div>section>ul>, processo-detalhe>main>div>section>ul>, processo-detalhe>main>section>ul>, checklists>main>section>ul>
+.checklist li> Cada item do checklist em linha, separado por um traço | HTML: painel>main>div>section>ul>li> (JS), processo-detalhe>main>div>section>ul>li> (JS), processo-detalhe>main>section>ul>li> (JS), checklists>main>section>ul>li> (JS)
+.checklist li:last-child> Tira o traço do último item
+.marca-item> Bolinha do item do checklist, vermelha quando está pendente | HTML: processo-detalhe>main>div>section>ul>li>span> (JS), processo-detalhe>main>section>ul>li>span> (JS), checklists>main>section>ul>li>span> (JS)
+.checklist li.entregue .marca-item> Bolinha fica verde quando o documento foi entregue | HTML: processo-detalhe>main>div>section>ul>li>span> (JS), checklists>main>section>ul>li>span> (JS)
+.checklist li.entregue span:nth-child(2)> Nome do item entregue fica cinza | HTML: processo-detalhe>main>div>section>ul>li>span> (JS), checklists>main>section>ul>li>span> (JS)
+.historico> Linha do tempo com um traço vertical à esquerda | HTML: processo-detalhe>main>div>section>ol>
+.historico li> Cada evento da linha do tempo | HTML: processo-detalhe>main>div>section>ol>li> (JS)
+.historico li::before> Desenha a bolinha verde de cada evento na linha do tempo
+.historico-data> Data do evento, pequena e cinza | HTML: processo-detalhe>main>div>section>ol>li>span> (JS)
+.historico-mudanca> Texto da mudança de fase em negrito | HTML: processo-detalhe>main>div>section>ol>li>div> (JS)
+.historico-obs> Observação do evento, pequena e cinza | HTML: processo-detalhe>main>div>section>ol>li>div> (JS)
+.etiqueta-status> Selo da situação do processo com texto branco (a cor vem do JS) | HTML: processos>main>div>article>div>div>span> (JS), processo-detalhe>main>section>div>div>span>span> (JS), notificacoes>main>div>article>div>div>span> (JS) e mais 2
+@media (max-width: 800px)> Ajustes para telas médias (tablet)
+    .colunas> Em telas médias, as duas colunas viram uma
+    .grade-dados> Em telas médias, os dados ficam em duas colunas
+.select-categoria> Lista pequena para trocar a categoria do documento na própria linha | HTML: documentos>main>div>article>div>div>select> (JS)
+#form-upload input[type="file"]> Campo de escolher arquivo com borda tracejada | HTML: processo-detalhe>main>section>form>input>
+.cartoes> Grade que distribui os cartões do resumo automaticamente | HTML: painel>main>section>div>, importacoes>main>section>div>div> (JS)
+.cartao> Cartão do resumo com faixa colorida em cima | HTML: painel>main>section>div>div> (JS), importacoes>main>section>div>div>div> (JS)
+.cartao-numero> Número grande do cartão | HTML: painel>main>section>div>div>div> (JS), importacoes>main>section>div>div>div>div> (JS)
+.cartao-rotulo> Nome da situação abaixo do número | HTML: painel>main>section>div>div>div> (JS), importacoes>main>section>div>div>div>div> (JS)
+.cartao-alerta> Aviso de prazo em laranja-avermelhado | HTML: painel>main>section>div>div>div> (JS)
+.item-painel> Cada linha das listas do painel, separada por um traço | HTML: painel>main>div>section>ul>li> (JS)
+.item-painel:last-child> Tira o traço da última linha
+.item-painel a> Título do processo em negrito, sem sublinhado | HTML: painel>main>div>section>ul>li>a> (JS)
+.item-painel a:hover> Sublinha o título ao passar o mouse
+.item-linha> Linha que alinha selos e textos pequenos lado a lado | HTML: painel>main>div>section>ul>li>div> (JS), processo-detalhe>main>section>div>
+.selo> Selo pequeno em maiúsculas com texto branco (a cor vem do JS) | HTML: painel>main>div>section>ul>li>div>span> (JS), processo-detalhe>main>section>div>span> (JS)
+.texto-pendente> Texto em laranja-avermelhado para o que está faltando | HTML: painel>main>div>section>ul>li>div> (JS), importacoes>main>section>div>article>div>div>span> (JS), importacoes>main>section>div>div> (JS)
+.texto-prazo> Texto do prazo, pequeno e cinza | HTML: painel>main>div>section>ul>li>div>span> (JS), notificacoes>main>div>article>div>div> (JS), notificacoes>main>div>article>div>div>span> (JS), importacoes>main>section>div>article>div>div>span> (JS)
+.texto-prazo.vencido> Prazo vencido fica laranja-avermelhado e em negrito | HTML: painel>main>div>section>ul>li>div>span> (JS)
+.barra-filtros> Faixa branca que alinha os filtros lado a lado | HTML: processos>main>div>, notificacoes>main>div>, checklists>main>div>
+.barra-filtros label> Rótulos dos filtros em negrito | HTML: processos>main>div>label>, notificacoes>main>div>label>, checklists>main>div>label>
+.barra-filtros select> Listas de filtro com borda e largura controlada | HTML: processos>main>div>select>, checklists>main>div>select>
+.barra-filtros select:focus> Contorno verde na lista de filtro selecionada
+#rotulo-fonte> Rótulo da origem do resultado, encostado à direita e em fonte de máquina | HTML: processos>main>div>span>, notificacoes>main>div>span>
+@media (max-width: 700px)> Ajustes para telas pequenas (celular)
+    .barra-filtros select> No celular, os filtros esticam para ocupar a linha
+    #rotulo-fonte> No celular, o rótulo de origem desce para uma linha própria
+.tela-login> Fundo azul-escuro que centraliza a caixa de login na tela | HTML: login>body>
+.caixa-login> Caixa branca do login, estreita e com sombra | HTML: login>main>
+.marca-login> Logo maior e escuro dentro da caixa de login | HTML: login>main>div>
+.subtitulo-login> Frase cinza abaixo do logo no login | HTML: login>main>p>
+.formulario-login> Tira a caixa e a sombra do formulário dentro do login | HTML: login>main>form>
+.formulario-login .acoes-formulario> Espaço acima do botão Entrar | HTML: login>main>form>div>
+.formulario-login .botao-principal> Botão Entrar ocupa a largura toda | HTML: login>main>form>div>button>
+.usuario-sessao> Bloco do usuário logado no topo: nome e botão Sair lado a lado | HTML: painel>header>div>div>, clientes>header>div>div>, cliente-form>header>div>div> e mais 9
+.usuario-dados> Empilha o nome e o perfil do usuário, alinhados à direita | HTML: painel>header>div>div>div> (JS), clientes>header>div>div>div> (JS), cliente-form>header>div>div>div> (JS) e mais 9
+.usuario-nome> Nome do usuário logado em negrito | HTML: painel>header>div>div>div>span> (JS), clientes>header>div>div>div>span> (JS), cliente-form>header>div>div>div>span> (JS) e mais 9
+.usuario-perfil> Perfil do usuário em letra menor e clara | HTML: painel>header>div>div>div>span> (JS), clientes>header>div>div>div>span> (JS), cliente-form>header>div>div>div>span> (JS) e mais 9
+
+style inline> Estilos escritos direto no HTML (atributo style="..."):
+    style="display:flex; align-items:center; gap:6px; cursor:pointer;"> Coloca a caixinha de marcar e o texto lado a lado, com mãozinha no mouse | HTML: clientes>main>div>label>, processos>main>div>label>, documentos>main>div>label>, notificacoes>main>div>label>, checklists>main>section>div>label>, usuarios>main>div>label>
+    style="text-transform: uppercase;"> Mostra as letras do estado sempre em maiúsculas | HTML: cliente-form>main>form>div>div>input>
+    style="margin-top:14px"> Dá um espaço acima da lista | HTML: importacoes>main>section>div>
+    style="margin-top:12px"> Dá um espaço acima dos marcadores | HTML: processo-detalhe>main>section>div>
+    style="max-width:720px; margin-top:16px"> Limita a largura do bloco e dá um espaço acima dele | HTML: usuario-form>main>section>
+==============================================================================
+*/
+
 :root {
     --tinta:        #1b2a41;
     --tinta-clara:  #5a6472;
@@ -14,16 +149,12 @@
     --raio: 6px;
     --sombra: 0 1px 3px rgba(27, 42, 65, 0.08);
 }
-/* [CSS] *> Zera margens e espaçamentos padrão do navegador em todos os elementos
-   [HTML] todos os elementos de todas as páginas */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* [CSS] body> Define a fonte, o tamanho do texto, a cor da letra e o fundo bege do site
-   [HTML] login>body>, painel>body>, clientes>body>, cliente-form>body>, processos>body>, processo-form>body>, processo-detalhe>body>, documentos>body>, notificacoes>body>, checklists>body>, importacoes>body>, usuarios>body>, usuario-form>body> */
 body {
     font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
     font-size: 16px;
@@ -31,57 +162,17 @@ body {
     color: var(--tinta);
     background-color: var(--papel);
 }
-/* [CSS] .mono> Fonte de máquina de escrever, usada em números de processo e nomes de arquivo
-   [HTML] painel>main>div>section>p>span>
-   [HTML] painel>main>div>section>ul>li>div>span> (criado pelo JS)
-   [HTML] painel>main>section>p>span>
-   [HTML] clientes>main>div>article>div>div>span> (criado pelo JS)
-   [HTML] cliente-form>main>form>div>div>input>
-   [HTML] processos>main>div>article>div>div>span> (criado pelo JS)
-   [HTML] processo-form>main>form>div>div>input>
-   [HTML] processo-detalhe>main>p>
-   [HTML] processo-detalhe>main>section>ul>li>span>span> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>div> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>div>span> (criado pelo JS)
-   [HTML] checklists>main>section>ul>li>span>span> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div>div> (criado pelo JS) */
 .mono {
     font-family: 'Roboto Mono', 'Consolas', monospace;
     font-size: 0.9rem;
     letter-spacing: -0.02em;
 }
-/* [CSS] .cabecalho> Faixa azul-escura no topo da página
-   [HTML] painel>header>
-   [HTML] clientes>header>
-   [HTML] cliente-form>header>
-   [HTML] processos>header>
-   [HTML] processo-form>header>
-   [HTML] processo-detalhe>header>
-   [HTML] documentos>header>
-   [HTML] notificacoes>header>
-   [HTML] checklists>header>
-   [HTML] importacoes>header>
-   [HTML] usuarios>header>
-   [HTML] usuario-form>header> */
 .cabecalho {
     background-color: var(--tinta);
     color: var(--papel);
     padding: 0 24px;
 }
 
-/* [CSS] .cabecalho-conteudo> Centraliza o topo e coloca logo, abas e usuário lado a lado
-   [HTML] painel>header>div>
-   [HTML] clientes>header>div>
-   [HTML] cliente-form>header>div>
-   [HTML] processos>header>div>
-   [HTML] processo-form>header>div>
-   [HTML] processo-detalhe>header>div>
-   [HTML] documentos>header>div>
-   [HTML] notificacoes>header>div>
-   [HTML] checklists>header>div>
-   [HTML] importacoes>header>div>
-   [HTML] usuarios>header>div>
-   [HTML] usuario-form>header>div> */
 .cabecalho-conteudo {
     max-width: 1100px;
     margin: 0 auto;
@@ -92,20 +183,6 @@ body {
     padding-top: 18px;
 }
 
-/* [CSS] .marca> Texto do logo TabFlower grande e em negrito
-   [HTML] login>main>div>
-   [HTML] painel>header>div>div>
-   [HTML] clientes>header>div>div>
-   [HTML] cliente-form>header>div>div>
-   [HTML] processos>header>div>div>
-   [HTML] processo-form>header>div>div>
-   [HTML] processo-detalhe>header>div>div>
-   [HTML] documentos>header>div>div>
-   [HTML] notificacoes>header>div>div>
-   [HTML] checklists>header>div>div>
-   [HTML] importacoes>header>div>div>
-   [HTML] usuarios>header>div>div>
-   [HTML] usuario-form>header>div>div> */
 .marca {
     font-family: 'Archivo', 'Segoe UI', sans-serif;
     font-size: 1.4rem;
@@ -114,55 +191,15 @@ body {
     padding-bottom: 14px;
 }
 
-/* [CSS] .marca span> Pinta a palavra Flower do logo de verde
-   [HTML] login>main>div>span>
-   [HTML] painel>header>div>div>span>
-   [HTML] clientes>header>div>div>span>
-   [HTML] cliente-form>header>div>div>span>
-   [HTML] processos>header>div>div>span>
-   [HTML] processo-form>header>div>div>span>
-   [HTML] processo-detalhe>header>div>div>span>
-   [HTML] documentos>header>div>div>span>
-   [HTML] notificacoes>header>div>div>span>
-   [HTML] checklists>header>div>div>span>
-   [HTML] importacoes>header>div>div>span>
-   [HTML] usuarios>header>div>div>span>
-   [HTML] usuario-form>header>div>div>span> */
 .marca span {
     color: var(--folha);
 }
-/* [CSS] .abas> Coloca as abas do menu em linha, sem marcadores de lista
-   [HTML] painel>header>div>nav>ul>
-   [HTML] clientes>header>div>nav>ul>
-   [HTML] cliente-form>header>div>nav>ul>
-   [HTML] processos>header>div>nav>ul>
-   [HTML] processo-form>header>div>nav>ul>
-   [HTML] processo-detalhe>header>div>nav>ul>
-   [HTML] documentos>header>div>nav>ul>
-   [HTML] notificacoes>header>div>nav>ul>
-   [HTML] checklists>header>div>nav>ul>
-   [HTML] importacoes>header>div>nav>ul>
-   [HTML] usuarios>header>div>nav>ul>
-   [HTML] usuario-form>header>div>nav>ul> */
 .abas {
     display: flex;
     gap: 4px;
     list-style: none;
 }
 
-/* [CSS] .abas a> Cada aba do menu: texto claro com cantos de cima arredondados
-   [HTML] painel>header>div>nav>ul>li>a>
-   [HTML] clientes>header>div>nav>ul>li>a>
-   [HTML] cliente-form>header>div>nav>ul>li>a>
-   [HTML] processos>header>div>nav>ul>li>a>
-   [HTML] processo-form>header>div>nav>ul>li>a>
-   [HTML] processo-detalhe>header>div>nav>ul>li>a>
-   [HTML] documentos>header>div>nav>ul>li>a>
-   [HTML] notificacoes>header>div>nav>ul>li>a>
-   [HTML] checklists>header>div>nav>ul>li>a>
-   [HTML] importacoes>header>div>nav>ul>li>a>
-   [HTML] usuarios>header>div>nav>ul>li>a>
-   [HTML] usuario-form>header>div>nav>ul>li>a> */
 .abas a {
     display: block;
     padding: 10px 20px;
@@ -173,60 +210,21 @@ body {
     font-weight: 600;
 }
 
-/* [CSS] .abas a:hover> Clareia a aba quando o mouse passa por cima
-   [HTML] os mesmos elementos de .abas a */
 .abas a:hover {
     background-color: rgba(247, 246, 243, 0.1);
     color: var(--papel);
 }
 
-/* [CSS] .abas a.ativa> Aba da página atual fica com fundo claro, parecendo aberta
-   [HTML] painel>header>div>nav>ul>li>a>
-   [HTML] clientes>header>div>nav>ul>li>a>
-   [HTML] cliente-form>header>div>nav>ul>li>a>
-   [HTML] processos>header>div>nav>ul>li>a>
-   [HTML] processo-form>header>div>nav>ul>li>a>
-   [HTML] processo-detalhe>header>div>nav>ul>li>a>
-   [HTML] documentos>header>div>nav>ul>li>a>
-   [HTML] importacoes>header>div>nav>ul>li>a>
-   [HTML] usuarios>header>div>nav>ul>li>a>
-   [HTML] usuario-form>header>div>nav>ul>li>a> */
 .abas a.ativa {
     background-color: var(--papel);
     color: var(--tinta);
 }
-/* [CSS] .pagina> Área central do conteúdo, com largura máxima e espaço nas bordas
-   [HTML] painel>main>
-   [HTML] clientes>main>
-   [HTML] cliente-form>main>
-   [HTML] processos>main>
-   [HTML] processo-form>main>
-   [HTML] processo-detalhe>main>
-   [HTML] documentos>main>
-   [HTML] notificacoes>main>
-   [HTML] checklists>main>
-   [HTML] importacoes>main>
-   [HTML] usuarios>main>
-   [HTML] usuario-form>main> */
 .pagina {
     max-width: 1100px;
     margin: 0 auto;
     padding: 32px 24px 64px;
 }
 
-/* [CSS] .titulo-pagina> Título grande e em negrito no topo da página
-   [HTML] painel>main>h1>
-   [HTML] clientes>main>h1>
-   [HTML] cliente-form>main>h1>
-   [HTML] processos>main>h1>
-   [HTML] processo-form>main>h1>
-   [HTML] processo-detalhe>main>h1>
-   [HTML] documentos>main>h1>
-   [HTML] notificacoes>main>h1>
-   [HTML] checklists>main>h1>
-   [HTML] importacoes>main>h1>
-   [HTML] usuarios>main>h1>
-   [HTML] usuario-form>main>h1> */
 .titulo-pagina {
     font-family: 'Archivo', sans-serif;
     font-size: 1.6rem;
@@ -235,31 +233,12 @@ body {
     margin-bottom: 4px;
 }
 
-/* [CSS] .subtitulo-pagina> Texto explicativo cinza logo abaixo do título
-   [HTML] painel>main>p>
-   [HTML] clientes>main>p>
-   [HTML] cliente-form>main>p>
-   [HTML] processos>main>p>
-   [HTML] processo-form>main>p>
-   [HTML] processo-detalhe>main>p>
-   [HTML] documentos>main>p>
-   [HTML] notificacoes>main>p>
-   [HTML] checklists>main>p>
-   [HTML] importacoes>main>p>
-   [HTML] usuarios>main>p>
-   [HTML] usuario-form>main>p> */
 .subtitulo-pagina {
     color: var(--tinta-clara);
     font-size: 0.95rem;
     margin-bottom: 24px;
 }
 
-/* [CSS] .barra-acoes> Linha que alinha busca, filtros e botões lado a lado
-   [HTML] clientes>main>div>
-   [HTML] processos>main>div>
-   [HTML] processo-detalhe>main>div>
-   [HTML] documentos>main>div>
-   [HTML] usuarios>main>div> */
 .barra-acoes {
     display: flex;
     gap: 12px;
@@ -268,65 +247,9 @@ body {
     margin-bottom: 20px;
 }
 
-/* [CSS] .espacador> Ocupa o espaço que sobra e empurra o que vem depois para a direita
-   [HTML] clientes>main>div>div>
-   [HTML] processos>main>div>div>
-   [HTML] processo-detalhe>main>div>div>
-   [HTML] documentos>main>div>div>
-   [HTML] usuarios>main>div>div> */
 .espacador {
     flex: 1;
 }
-/* [CSS] .botao> Formato padrão de botão: borda, cantos arredondados e mãozinha no mouse
-   [HTML] login>main>form>div>button>
-   [HTML] painel>header>div>div>button> (criado pelo JS)
-   [HTML] clientes>header>div>div>button> (criado pelo JS)
-   [HTML] clientes>main>div>a>
-   [HTML] clientes>main>div>article>div>a> (criado pelo JS)
-   [HTML] clientes>main>div>article>div>button> (criado pelo JS)
-   [HTML] clientes>main>div>button>
-   [HTML] clientes>main>div>form>button>
-   [HTML] cliente-form>header>div>div>button> (criado pelo JS)
-   [HTML] cliente-form>main>form>div>a>
-   [HTML] cliente-form>main>form>div>button>
-   [HTML] processos>header>div>div>button> (criado pelo JS)
-   [HTML] processos>main>div>a>
-   [HTML] processos>main>div>article>div>a> (criado pelo JS)
-   [HTML] processos>main>div>article>div>button> (criado pelo JS)
-   [HTML] processos>main>div>button>
-   [HTML] processos>main>div>form>button>
-   [HTML] processo-form>header>div>div>button> (criado pelo JS)
-   [HTML] processo-form>main>form>div>a>
-   [HTML] processo-form>main>form>div>button>
-   [HTML] processo-detalhe>header>div>div>button> (criado pelo JS)
-   [HTML] processo-detalhe>main>div>a>
-   [HTML] processo-detalhe>main>section>div>button>
-   [HTML] processo-detalhe>main>section>form>button>
-   [HTML] processo-detalhe>main>section>ul>li>a> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>ul>li>button> (criado pelo JS)
-   [HTML] documentos>header>div>div>button> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>a> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>button> (criado pelo JS)
-   [HTML] documentos>main>div>button>
-   [HTML] documentos>main>div>form>button>
-   [HTML] notificacoes>header>div>div>button> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>a> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>button> (criado pelo JS)
-   [HTML] checklists>header>div>div>button> (criado pelo JS)
-   [HTML] checklists>main>section>div>button>
-   [HTML] checklists>main>section>ul>li>button> (criado pelo JS)
-   [HTML] importacoes>header>div>div>button> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div>button> (criado pelo JS)
-   [HTML] importacoes>main>section>form>a>
-   [HTML] importacoes>main>section>form>button>
-   [HTML] usuarios>header>div>div>button> (criado pelo JS)
-   [HTML] usuarios>main>div>a>
-   [HTML] usuarios>main>div>article>div>a> (criado pelo JS)
-   [HTML] usuarios>main>div>article>div>button> (criado pelo JS)
-   [HTML] usuario-form>header>div>div>button> (criado pelo JS)
-   [HTML] usuario-form>main>form>div>a>
-   [HTML] usuario-form>main>form>div>button>
-   [HTML] usuario-form>main>section>div>button> */
 .botao {
     display: inline-flex;
     align-items: center;
@@ -344,92 +267,35 @@ body {
     border-color: var(--linha);
 }
 
-/* [CSS] .botao:hover> Escurece a borda do botão ao passar o mouse
-   [HTML] os mesmos elementos de .botao */
 .botao:hover {
     border-color: var(--tinta-clara);
 }
 
-/* [CSS] .botao-principal> Botão de ação principal: fundo verde e texto branco
-   [HTML] login>main>form>div>button>
-   [HTML] clientes>main>div>a>
-   [HTML] cliente-form>main>form>div>button>
-   [HTML] processos>main>div>a>
-   [HTML] processo-form>main>form>div>button>
-   [HTML] processo-detalhe>main>section>div>button>
-   [HTML] processo-detalhe>main>section>form>button>
-   [HTML] checklists>main>section>div>button>
-   [HTML] importacoes>main>section>form>button>
-   [HTML] usuarios>main>div>a>
-   [HTML] usuario-form>main>form>div>button> */
 .botao-principal {
     background-color: var(--folha);
     color: #fff;
     border-color: var(--folha);
 }
 
-/* [CSS] .botao-principal:hover> Verde fica mais escuro ao passar o mouse
-   [HTML] os mesmos elementos de .botao-principal */
 .botao-principal:hover {
     background-color: #275c41;
     border-color: #275c41;
 }
 
-/* [CSS] .botao-perigo> Botão de ação perigosa (excluir): texto laranja-avermelhado
-   [HTML] clientes>main>div>article>div>button> (criado pelo JS)
-   [HTML] processos>main>div>article>div>button> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>ul>li>button> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>button> (criado pelo JS)
-   [HTML] checklists>main>section>ul>li>button> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div>button> (criado pelo JS)
-   [HTML] usuarios>main>div>article>div>button> (criado pelo JS) */
 .botao-perigo {
     color: var(--alerta);
     border-color: var(--linha);
 }
 
-/* [CSS] .botao-perigo:hover> Fundo fica rosado ao passar o mouse, avisando o perigo
-   [HTML] os mesmos elementos de .botao-perigo */
 .botao-perigo:hover {
     background-color: var(--alerta-claro);
     border-color: var(--alerta);
 }
 
-/* [CSS] .botao-pequeno> Versão menor do botão, usada dentro de listas
-   [HTML] painel>header>div>div>button> (criado pelo JS)
-   [HTML] clientes>header>div>div>button> (criado pelo JS)
-   [HTML] clientes>main>div>article>div>a> (criado pelo JS)
-   [HTML] clientes>main>div>article>div>button> (criado pelo JS)
-   [HTML] cliente-form>header>div>div>button> (criado pelo JS)
-   [HTML] processos>header>div>div>button> (criado pelo JS)
-   [HTML] processos>main>div>article>div>a> (criado pelo JS)
-   [HTML] processos>main>div>article>div>button> (criado pelo JS)
-   [HTML] processo-form>header>div>div>button> (criado pelo JS)
-   [HTML] processo-detalhe>header>div>div>button> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>ul>li>a> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>ul>li>button> (criado pelo JS)
-   [HTML] documentos>header>div>div>button> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>a> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>button> (criado pelo JS)
-   [HTML] notificacoes>header>div>div>button> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>a> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>button> (criado pelo JS)
-   [HTML] checklists>header>div>div>button> (criado pelo JS)
-   [HTML] checklists>main>section>ul>li>button> (criado pelo JS)
-   [HTML] importacoes>header>div>div>button> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div>button> (criado pelo JS)
-   [HTML] usuarios>header>div>div>button> (criado pelo JS)
-   [HTML] usuarios>main>div>article>div>a> (criado pelo JS)
-   [HTML] usuarios>main>div>article>div>button> (criado pelo JS)
-   [HTML] usuario-form>header>div>div>button> (criado pelo JS) */
 .botao-pequeno {
     padding: 5px 12px;
     font-size: 0.85rem;
 }
-/* [CSS] .busca> Caixa de busca: campo e botão lado a lado com largura controlada
-   [HTML] clientes>main>div>form>
-   [HTML] processos>main>div>form>
-   [HTML] documentos>main>div>form> */
 .busca {
     display: flex;
     gap: 8px;
@@ -438,10 +304,6 @@ body {
     max-width: 460px;
 }
 
-/* [CSS] .busca input> Campo de texto da busca com borda e cantos arredondados
-   [HTML] clientes>main>div>form>input>
-   [HTML] processos>main>div>form>input>
-   [HTML] documentos>main>div>form>input> */
 .busca input {
     flex: 1;
     padding: 9px 14px;
@@ -453,32 +315,16 @@ body {
     color: var(--tinta);
 }
 
-/* [CSS] .busca input:focus> Contorno verde no campo de busca quando está selecionado
-   [HTML] os mesmos elementos de .busca input */
 .busca input:focus {
     outline: 2px solid var(--folha);
     outline-offset: -1px;
 }
-/* [CSS] .lista> Empilha os itens da lista um embaixo do outro com espaço entre eles
-   [HTML] clientes>main>div>
-   [HTML] processos>main>div>
-   [HTML] documentos>main>div>
-   [HTML] notificacoes>main>div>
-   [HTML] importacoes>main>section>div>
-   [HTML] usuarios>main>div> */
 .lista {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-/* [CSS] .ficha> Cartão branco de cada item da lista, com faixa verde à esquerda
-   [HTML] clientes>main>div>article> (criado pelo JS)
-   [HTML] processos>main>div>article> (criado pelo JS)
-   [HTML] documentos>main>div>article> (criado pelo JS)
-   [HTML] notificacoes>main>div>article> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article> (criado pelo JS)
-   [HTML] usuarios>main>div>article> (criado pelo JS) */
 .ficha {
     display: flex;
     align-items: center;
@@ -491,47 +337,22 @@ body {
     box-shadow: var(--sombra);
 }
 
-/* [CSS] .ficha.inativa> Item inativo fica apagado e com faixa cinza
-   [HTML] clientes>main>div>article> (criado pelo JS)
-   [HTML] processos>main>div>article> (criado pelo JS)
-   [HTML] documentos>main>div>article> (criado pelo JS) */
 .ficha.inativa {
     border-left-color: var(--tinta-clara);
     opacity: 0.65;
 }
 
-/* [CSS] .ficha-dados> Parte da ficha com os dados, ocupa o espaço disponível
-   [HTML] clientes>main>div>article>div> (criado pelo JS)
-   [HTML] processos>main>div>article>div> (criado pelo JS)
-   [HTML] documentos>main>div>article>div> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div> (criado pelo JS)
-   [HTML] usuarios>main>div>article>div> (criado pelo JS) */
 .ficha-dados {
     flex: 1;
     min-width: 0;
 }
 
-/* [CSS] .ficha-nome> Nome do item em destaque, em negrito
-   [HTML] clientes>main>div>article>div>div> (criado pelo JS)
-   [HTML] processos>main>div>article>div>div> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>div> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>div> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div>div> (criado pelo JS)
-   [HTML] usuarios>main>div>article>div>div> (criado pelo JS) */
 .ficha-nome {
     font-weight: 600;
     font-size: 1.05rem;
     margin-bottom: 2px;
 }
 
-/* [CSS] .ficha-info> Linha de informações menores e cinzas da ficha
-   [HTML] clientes>main>div>article>div>div> (criado pelo JS)
-   [HTML] processos>main>div>article>div>div> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>div> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>div> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div>div> (criado pelo JS)
-   [HTML] usuarios>main>div>article>div>div> (criado pelo JS) */
 .ficha-info {
     color: var(--tinta-clara);
     font-size: 0.9rem;
@@ -541,24 +362,11 @@ body {
     align-items: center;
 }
 
-/* [CSS] .ficha-acoes> Área dos botões da ficha, alinhados lado a lado
-   [HTML] clientes>main>div>article>div> (criado pelo JS)
-   [HTML] processos>main>div>article>div> (criado pelo JS)
-   [HTML] documentos>main>div>article>div> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div> (criado pelo JS)
-   [HTML] usuarios>main>div>article>div> (criado pelo JS) */
 .ficha-acoes {
     display: flex;
     gap: 8px;
     flex-shrink: 0;
 }
-/* [CSS] .etiqueta> Selinho pequeno em letras maiúsculas com fundo verde-claro
-   [HTML] clientes>main>div>article>div>div>span> (criado pelo JS)
-   [HTML] clientes>main>div>article>div>span> (criado pelo JS)
-   [HTML] processos>main>div>article>div>span> (criado pelo JS)
-   [HTML] processo-detalhe>main>div>section>ul>li>span> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>div>span> (criado pelo JS) */
 .etiqueta {
     display: inline-block;
     padding: 2px 8px;
@@ -571,20 +379,10 @@ body {
     color: var(--folha);
 }
 
-/* [CSS] .etiqueta-cinza> Variação cinza do selinho
-   [HTML] clientes>main>div>article>div>span> (criado pelo JS)
-   [HTML] processos>main>div>article>div>span> (criado pelo JS)
-   [HTML] processo-detalhe>main>div>section>ul>li>span> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>div>span> (criado pelo JS) */
 .etiqueta-cinza {
     background-color: var(--linha);
     color: var(--tinta-clara);
 }
-/* [CSS] .formulario> Caixa branca com borda e sombra que envolve o formulário
-   [HTML] login>main>form>
-   [HTML] cliente-form>main>form>
-   [HTML] processo-form>main>form>
-   [HTML] usuario-form>main>form> */
 .formulario {
     background-color: var(--papel-branco);
     border: 1px solid var(--linha);
@@ -594,10 +392,6 @@ body {
     max-width: 720px;
 }
 
-/* [CSS] .grupo-campos> Organiza os campos em duas colunas
-   [HTML] cliente-form>main>form>div>
-   [HTML] processo-form>main>form>div>
-   [HTML] usuario-form>main>form>div> */
 .grupo-campos {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -605,55 +399,26 @@ body {
     margin-bottom: 18px;
 }
 
-/* [CSS] .campo> Empilha o rótulo em cima do campo
-   [HTML] login>main>form>div>
-   [HTML] cliente-form>main>form>div>div>
-   [HTML] processo-form>main>form>div>div>
-   [HTML] usuario-form>main>form>div>div> */
 .campo {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-/* [CSS] .campo-largo> Faz o campo ocupar a linha inteira
-   [HTML] login>main>form>div>
-   [HTML] cliente-form>main>form>div>div>
-   [HTML] processo-form>main>form>div>div>
-   [HTML] usuario-form>main>form>div>div> */
 .campo-largo {
     grid-column: 1 / -1;
 }
 
-/* [CSS] .campo label> Rótulo do campo pequeno, em negrito e cinza
-   [HTML] login>main>form>div>label>
-   [HTML] cliente-form>main>form>div>div>label>
-   [HTML] processo-form>main>form>div>div>label>
-   [HTML] usuario-form>main>form>div>div>label> */
 .campo label {
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--tinta-clara);
 }
 
-/* [CSS] .campo label .obrigatorio> Asterisco de campo obrigatório em vermelho
-   [HTML] cliente-form>main>form>div>div>label>span>
-   [HTML] processo-form>main>form>div>div>label>span>
-   [HTML] usuario-form>main>form>div>div>label>span> */
 .campo label .obrigatorio {
     color: var(--alerta);
 }
 
-/* [CSS] .campo input, .campo select, .campo textarea> Caixa de texto com borda e cantos arredondados / Lista de opções com borda e cantos arredondados / Caixa de texto grande com borda e cantos arredondados
-   [HTML] login>main>form>div>input>
-   [HTML] cliente-form>main>form>div>div>input>
-   [HTML] processo-form>main>form>div>div>input>
-   [HTML] usuario-form>main>form>div>div>input>
-   [HTML] cliente-form>main>form>div>div>select>
-   [HTML] processo-form>main>form>div>div>select>
-   [HTML] usuario-form>main>form>div>div>select>
-   [HTML] cliente-form>main>form>div>div>textarea>
-   [HTML] processo-form>main>form>div>div>textarea> */
 .campo input,
 .campo select,
 .campo textarea {
@@ -666,10 +431,6 @@ body {
     color: var(--tinta);
 }
 
-/* [CSS] .campo input:focus, .campo select:focus, .campo textarea:focus> Contorno verde quando o campo está selecionado / Contorno verde quando a lista está selecionada / Contorno verde quando a caixa está selecionada
-   [HTML] os mesmos elementos de .campo input
-   [HTML] os mesmos elementos de .campo select
-   [HTML] os mesmos elementos de .campo textarea */
 .campo input:focus,
 .campo select:focus,
 .campo textarea:focus {
@@ -677,76 +438,28 @@ body {
     outline-offset: -1px;
 }
 
-/* [CSS] .campo input:disabled> Campo bloqueado fica cinza e com cursor de proibido
-   [HTML] os mesmos elementos de .campo input */
 .campo input:disabled {
     background-color: var(--papel);
     color: var(--tinta-clara);
     cursor: not-allowed;
 }
 
-/* [CSS] .campo textarea> A caixa de texto grande só estica para baixo e tem altura mínima
-   [HTML] cliente-form>main>form>div>div>textarea>
-   [HTML] processo-form>main>form>div>div>textarea> */
 .campo textarea {
     resize: vertical;
     min-height: 70px;
 }
 
-/* [CSS] .dica> Texto de ajuda pequeno e cinza
-   [HTML] painel>main>div>section>p>
-   [HTML] painel>main>section>p>
-   [HTML] clientes>main>div>label>
-   [HTML] cliente-form>main>form>div>div>span>
-   [HTML] processos>main>div>label>
-   [HTML] processos>main>div>span>
-   [HTML] processo-form>main>form>div>div>span>
-   [HTML] processo-detalhe>main>div>section>p>
-   [HTML] processo-detalhe>main>section>div>span> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>p>
-   [HTML] processo-detalhe>main>section>ul>li> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>ul>li>span> (criado pelo JS)
-   [HTML] documentos>main>div>article>div>div>span> (criado pelo JS)
-   [HTML] documentos>main>div>label>
-   [HTML] notificacoes>main>div>label>
-   [HTML] notificacoes>main>div>span>
-   [HTML] checklists>main>div>label>
-   [HTML] checklists>main>section>div>label>
-   [HTML] checklists>main>section>p>
-   [HTML] importacoes>main>section>div>article>div>div> (criado pelo JS)
-   [HTML] importacoes>main>section>p>
-   [HTML] usuarios>main>div>label>
-   [HTML] usuario-form>main>form>div>div>span>
-   [HTML] usuario-form>main>section>p> */
 .dica {
     font-size: 0.8rem;
     color: var(--tinta-clara);
 }
 
-/* [CSS] .rodape-formulario> Linha dos botões no fim do formulário, separada por um traço
-   [HTML] cliente-form>main>form>div>
-   [HTML] processo-form>main>form>div>
-   [HTML] usuario-form>main>form>div> */
 .rodape-formulario {
     display: flex;
     gap: 10px;
     padding-top: 20px;
     border-top: 1px solid var(--linha);
 }
-/* [CSS] .aviso> Caixa de mensagem com faixa colorida à esquerda
-   [HTML] login>main>div>
-   [HTML] painel>main>div>
-   [HTML] clientes>main>div>
-   [HTML] cliente-form>main>div>
-   [HTML] processos>main>div>
-   [HTML] processo-form>main>div>
-   [HTML] processo-detalhe>main>div>
-   [HTML] documentos>main>div>
-   [HTML] notificacoes>main>div>
-   [HTML] checklists>main>div>
-   [HTML] importacoes>main>div>
-   [HTML] usuarios>main>div>
-   [HTML] usuario-form>main>div> */
 .aviso {
     padding: 12px 16px;
     border-radius: var(--raio);
@@ -755,64 +468,21 @@ body {
     border-left: 4px solid;
 }
 
-/* [CSS] .aviso-erro> Mensagem de erro em tons de laranja-avermelhado
-   [HTML] login>main>div>
-   [HTML] painel>main>div>
-   [HTML] clientes>main>div>
-   [HTML] cliente-form>main>div>
-   [HTML] processos>main>div>
-   [HTML] processo-form>main>div>
-   [HTML] processo-detalhe>main>div>
-   [HTML] documentos>main>div>
-   [HTML] notificacoes>main>div>
-   [HTML] checklists>main>div>
-   [HTML] importacoes>main>div>
-   [HTML] usuarios>main>div>
-   [HTML] usuario-form>main>div> */
 .aviso-erro {
     background-color: var(--alerta-claro);
     border-color: var(--alerta);
     color: #8a2c05;
 }
 
-/* [CSS] .aviso-sucesso> Mensagem de sucesso em tons de verde
-   [HTML] clientes>main>div>
-   [HTML] processos>main>div>
-   [HTML] processo-detalhe>main>div>
-   [HTML] documentos>main>div>
-   [HTML] checklists>main>div>
-   [HTML] importacoes>main>div>
-   [HTML] usuarios>main>div>
-   [HTML] usuario-form>main>div> */
 .aviso-sucesso {
     background-color: var(--folha-clara);
     border-color: var(--folha);
     color: #1f4f37;
 }
 
-/* [CSS] .escondido> Esconde o elemento da tela
-   [HTML] login>main>div>
-   [HTML] painel>main>div>
-   [HTML] clientes>main>div>
-   [HTML] cliente-form>main>div>
-   [HTML] processos>main>div>
-   [HTML] processo-form>main>div>
-   [HTML] processo-detalhe>main>div>
-   [HTML] documentos>main>div>
-   [HTML] notificacoes>main>div>
-   [HTML] checklists>main>div>
-   [HTML] importacoes>main>div>
-   [HTML] importacoes>main>section>div>
-   [HTML] usuarios>main>div>
-   [HTML] usuario-form>main>div>
-   [HTML] usuario-form>main>form>div>div>
-   [HTML] usuario-form>main>section> */
 .escondido {
     display: none;
 }
-/* [CSS] .vazio> Caixa tracejada que aparece quando a lista está vazia
-   [HTML] clientes>main>div>div>
-   [HTML] notificacoes>main>div>div> (criado pelo JS) */
 .vazio {
     background-color: var(--papel-branco);
     border: 1px dashed var(--linha);
@@ -822,68 +492,42 @@ body {
     color: var(--tinta-clara);
 }
 
-/* [CSS] .vazio strong> Frase principal da caixa vazia em destaque
-   [HTML] clientes>main>div>div>strong> (criado pelo JS)
-   [HTML] notificacoes>main>div>div>strong> (criado pelo JS) */
 .vazio strong {
     display: block;
     color: var(--tinta);
     font-size: 1.05rem;
     margin-bottom: 4px;
 }
-/* [CSS] @media (max-width: 700px)> Ajustes para telas pequenas (celular) */
 @media (max-width: 700px) {
-    /* [CSS] .cabecalho-conteudo> No celular, empilha logo, abas e usuário
-       [HTML] os mesmos elementos de .cabecalho-conteudo */
     .cabecalho-conteudo {
         flex-direction: column;
         align-items: stretch;
         gap: 12px;
     }
 
-    /* [CSS] .abas> No celular, as abas rolam para o lado
-       [HTML] os mesmos elementos de .abas */
     .abas {
         overflow-x: auto;
     }
 
-    /* [CSS] .grupo-campos> No celular, os campos ficam em uma coluna só
-       [HTML] os mesmos elementos de .grupo-campos */
     .grupo-campos {
         grid-template-columns: 1fr;
     }
 
-    /* [CSS] .ficha> No celular, empilha os dados e os botões da ficha
-       [HTML] os mesmos elementos de .ficha */
     .ficha {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
     }
 
-    /* [CSS] .ficha-acoes> No celular, os botões da ficha ocupam a largura toda
-       [HTML] os mesmos elementos de .ficha-acoes */
     .ficha-acoes {
         width: 100%;
     }
 }
-/* [CSS] @media (prefers-reduced-motion: reduce)> Para quem pediu menos animação no sistema */
 @media (prefers-reduced-motion: reduce) {
-    /* [CSS] *> Desliga as transições animadas
-       [HTML] todos os elementos de todas as páginas */
     * {
         transition: none !important;
     }
 }
-/* [CSS] .painel> Bloco branco com borda e sombra que separa as seções da página
-   [HTML] painel>main>div>section>
-   [HTML] painel>main>section>
-   [HTML] processo-detalhe>main>div>section>
-   [HTML] processo-detalhe>main>section>
-   [HTML] checklists>main>section>
-   [HTML] importacoes>main>section>
-   [HTML] importacoes>main>section>div>
-   [HTML] usuario-form>main>section> */
 .painel {
     background-color: var(--papel-branco);
     border: 1px solid var(--linha);
@@ -893,15 +537,6 @@ body {
     margin-bottom: 16px;
 }
 
-/* [CSS] .titulo-secao> Título de cada bloco, em negrito
-   [HTML] painel>main>div>section>h2>
-   [HTML] painel>main>section>h2>
-   [HTML] processo-detalhe>main>div>section>h2>
-   [HTML] processo-detalhe>main>section>h2>
-   [HTML] checklists>main>section>h2>
-   [HTML] importacoes>main>section>div>h2> (criado pelo JS)
-   [HTML] importacoes>main>section>h2>
-   [HTML] usuario-form>main>section>h2> */
 .titulo-secao {
     font-family: 'Archivo', sans-serif;
     font-size: 1.05rem;
@@ -909,25 +544,18 @@ body {
     margin-bottom: 4px;
 }
 
-/* [CSS] .colunas> Divide o conteúdo em duas colunas lado a lado
-   [HTML] painel>main>div>
-   [HTML] processo-detalhe>main>div> */
 .colunas {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     align-items: start;
 }
-/* [CSS] .grade-dados> Organiza os dados em três colunas
-   [HTML] processo-detalhe>main>section>div> */
 .grade-dados {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
 
-/* [CSS] .dado-rotulo> Nome do dado, pequeno, cinza e em maiúsculas
-   [HTML] processo-detalhe>main>section>div>div>span> (criado pelo JS) */
 .dado-rotulo {
     display: block;
     font-size: 0.75rem;
@@ -938,19 +566,10 @@ body {
     margin-bottom: 2px;
 }
 
-/* [CSS] .dado-valor> Valor do dado em tamanho normal
-   [HTML] processo-detalhe>main>section>div>div>span> (criado pelo JS) */
 .dado-valor {
     font-size: 0.98rem;
 }
 
-/* [CSS] .linha-status> Linha que coloca a lista de fases, a observação e o botão lado a lado
-   [HTML] painel>main>div>section>div>
-   [HTML] processo-detalhe>main>section>div>
-   [HTML] processo-detalhe>main>section>form>
-   [HTML] checklists>main>section>div>
-   [HTML] importacoes>main>section>form>
-   [HTML] usuario-form>main>section>div> */
 .linha-status {
     display: flex;
     gap: 10px;
@@ -958,16 +577,6 @@ body {
     flex-wrap: wrap;
 }
 
-/* [CSS] .linha-status select, .linha-status input> Lista de opções com borda e cantos arredondados / Campo de texto com borda e cantos arredondados
-   [HTML] painel>main>div>section>div>select>
-   [HTML] processo-detalhe>main>section>div>select>
-   [HTML] processo-detalhe>main>section>form>select>
-   [HTML] checklists>main>section>div>select>
-   [HTML] processo-detalhe>main>section>div>input>
-   [HTML] processo-detalhe>main>section>form>input>
-   [HTML] checklists>main>section>div>label>input>
-   [HTML] importacoes>main>section>form>input>
-   [HTML] usuario-form>main>section>div>input> */
 .linha-status select,
 .linha-status input {
     padding: 9px 12px;
@@ -979,31 +588,15 @@ body {
     color: var(--tinta);
 }
 
-/* [CSS] .linha-status input> O campo de observação estica para ocupar o espaço livre
-   [HTML] processo-detalhe>main>section>div>input>
-   [HTML] processo-detalhe>main>section>form>input>
-   [HTML] checklists>main>section>div>label>input>
-   [HTML] importacoes>main>section>form>input>
-   [HTML] usuario-form>main>section>div>input> */
 .linha-status input {
     flex: 1;
     min-width: 180px;
 }
-/* [CSS] .checklist> Lista do checklist sem marcadores
-   [HTML] painel>main>div>section>ul>
-   [HTML] processo-detalhe>main>div>section>ul>
-   [HTML] processo-detalhe>main>section>ul>
-   [HTML] checklists>main>section>ul> */
 .checklist {
     list-style: none;
     margin-top: 12px;
 }
 
-/* [CSS] .checklist li> Cada item do checklist em linha, separado por um traço
-   [HTML] painel>main>div>section>ul>li> (criado pelo JS)
-   [HTML] processo-detalhe>main>div>section>ul>li> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>ul>li> (criado pelo JS)
-   [HTML] checklists>main>section>ul>li> (criado pelo JS) */
 .checklist li {
     display: flex;
     align-items: center;
@@ -1013,16 +606,10 @@ body {
     font-size: 0.95rem;
 }
 
-/* [CSS] .checklist li:last-child> Tira o traço do último item
-   [HTML] os mesmos elementos de .checklist li */
 .checklist li:last-child {
     border-bottom: none;
 }
 
-/* [CSS] .marca-item> Bolinha do item do checklist, vermelha quando está pendente
-   [HTML] processo-detalhe>main>div>section>ul>li>span> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>ul>li>span> (criado pelo JS)
-   [HTML] checklists>main>section>ul>li>span> (criado pelo JS) */
 .marca-item {
     width: 20px;
     height: 20px;
@@ -1037,23 +624,15 @@ body {
     border: 1px solid var(--alerta);
 }
 
-/* [CSS] .checklist li.entregue .marca-item> Bolinha fica verde quando o documento foi entregue
-   [HTML] processo-detalhe>main>div>section>ul>li>span> (criado pelo JS)
-   [HTML] checklists>main>section>ul>li>span> (criado pelo JS) */
 .checklist li.entregue .marca-item {
     background-color: var(--folha-clara);
     color: var(--folha);
     border-color: var(--folha);
 }
 
-/* [CSS] .checklist li.entregue span:nth-child(2)> Nome do item entregue fica cinza
-   [HTML] processo-detalhe>main>div>section>ul>li>span> (criado pelo JS)
-   [HTML] checklists>main>section>ul>li>span> (criado pelo JS) */
 .checklist li.entregue span:nth-child(2) {
     color: var(--tinta-clara);
 }
-/* [CSS] .historico> Linha do tempo com um traço vertical à esquerda
-   [HTML] processo-detalhe>main>div>section>ol> */
 .historico {
     list-style: none;
     margin-top: 12px;
@@ -1061,15 +640,11 @@ body {
     padding-left: 16px;
 }
 
-/* [CSS] .historico li> Cada evento da linha do tempo
-   [HTML] processo-detalhe>main>div>section>ol>li> (criado pelo JS) */
 .historico li {
     padding-bottom: 16px;
     position: relative;
 }
 
-/* [CSS] .historico li::before> Desenha a bolinha verde de cada evento na linha do tempo
-   [HTML] os mesmos elementos de .historico li */
 .historico li::before {
     content: '';
     position: absolute;
@@ -1081,32 +656,20 @@ body {
     background-color: var(--folha);
 }
 
-/* [CSS] .historico-data> Data do evento, pequena e cinza
-   [HTML] processo-detalhe>main>div>section>ol>li>span> (criado pelo JS) */
 .historico-data {
     font-size: 0.78rem;
     color: var(--tinta-clara);
 }
 
-/* [CSS] .historico-mudanca> Texto da mudança de fase em negrito
-   [HTML] processo-detalhe>main>div>section>ol>li>div> (criado pelo JS) */
 .historico-mudanca {
     font-weight: 600;
     font-size: 0.95rem;
 }
 
-/* [CSS] .historico-obs> Observação do evento, pequena e cinza
-   [HTML] processo-detalhe>main>div>section>ol>li>div> (criado pelo JS) */
 .historico-obs {
     font-size: 0.88rem;
     color: var(--tinta-clara);
 }
-/* [CSS] .etiqueta-status> Selo da situação do processo com texto branco (a cor vem do JS)
-   [HTML] processos>main>div>article>div>div>span> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>div>div>span>span> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>div>span> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div>div>span> (criado pelo JS)
-   [HTML] usuarios>main>div>article>div>div>span> (criado pelo JS) */
 .etiqueta-status {
     display: inline-block;
     padding: 2px 9px;
@@ -1118,22 +681,15 @@ body {
     color: #fff;
 }
 
-/* [CSS] @media (max-width: 800px)> Ajustes para telas médias (tablet) */
 @media (max-width: 800px) {
-    /* [CSS] .colunas> Em telas médias, as duas colunas viram uma
-       [HTML] os mesmos elementos de .colunas */
     .colunas {
         grid-template-columns: 1fr;
     }
 
-    /* [CSS] .grade-dados> Em telas médias, os dados ficam em duas colunas
-       [HTML] os mesmos elementos de .grade-dados */
     .grade-dados {
         grid-template-columns: 1fr 1fr;
     }
 }
-/* [CSS] .select-categoria> Lista pequena para trocar a categoria do documento na própria linha
-   [HTML] documentos>main>div>article>div>div>select> (criado pelo JS) */
 .select-categoria {
     padding: 3px 8px;
     border: 1px solid var(--linha);
@@ -1144,8 +700,6 @@ body {
     color: var(--tinta);
     max-width: 200px;
 }
-/* [CSS] #form-upload input[type="file"]> Campo de escolher arquivo com borda tracejada
-   [HTML] processo-detalhe>main>section>form>input> */
 #form-upload input[type="file"] {
     flex: 1;
     min-width: 200px;
@@ -1156,9 +710,6 @@ body {
     font-size: 0.9rem;
     background-color: var(--papel);
 }
-/* [CSS] .cartoes> Grade que distribui os cartões do resumo automaticamente
-   [HTML] painel>main>section>div>
-   [HTML] importacoes>main>section>div>div> (criado pelo JS) */
 .cartoes {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -1166,9 +717,6 @@ body {
     margin-top: 14px;
 }
 
-/* [CSS] .cartao> Cartão do resumo com faixa colorida em cima
-   [HTML] painel>main>section>div>div> (criado pelo JS)
-   [HTML] importacoes>main>section>div>div>div> (criado pelo JS) */
 .cartao {
     border: 1px solid var(--linha);
     border-radius: var(--raio);
@@ -1177,9 +725,6 @@ body {
     background-color: var(--papel);
 }
 
-/* [CSS] .cartao-numero> Número grande do cartão
-   [HTML] painel>main>section>div>div>div> (criado pelo JS)
-   [HTML] importacoes>main>section>div>div>div>div> (criado pelo JS) */
 .cartao-numero {
     font-family: 'Archivo', sans-serif;
     font-size: 1.9rem;
@@ -1187,39 +732,28 @@ body {
     line-height: 1.1;
 }
 
-/* [CSS] .cartao-rotulo> Nome da situação abaixo do número
-   [HTML] painel>main>section>div>div>div> (criado pelo JS)
-   [HTML] importacoes>main>section>div>div>div>div> (criado pelo JS) */
 .cartao-rotulo {
     font-size: 0.82rem;
     color: var(--tinta-clara);
     margin-top: 2px;
 }
 
-/* [CSS] .cartao-alerta> Aviso de prazo em laranja-avermelhado
-   [HTML] painel>main>section>div>div>div> (criado pelo JS) */
 .cartao-alerta {
     font-size: 0.78rem;
     font-weight: 600;
     color: var(--alerta);
     margin-top: 6px;
 }
-/* [CSS] .item-painel> Cada linha das listas do painel, separada por um traço
-   [HTML] painel>main>div>section>ul>li> (criado pelo JS) */
 .item-painel {
     display: block;
     padding: 11px 0;
     border-bottom: 1px solid var(--linha);
 }
 
-/* [CSS] .item-painel:last-child> Tira o traço da última linha
-   [HTML] os mesmos elementos de .item-painel */
 .item-painel:last-child {
     border-bottom: none;
 }
 
-/* [CSS] .item-painel a> Título do processo em negrito, sem sublinhado
-   [HTML] painel>main>div>section>ul>li>a> (criado pelo JS) */
 .item-painel a {
     color: var(--tinta);
     text-decoration: none;
@@ -1227,15 +761,10 @@ body {
     font-size: 0.96rem;
 }
 
-/* [CSS] .item-painel a:hover> Sublinha o título ao passar o mouse
-   [HTML] os mesmos elementos de .item-painel a */
 .item-painel a:hover {
     text-decoration: underline;
 }
 
-/* [CSS] .item-linha> Linha que alinha selos e textos pequenos lado a lado
-   [HTML] painel>main>div>section>ul>li>div> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>div> */
 .item-linha {
     display: flex;
     gap: 8px;
@@ -1244,9 +773,6 @@ body {
     margin-top: 3px;
 }
 
-/* [CSS] .selo> Selo pequeno em maiúsculas com texto branco (a cor vem do JS)
-   [HTML] painel>main>div>section>ul>li>div>span> (criado pelo JS)
-   [HTML] processo-detalhe>main>section>div>span> (criado pelo JS) */
 .selo {
     display: inline-block;
     padding: 1px 7px;
@@ -1258,35 +784,20 @@ body {
     color: #fff;
 }
 
-/* [CSS] .texto-pendente> Texto em laranja-avermelhado para o que está faltando
-   [HTML] painel>main>div>section>ul>li>div> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div>div>span> (criado pelo JS)
-   [HTML] importacoes>main>section>div>div> (criado pelo JS) */
 .texto-pendente {
     font-size: 0.85rem;
     color: var(--alerta);
 }
 
-/* [CSS] .texto-prazo> Texto do prazo, pequeno e cinza
-   [HTML] painel>main>div>section>ul>li>div>span> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>div> (criado pelo JS)
-   [HTML] notificacoes>main>div>article>div>div>span> (criado pelo JS)
-   [HTML] importacoes>main>section>div>article>div>div>span> (criado pelo JS) */
 .texto-prazo {
     font-size: 0.82rem;
     color: var(--tinta-clara);
 }
 
-/* [CSS] .texto-prazo.vencido> Prazo vencido fica laranja-avermelhado e em negrito
-   [HTML] painel>main>div>section>ul>li>div>span> (criado pelo JS) */
 .texto-prazo.vencido {
     color: var(--alerta);
     font-weight: 600;
 }
-/* [CSS] .barra-filtros> Faixa branca que alinha os filtros lado a lado
-   [HTML] processos>main>div>
-   [HTML] notificacoes>main>div>
-   [HTML] checklists>main>div> */
 .barra-filtros {
     display: flex;
     align-items: center;
@@ -1299,17 +810,10 @@ body {
     margin-bottom: 16px;
 }
 
-/* [CSS] .barra-filtros label> Rótulos dos filtros em negrito
-   [HTML] processos>main>div>label>
-   [HTML] notificacoes>main>div>label>
-   [HTML] checklists>main>div>label> */
 .barra-filtros label {
     font-weight: 600;
 }
 
-/* [CSS] .barra-filtros select> Listas de filtro com borda e largura controlada
-   [HTML] processos>main>div>select>
-   [HTML] checklists>main>div>select> */
 .barra-filtros select {
     padding: 6px 10px;
     border: 1px solid var(--linha);
@@ -1321,39 +825,27 @@ body {
     max-width: 190px;
 }
 
-/* [CSS] .barra-filtros select:focus> Contorno verde na lista de filtro selecionada
-   [HTML] os mesmos elementos de .barra-filtros select */
 .barra-filtros select:focus {
     outline: 2px solid var(--folha);
     outline-offset: -1px;
 }
-/* [CSS] #rotulo-fonte> Rótulo da origem do resultado, encostado à direita e em fonte de máquina
-   [HTML] processos>main>div>span>
-   [HTML] notificacoes>main>div>span> */
 #rotulo-fonte {
     margin-left: auto;
     font-family: 'Roboto Mono', monospace;
     font-size: 0.78rem;
 }
 
-/* [CSS] @media (max-width: 700px)> Ajustes para telas pequenas (celular) */
 @media (max-width: 700px) {
-    /* [CSS] .barra-filtros select> No celular, os filtros esticam para ocupar a linha
-       [HTML] os mesmos elementos de .barra-filtros select */
     .barra-filtros select {
         max-width: none;
         flex: 1;
     }
 
-    /* [CSS] #rotulo-fonte> No celular, o rótulo de origem desce para uma linha própria
-       [HTML] os mesmos elementos de #rotulo-fonte */
     #rotulo-fonte {
         margin-left: 0;
         width: 100%;
     }
 }
-/* [CSS] .tela-login> Fundo azul-escuro que centraliza a caixa de login na tela
-   [HTML] login>body> */
 .tela-login {
     display: flex;
     align-items: center;
@@ -1363,8 +855,6 @@ body {
     background-color: var(--tinta);
 }
 
-/* [CSS] .caixa-login> Caixa branca do login, estreita e com sombra
-   [HTML] login>main> */
 .caixa-login {
     width: 100%;
     max-width: 380px;
@@ -1374,23 +864,17 @@ body {
     padding: 36px 32px;
 }
 
-/* [CSS] .marca-login> Logo maior e escuro dentro da caixa de login
-   [HTML] login>main>div> */
 .marca-login {
     font-size: 1.8rem;
     color: var(--tinta);
     padding-bottom: 2px;
 }
 
-/* [CSS] .subtitulo-login> Frase cinza abaixo do logo no login
-   [HTML] login>main>p> */
 .subtitulo-login {
     color: var(--tinta-clara);
     font-size: 0.9rem;
     margin-bottom: 24px;
 }
-/* [CSS] .formulario-login> Tira a caixa e a sombra do formulário dentro do login
-   [HTML] login>main>form> */
 .formulario-login {
     padding: 0;
     border: none;
@@ -1398,31 +882,14 @@ body {
     background: none;
 }
 
-/* [CSS] .formulario-login .acoes-formulario> Espaço acima do botão Entrar
-   [HTML] login>main>form>div> */
 .formulario-login .acoes-formulario {
     margin-top: 20px;
 }
 
-/* [CSS] .formulario-login .botao-principal> Botão Entrar ocupa a largura toda
-   [HTML] login>main>form>div>button> */
 .formulario-login .botao-principal {
     width: 100%;
     justify-content: center;
 }
-/* [CSS] .usuario-sessao> Bloco do usuário logado no topo: nome e botão Sair lado a lado
-   [HTML] painel>header>div>div>
-   [HTML] clientes>header>div>div>
-   [HTML] cliente-form>header>div>div>
-   [HTML] processos>header>div>div>
-   [HTML] processo-form>header>div>div>
-   [HTML] processo-detalhe>header>div>div>
-   [HTML] documentos>header>div>div>
-   [HTML] notificacoes>header>div>div>
-   [HTML] checklists>header>div>div>
-   [HTML] importacoes>header>div>div>
-   [HTML] usuarios>header>div>div>
-   [HTML] usuario-form>header>div>div> */
 .usuario-sessao {
     display: flex;
     align-items: center;
@@ -1430,19 +897,6 @@ body {
     padding-bottom: 12px;
 }
 
-/* [CSS] .usuario-dados> Empilha o nome e o perfil do usuário, alinhados à direita
-   [HTML] painel>header>div>div>div> (criado pelo JS)
-   [HTML] clientes>header>div>div>div> (criado pelo JS)
-   [HTML] cliente-form>header>div>div>div> (criado pelo JS)
-   [HTML] processos>header>div>div>div> (criado pelo JS)
-   [HTML] processo-form>header>div>div>div> (criado pelo JS)
-   [HTML] processo-detalhe>header>div>div>div> (criado pelo JS)
-   [HTML] documentos>header>div>div>div> (criado pelo JS)
-   [HTML] notificacoes>header>div>div>div> (criado pelo JS)
-   [HTML] checklists>header>div>div>div> (criado pelo JS)
-   [HTML] importacoes>header>div>div>div> (criado pelo JS)
-   [HTML] usuarios>header>div>div>div> (criado pelo JS)
-   [HTML] usuario-form>header>div>div>div> (criado pelo JS) */
 .usuario-dados {
     display: flex;
     flex-direction: column;
@@ -1450,54 +904,11 @@ body {
     line-height: 1.2;
 }
 
-/* [CSS] .usuario-nome> Nome do usuário logado em negrito
-   [HTML] painel>header>div>div>div>span> (criado pelo JS)
-   [HTML] clientes>header>div>div>div>span> (criado pelo JS)
-   [HTML] cliente-form>header>div>div>div>span> (criado pelo JS)
-   [HTML] processos>header>div>div>div>span> (criado pelo JS)
-   [HTML] processo-form>header>div>div>div>span> (criado pelo JS)
-   [HTML] processo-detalhe>header>div>div>div>span> (criado pelo JS)
-   [HTML] documentos>header>div>div>div>span> (criado pelo JS)
-   [HTML] notificacoes>header>div>div>div>span> (criado pelo JS)
-   [HTML] checklists>header>div>div>div>span> (criado pelo JS)
-   [HTML] importacoes>header>div>div>div>span> (criado pelo JS)
-   [HTML] usuarios>header>div>div>div>span> (criado pelo JS)
-   [HTML] usuario-form>header>div>div>div>span> (criado pelo JS) */
 .usuario-nome {
     font-size: 0.9rem;
     font-weight: 600;
 }
-/* [CSS] .usuario-perfil> Perfil do usuário em letra menor e clara
-   [HTML] painel>header>div>div>div>span> (criado pelo JS)
-   [HTML] clientes>header>div>div>div>span> (criado pelo JS)
-   [HTML] cliente-form>header>div>div>div>span> (criado pelo JS)
-   [HTML] processos>header>div>div>div>span> (criado pelo JS)
-   [HTML] processo-form>header>div>div>div>span> (criado pelo JS)
-   [HTML] processo-detalhe>header>div>div>div>span> (criado pelo JS)
-   [HTML] documentos>header>div>div>div>span> (criado pelo JS)
-   [HTML] notificacoes>header>div>div>div>span> (criado pelo JS)
-   [HTML] checklists>header>div>div>div>span> (criado pelo JS)
-   [HTML] importacoes>header>div>div>div>span> (criado pelo JS)
-   [HTML] usuarios>header>div>div>div>span> (criado pelo JS)
-   [HTML] usuario-form>header>div>div>div>span> (criado pelo JS) */
 .usuario-perfil {
     font-size: 0.78rem;
     color: rgba(247, 246, 243, 0.65);
 }
-
-/* [CSS] style inline> Estilos escritos direto no HTML, no atributo style="...". O código fica no HTML; a explicação fica aqui */
-/* [CSS] style="display:flex; align-items:center; gap:6px; cursor:pointer;"> Coloca a caixinha de marcar e o texto lado a lado, com mãozinha no mouse
-   [HTML] clientes>main>div>label>
-   [HTML] processos>main>div>label>
-   [HTML] documentos>main>div>label>
-   [HTML] notificacoes>main>div>label>
-   [HTML] checklists>main>section>div>label>
-   [HTML] usuarios>main>div>label> */
-/* [CSS] style="text-transform: uppercase;"> Mostra as letras do estado sempre em maiúsculas
-   [HTML] cliente-form>main>form>div>div>input> */
-/* [CSS] style="margin-top:14px"> Dá um espaço acima da lista
-   [HTML] importacoes>main>section>div> */
-/* [CSS] style="margin-top:12px"> Dá um espaço acima dos marcadores
-   [HTML] processo-detalhe>main>section>div> */
-/* [CSS] style="max-width:720px; margin-top:16px"> Limita a largura do bloco e dá um espaço acima dele
-   [HTML] usuario-form>main>section> */

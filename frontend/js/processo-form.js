@@ -1,53 +1,66 @@
-// [JS] processo-form> Atalhos para os campos do formulário de processo
+/*
+==============================================================================
+SEÇÃO COMENTÁRIOS — processo-form.js: Lógica da página processo-form.html: Cadastro e edição de processo
+Formato: caminho do elemento no HTML> nome no código: o que faz
+==============================================================================
+processo-form> campos: Atalhos para os campos do formulário de processo
+processo-form>main>form>div>div>input> campos.numero: Formata o número enquanto digita; fica bloqueado na edição
+processo-form>main>form>div>div>input> campos.titulo: Preenchido na edição e enviado ao salvar
+processo-form>main>form>div>div>select> campos.cliente: Recebe os clientes ativos da API; fica bloqueada na edição
+processo-form>main>form>div>div>select> campos.advogado: Recebe os advogados da API; avisa se não houver nenhum
+processo-form>main>form>div>div>select> campos.tipo: Recebe os tipos da API; fica bloqueada na edição
+processo-form>main>form>div>div>select> campos.status: Recebe as situações da API; fica bloqueada na edição
+processo-form>main>form>div>div>input> campos.dataAbertura: Já vem com a data de hoje no cadastro; fica bloqueado na edição
+processo-form>main>form>div>div>input> campos.prazoFinal: Preenchido na edição e enviado ao salvar
+processo-form>main>form>div>div>input> campos.comarca: Preenchido na edição e enviado ao salvar
+processo-form>main>form>div>div>input> campos.valorCausa: Preenchido na edição e enviado ao salvar
+processo-form>main>form>div>div>textarea> campos.descricao: Preenchida na edição e enviada ao salvar
+processo-form> tela: Atalhos para título, formulário, avisos e botão
+processo-form>main>form> tela.form: Ao enviar, cadastra ou atualiza e abre o detalhe do processo
+processo-form>main>div> tela.aviso: Mostra aqui as mensagens de erro ou de sucesso
+processo-form>main>h1> tela.titulo: Troca para "Editar processo" quando a página abre com ?id=
+processo-form>main>p> tela.subtitulo: Troca o texto no modo de edição
+processo-form>main>form>div>button> tela.botaoSalvar: Troca para "Salvar alterações" na edição e mostra "Salvando..." enquanto espera
+processo-form>main>form>div>div>span> tela.dicaNumero: Muda o texto da dica no modo de edição
+processo-form>main>form>div>div>input> aplicarMascara(): Formata o número do processo enquanto digita
+processo-form> idProcesso: Lê o ?id= da URL: com id a tela edita, sem id cadastra
+processo-form>main>form>div>div>select> preencherSelect(): Coloca as opções dentro de uma lista (select)
+processo-form>main>form>div>div>select> carregarOpcoes(): Busca clientes, tipos, situações e advogados e preenche as listas; avisa se faltar advogado ou cliente
+processo-form>main> prepararTela(): Prepara a tela: no cadastro põe a data de hoje; na edição bloqueia campos fixos e preenche com os dados do processo
+processo-form>main>form> coletarDados(): Junta os valores dos campos para enviar à API (campos fixos só no cadastro)
+processo-form>main>form> tela.form (submit): Ao salvar: cadastra ou atualiza e abre o detalhe do processo; se der erro, mostra a mensagem no topo
+processo-form> prepararTela(): Prepara a tela assim que a página abre
+==============================================================================
+*/
+
 const campos = {
-    // [JS] processo-form>main>form>div>div>input> Formata o número enquanto digita; fica bloqueado na edição
     numero: document.getElementById('numero_processo'),
-    // [JS] processo-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     titulo: document.getElementById('titulo_processo'),
-    // [JS] processo-form>main>form>div>div>select> Recebe os clientes ativos da API; fica bloqueada na edição
     cliente: document.getElementById('cliente_id'),
-    // [JS] processo-form>main>form>div>div>select> Recebe os advogados da API; avisa se não houver nenhum
     advogado: document.getElementById('advogado_id'),
-    // [JS] processo-form>main>form>div>div>select> Recebe os tipos da API; fica bloqueada na edição
     tipo: document.getElementById('tipo_processo_id'),
-    // [JS] processo-form>main>form>div>div>select> Recebe as situações da API; fica bloqueada na edição
     status: document.getElementById('status_id'),
-    // [JS] processo-form>main>form>div>div>input> Já vem com a data de hoje no cadastro; fica bloqueado na edição
     dataAbertura: document.getElementById('data_abertura'),
-    // [JS] processo-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     prazoFinal: document.getElementById('prazo_final'),
-    // [JS] processo-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     comarca: document.getElementById('comarca'),
-    // [JS] processo-form>main>form>div>div>input> Preenchido na edição e enviado ao salvar
     valorCausa: document.getElementById('valor_causa'),
-    // [JS] processo-form>main>form>div>div>textarea> Preenchida na edição e enviada ao salvar
     descricao: document.getElementById('descricao')
 };
 
-// [JS] processo-form> Atalhos para título, formulário, avisos e botão
 const tela = {
-    // [JS] processo-form>main>form> Ao enviar, cadastra ou atualiza e abre o detalhe do processo
     form: document.getElementById('form-processo'),
-    // [JS] processo-form>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
-    // [JS] processo-form>main>h1> Troca para "Editar processo" quando a página abre com ?id=
     titulo: document.getElementById('titulo'),
-    // [JS] processo-form>main>p> Troca o texto no modo de edição
     subtitulo: document.getElementById('subtitulo'),
-    // [JS] processo-form>main>form>div>button> Troca para "Salvar alterações" na edição e mostra "Salvando..." enquanto espera
     botaoSalvar: document.getElementById('botao-salvar'),
-    // [JS] processo-form>main>form>div>div>span> Muda o texto da dica no modo de edição
     dicaNumero: document.getElementById('dica-numero')
 };
 
-// [JS] processo-form>main>form>div>div>input> Formata o número do processo enquanto digita
 aplicarMascara(campos.numero, formatarNumeroProcesso);
 
-// [JS] processo-form> Lê o ?id= da URL: com id a tela edita, sem id cadastra
 const idProcesso = new URLSearchParams(window.location.search).get('id');
 const modoEdicao = Boolean(idProcesso);
 
-// [JS] processo-form>main>form>div>div>select> Coloca as opções dentro de uma lista (select)
 function preencherSelect(select, itens, vazio = null) {
     select.innerHTML = '';
 
@@ -66,7 +79,6 @@ function preencherSelect(select, itens, vazio = null) {
     });
 }
 
-// [JS] processo-form>main>form>div>div>select> Busca clientes, tipos, situações e advogados e preenche as listas; avisa se faltar advogado ou cliente
 async function carregarOpcoes() {
     const [opcoes, clientes] = await Promise.all([
         api.processos.opcoes(),
@@ -96,7 +108,6 @@ async function carregarOpcoes() {
     }
 }
 
-// [JS] processo-form>main> Prepara a tela: no cadastro põe a data de hoje; na edição bloqueia campos fixos e preenche com os dados do processo
 async function prepararTela() {
     try {
         await carregarOpcoes();
@@ -135,7 +146,7 @@ async function prepararTela() {
         campos.dataAbertura.value = processo.data_abertura || '';
         campos.prazoFinal.value = processo.prazo_final || '';
         campos.comarca.value = processo.comarca || '';
-        campos.valorCausa.value = processo.valor_causa || '';
+        campos.valorCausa.value = processo.valor_causa ?? '';
         campos.descricao.value = processo.descricao || '';
     } catch (erro) {
         mostrarAviso(tela.aviso, erro.message);
@@ -143,7 +154,6 @@ async function prepararTela() {
     }
 }
 
-// [JS] processo-form>main>form> Junta os valores dos campos para enviar à API (campos fixos só no cadastro)
 function coletarDados() {
     const dados = {
         titulo: campos.titulo.value.trim(),
@@ -165,7 +175,6 @@ function coletarDados() {
     return dados;
 }
 
-// [JS] processo-form>main>form> Ao salvar: cadastra ou atualiza e abre o detalhe do processo; se der erro, mostra a mensagem no topo
 tela.form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparAviso(tela.aviso);
@@ -193,5 +202,4 @@ tela.form.addEventListener('submit', async (evento) => {
     }
 });
 
-// [JS] processo-form> Prepara a tela assim que a página abre
 prepararTela();

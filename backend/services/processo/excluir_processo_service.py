@@ -1,5 +1,4 @@
-"""Arquiva um processo, sem apagar do banco. Só o Admin pode."""
-
+# Arquiva um processo sem apagar do banco, só o Admin pode
 from models.processo import Processo
 from services.auditoria.registrar_auditoria_service import (
     RegistrarAuditoriaService,
@@ -23,9 +22,7 @@ class ExcluirProcessoService:
         if not processo.ativo:
             raise ValueError("Este processo já está arquivado.")
 
-        #remover() grava o
-        #arquivamento e o log na mesma transação.
-        RegistrarAuditoriaService.registrar(
+        RegistrarAuditoriaService.executar(
             usuario_id=usuario.id,
             acao="EXCLUIR",
             entidade="processo",
@@ -33,4 +30,4 @@ class ExcluirProcessoService:
             descricao=f"Processo {processo.numero_processo} arquivado.",
         )
 
-        return processo.remover()
+        return processo.deletar()

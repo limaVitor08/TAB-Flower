@@ -1,12 +1,4 @@
-"""
-Carrega todas as Models de uma vez.
-
-O SQLAlchemy só entende as chaves estrangeiras se todas as Models
-estiverem carregadas. Se uma ficar de fora, a aplicação quebra ao subir
-com um erro do tipo "could not find table". Importando tudo aqui,
-qualquer "from models.X import Y" já carrega o resto.
-"""
-
+# Carrega todas as Models juntas para o SQLAlchemy entender as ligações entre elas
 from models.cliente import Cliente
 from models.tabelas_apoio import (
     CategoriaDocumento,

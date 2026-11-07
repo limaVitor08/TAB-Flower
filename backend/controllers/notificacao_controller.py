@@ -1,39 +1,25 @@
-"""
-Controller da Notificação (funcionalidades 16 e 17).
-Não tem rota para criar notificação, porque quem cria é o próprio
-sistema quando um documento é anexado. Aqui o usuário só lista os avisos
-dele e marca como lido.
-"""
+# Recebe os pedidos dos avisos de quem está logado
 from flask import g, jsonify, request
-from models.notificacao import Notificacao
-from repositories.notificacao_repository import NotificacaoRepository
+from services.notificacao.listar_notificacoes_service import ListarNotificacoesService
+from services.notificacao.marcar_notificacao_lida_service import (
+    MarcarNotificacaoLidaService,
+)
 class NotificacaoController:
     @staticmethod
     def listar():
-        """GET /api/notificacoes?nao_lidas=true
-        Cada pessoa ve apenas os proprios avisos. O destinatario vem do
-        token de sessao, nunca da requisicao - antes era possivel pedir
-        as notificacoes de qualquer usuario passando o id na URL.
-        """
-        usuario_id = g.usuario_atual.id
         apenas_nao_lidas = request.args.get("nao_lidas") == "true"
-        # Funcionalidades 16 e 17: usa sp_notificacoes_advogado, que traz
-        # o contexto (processo, cliente e documento) junto com o aviso.
-        avisos = NotificacaoRepository.do_advogado(usuario_id, apenas_nao_lidas)
+        avisos = ListarNotificacoesService.executar(
+            g.usuario_atual.id, apenas_nao_lidas
+        )
         return jsonify(avisos), 200
     @staticmethod
     def marcar_lida(id_notificacao):
-        """PATCH /api/notificações/1/lida
-        Só o destinatário marca o próprio aviso como lido. A listagem já
-        filtrava pelo token; era o marcar-lida que faltava conferir. Sem
-        isso, alguém marcava como lido o aviso de um colega e ele nunca
-        ficava sabendo que havia documento novo no processo dele - o
-        oposto do que as Funcionalidades 16 e 17 existem para resolver.
-        """
-        aviso = Notificacao.buscar_por_id(id_notificacao)
-        if not aviso:
-            return jsonify({"erro": "Notificação não encontrada."}), 404
-        if aviso.usuario_destino_id != g.usuario_atual.id:
-            return jsonify({"erro": "Este aviso não é seu."}), 403
-        aviso.marcar_lida()
+        try:
+            aviso = MarcarNotificacaoLidaService.executar(
+                id_notificacao, g.usuario_atual
+            )
+        except PermissionError as erro:
+            return jsonify({"erro": str(erro)}), 403
+        except LookupError as erro:
+            return jsonify({"erro": str(erro)}), 404
         return jsonify(aviso.to_dict()), 200

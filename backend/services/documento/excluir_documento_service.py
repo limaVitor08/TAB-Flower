@@ -1,15 +1,4 @@
-"""
-Exclui um documento (funcionalidade 20).
-
-1 - Só o Admin pode excluir.
-2 - A exclusão é só uma marcação, o registro e o arquivo continuam existindo.
-
-Se o documento cobria um item do checklist, o item volta a ficar
-pendente, e o processo pode voltar de fase. Isso tudo, junto com o log de
-auditoria, entra num commit só. Assim o sistema nunca diz que a
-documentação está completa depois que o arquivo que a completava saiu.
-"""
-
+# Marca um documento como excluído e reabre a pendência, só o Admin pode
 import logging
 
 from extensions import db
@@ -19,8 +8,8 @@ from models.processo import Processo
 from services.auditoria.registrar_auditoria_service import (
     RegistrarAuditoriaService,
 )
-from services.processo.avancar_status_automatico_service import (
-    AvancarStatusAutomaticoService,
+from services.processo.retroceder_status_automatico_service import (
+    RetrocederStatusAutomaticoService,
 )
 
 logger = logging.getLogger("tabflower")
@@ -29,9 +18,6 @@ logger = logging.getLogger("tabflower")
 class ExcluirDocumentoService:
     @staticmethod
     def executar(id_documento, usuario):
-        """Exclui logicamente o documento.
-        Recebe o objeto do usuário logado (g.usuario_atual), e não um id.
-        """
         documento = Documento.buscar_por_id(id_documento)
         if not documento:
             raise LookupError("Documento não encontrado.")
@@ -49,17 +35,17 @@ class ExcluirDocumentoService:
         try:
             ExcluirDocumentoService._reabrir_pendencia(documento)
 
-            documento.remover(usuario_id=usuario.id, confirmar=False)
+            documento.deletar(usuario_id=usuario.id, confirmar=False)
 
             retorno = None
             if documento.processo_id:
                 processo = Processo.buscar_por_id(documento.processo_id)
                 if processo:
-                    retorno = AvancarStatusAutomaticoService.ao_reabrir_pendencia(
+                    retorno = RetrocederStatusAutomaticoService.executar(
                         processo, usuario.id
                     )
 
-            RegistrarAuditoriaService.registrar(
+            RegistrarAuditoriaService.executar(
                 usuario_id=usuario.id,
                 acao="EXCLUIR",
                 entidade="documento",
@@ -76,33 +62,7 @@ class ExcluirDocumentoService:
         return {"documento": documento, "retorno_status": retorno}
 
     @staticmethod
-    def restaurar(id_documento, usuario):
-        """Desfaz a exclusão. Restrito ao Admin."""
-        documento = Documento.buscar_por_id(id_documento)
-        if not documento:
-            raise LookupError("Documento não encontrado.")
-
-        if not documento.excluido:
-            raise ValueError("Este documento não está excluído.")
-
-        if not usuario.perfil or not usuario.perfil.pode_excluir:
-            raise PermissionError(
-                "Somente o Administrador pode restaurar documentos."
-            )
-
-        RegistrarAuditoriaService.registrar(
-            usuario_id=usuario.id,
-            acao="RESTAURAR",
-            entidade="documento",
-            entidade_id=documento.id,
-            descricao=f"Documento {documento.nome_padronizado} restaurado.",
-        )
-
-        return documento.restaurar()
-
-    @staticmethod
     def _reabrir_pendencia(documento):
-        """Se o documento atendia um item do checklist, ele volta a pendente."""
         item = ChecklistProcesso.query.filter_by(
             documento_id=documento.id
         ).first()

@@ -1,22 +1,37 @@
-// [JS] importacoes> Atalhos para os elementos da importação
+/*
+==============================================================================
+SEÇÃO COMENTÁRIOS — importacoes.js: Lógica da página importacoes.html: Importação de clientes por planilha
+Formato: caminho do elemento no HTML> nome no código: o que faz
+==============================================================================
+importacoes> tela: Atalhos para os elementos da importação
+importacoes>main>div> tela.aviso: Mostra aqui as mensagens de erro ou de sucesso
+importacoes>main>section>form> tela.form: Ao enviar, importa a planilha e mostra o resultado
+importacoes>main>section>form>input> tela.arquivo: Pega o arquivo escolhido para enviar
+importacoes>main>section>form>button> tela.botaoEnviar: Mostra "Importando..." enquanto a planilha é processada
+importacoes>main>section>form>a> tela.linkModelo: Baixa o modelo levando o token de login
+importacoes>main>section>div> tela.resultado: Aparece com os cartões de total, sucesso, erro e a lista de linhas que falharam
+importacoes>main>section>div> tela.lista: Desenha cada carga com os botões Ver clientes e Desfazer
+importacoes>main>section>form>a> tela.linkModelo.href: Baixar modelo: baixa o CSV de exemplo pelo JS (um link comum não levaria o token)
+importacoes>main>section>div> mostrarResultado(): Mostra o resultado da carga: três cartões (linhas, cadastrados, com problema) e a lista de linhas que falharam
+importacoes> NOMES_SITUACAO: Troca a situação gravada no banco (CONCLUIDA) pelo nome com acento mostrado na tela (Concluída)
+importacoes>main>section>div>article> montarFicha(): Monta a ficha de uma importação: arquivo, situação, quantos entraram, erros, data e botões
+importacoes>main>section>div> carregarHistorico(): Busca o histórico de importações e desenha a lista
+importacoes>main>section>form> tela.form (submit): Envia a planilha, mostra o resultado e um aviso com o total; depois recarrega o histórico
+importacoes>main>section>div> tela.lista (click): Cliques nas fichas: Ver clientes mostra/esconde os nomes da carga; Desfazer pede confirmação e desativa a carga
+importacoes> carregarHistorico(): Carrega o histórico assim que a página abre
+==============================================================================
+*/
+
 const tela = {
-    // [JS] importacoes>main>div> Mostra aqui as mensagens de erro ou de sucesso
     aviso: document.getElementById('aviso'),
-    // [JS] importacoes>main>section>form> Ao enviar, importa a planilha e mostra o resultado
     form: document.getElementById('form-importacao'),
-    // [JS] importacoes>main>section>form>input> Pega o arquivo escolhido para enviar
     arquivo: document.getElementById('arquivo'),
-    // [JS] importacoes>main>section>form>button> Mostra "Importando..." enquanto a planilha é processada
     botaoEnviar: document.getElementById('botao-enviar'),
-    // [JS] importacoes>main>section>form>a> Baixa o modelo levando o token de login
     linkModelo: document.getElementById('link-modelo'),
-    // [JS] importacoes>main>section>div> Aparece com os cartões de total, sucesso, erro e a lista de linhas que falharam
     resultado: document.getElementById('resultado'),
-    // [JS] importacoes>main>section>div> Desenha cada carga com os botões Ver clientes e Desfazer
     lista: document.getElementById('lista')
 };
 
-// [JS] importacoes>main>section>form>a> Baixar modelo: baixa o CSV de exemplo pelo JS (um link comum não levaria o token)
 tela.linkModelo.href = '#';
 tela.linkModelo.addEventListener('click', async (evento) => {
     evento.preventDefault();
@@ -27,7 +42,6 @@ tela.linkModelo.addEventListener('click', async (evento) => {
     }
 });
 
-// [JS] importacoes>main>section>div> Mostra o resultado da carga: três cartões (linhas, cadastrados, com problema) e a lista de linhas que falharam
 function mostrarResultado(lote) {
     const houveErro = lote.total_erro > 0;
 
@@ -63,7 +77,12 @@ function mostrarResultado(lote) {
         ${erros}`;
 }
 
-// [JS] importacoes>main>section>div>article> Monta a ficha de uma importação: arquivo, situação, quantos entraram, erros, data e botões
+const NOMES_SITUACAO = {
+    PROCESSANDO: 'Processando',
+    CONCLUIDA: 'Concluída',
+    FALHOU: 'Falhou'
+};
+
 function montarFicha(lote) {
     const cor = lote.situacao === 'CONCLUIDA' ? '#2f6f4e' : '#c2410c';
 
@@ -86,7 +105,7 @@ function montarFicha(lote) {
                      style="font-size:0.95rem">${escaparHtml(lote.nome_arquivo)}</div>
                 <div class="ficha-info">
                     <span class="etiqueta-status" style="background-color:${cor}">
-                        ${escaparHtml(lote.situacao)}
+                        ${escaparHtml(NOMES_SITUACAO[lote.situacao] || lote.situacao)}
                     </span>
                     <span>${lote.total_sucesso} de ${lote.total_registros} importados</span>
                     ${lote.total_erro > 0
@@ -100,7 +119,6 @@ function montarFicha(lote) {
         </article>`;
 }
 
-// [JS] importacoes>main>section>div> Busca o histórico de importações e desenha a lista
 async function carregarHistorico() {
     tela.lista.innerHTML = '<div class="vazio">Carregando...</div>';
 
@@ -123,7 +141,6 @@ async function carregarHistorico() {
     }
 }
 
-// [JS] importacoes>main>section>form> Envia a planilha, mostra o resultado e um aviso com o total; depois recarrega o histórico
 tela.form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparAviso(tela.aviso);
@@ -160,7 +177,6 @@ tela.form.addEventListener('submit', async (evento) => {
     }
 });
 
-// [JS] importacoes>main>section>div> Cliques nas fichas: Ver clientes mostra/esconde os nomes da carga; Desfazer pede confirmação e desativa a carga
 tela.lista.addEventListener('click', async (evento) => {
     const ver = evento.target.closest('[data-ver]');
     const desfazer = evento.target.closest('[data-desfazer]');
@@ -213,5 +229,4 @@ tela.lista.addEventListener('click', async (evento) => {
     }
 });
 
-// [JS] importacoes> Carrega o histórico assim que a página abre
 carregarHistorico();

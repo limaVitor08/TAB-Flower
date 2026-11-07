@@ -1,7 +1,4 @@
-"""
-Lista os processos que ainda têm documento faltando (funcionalidade 12).
-"""
-
+# Lista os processos que ainda têm documento faltando
 from repositories.processo_repository import ProcessoRepository
 
 
